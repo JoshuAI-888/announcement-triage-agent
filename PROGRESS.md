@@ -38,7 +38,7 @@ notes: Check discriminates — run against `git show HEAD:src/models.py` (pre-`n
 status: pass
 check: checks/check_fetch.py
 result: 44 assertions. Live EDGAR, 20 tickers, 30d lookback, clean slate: run 1 = 3013 new / 0 duplicate, run 2 = **0 new**, run 3 (watermark rolled back, whole window re-delivered) = 3013 seen / **0 new** / 3013 duplicate. Plus SPEC §12 semantics on a throwaway DB: append-only audit enforced by sqlite triggers, one watermark row per exchange, naive datetimes refused, dead-letter capture. Exit 0.
-commit: <pending>
+commit: 5f64e27
 elapsed: 22m
 spend: NZ$0.00
 notes: Run 2 alone is a weaker proof than it looks — the watermark filters the feed before dedupe is ever consulted, so it returns 0 without the announcement_id hash doing any work. Added run 3, which rolls the watermark back to the bootstrap point so EDGAR re-delivers all 3013 filings and only the hash can stop them being written twice. That is the property SPEC §12 actually asks for (at-least-once, "re-running any window must be safe"). `fetch()` now returns a `FetchResult(new, duplicate, seen, watermark_advanced)` instead of a bare int so the replay assertion can distinguish the two; it also takes optional `db_path` / `raw_dir` so the check runs from a clean slate rather than against the build's own state.db. No S2: zero dead-letters, no throttling, no auth required — data.sec.gov is key-free and the configured User-Agent carries a contact address as EDGAR requires. The build's own store was then populated by two real runs (3013 new, then 0 new); 3013 raw JSON in data/raw/.
@@ -47,7 +47,7 @@ notes: Run 2 alone is a weaker proof than it looks — the watermark filters the
 status: pass
 check: checks/check_normalise.py
 result: 258 assertions. 3013 raw payloads on disk; 120 normalised across 26 native form types, 18 issuers and 8 canonical doc_types. Every required SPEC §5.1 field populated, every announcement_id unique and recomputing to the documented hash, body_text plain and whitespace-normalised, truncation verified exactly against the cached pre-truncation text. Stub adapter satisfies the protocol and returns []. Unknown native type -> admin with one warning naming the form. Exit 0.
-commit: <pending>
+commit: 328a70e
 elapsed: 41m
 spend: NZ$0.00
 notes: Two failed attempts before green, both real bugs, neither fixed by touching the check.
@@ -56,3 +56,24 @@ notes: Two failed attempts before green, both real bugs, neither fixed by touchi
   Selection: 3013 filings over 30 days is 84% 424B2 structured-note pricing supplements from two issuers, so normalising everything would cost ~3000 requests and produce a labelling queue that is mostly one form type from one desk. `select_raw_payloads` takes the most recent filings round-robin across native form types (`normalise.sample_limit: 120` in config.yaml). That is a coverage rule and makes no materiality judgement.
   Document text is fetched once per filing and cached as `data/raw/<id>.txt` (gitignored), so re-normalising the corpus costs no further EDGAR requests.
   `config/doc_type_map.yaml` covers all 21 corpus form types explicitly; the `admin` fall-through is reserved for genuinely unseen types.
+
+## A.4 export unlabelled candidates.csv
+status: pass
+check: checks/check_candidates.py
+result: 11 assertions. `data/gold/candidates.csv` holds 120 candidates across 18 issuers and 8 doc_types. Header opens with the SPEC §13.1 gold columns in order. All 9 owner-only columns (4x `label_*`, `slice_tag`, `difficulty`, `labelled_at`, `labeller`, `pass_number`) verified EMPTY on every row — 1080 cells, one distinct value: the empty string. Identifying columns verified against the canonical record they point at. Exit 0.
+commit: A4
+elapsed: 14m
+spend: NZ$0.00
+notes: No labels were written, suggested or inferred, and `data/gold/gold.csv` and `data/gold/RUBRIC.md` were not created — both remain absent for the owner to write. Exporter lives at `evals/export_candidates.py`; the export is the eval-set concern of SPEC §13.1, and putting it there leaves `src/` exactly as SPEC §2 specifies. Five source-fact columns (headline, native_doc_type, char_count, truncated, source_url) are appended AFTER the §13.1 set so the owner can read and open each filing while labelling; the file stays a prefix-compatible superset of the gold schema. Rows are ordered by publication time, newest first — no ordering, filtering or emphasis in this file encodes a view about materiality. `issuer_price_sensitive_flag` is empty throughout because EDGAR supplies no such signal (SPEC §5.1), which is an absent source field rather than an unmade judgement.
+
+---
+
+## Batch A complete
+
+All four sub-steps green; `python -m checks.run_all` runs 4 checks / 432 assertions and exits 0.
+Cumulative API spend: **NZ$0.00** — Batch A makes no LLM calls; the first is B1.
+Elapsed: 1h25m against a 2.5h budget.
+
+**Stopped here, as instructed.** Next in the §7 graph is the HUMAN GATE: the owner
+writes `data/gold/RUBRIC.md` and labels `data/gold/gold.csv`. B1 does not start
+until that exists.
