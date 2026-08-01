@@ -29,7 +29,16 @@ per sub-step below.
 status: pass
 check: checks/check_skeleton.py
 result: 119 assertions — repo skeleton (SPEC §2), every `config.yaml` tunable (SPEC §4), `Announcement`/`Classification`/`Entities` field lists matching SPEC §5 exactly, `compute_id` equals sha256 of `exchange|ticker|iso|headline|native_id`, and fail-loud rejection of missing/unknown/out-of-enum values. Exit 0.
-commit: <pending>
+commit: f288583
 elapsed: 8m
 spend: NZ$0.00
 notes: Check discriminates — run against `git show HEAD:src/models.py` (pre-`native_id`) it fails at "Announcement fields match SPEC §5.1 exactly" after 72 passing assertions. `README.md` is listed in SPEC §2 but is increment 10 and owner-written, so the check does not require it. Reference adapter switched to EDGAR: `src/adapters/nzx.py` deleted.
+
+## A.2 store + fetch
+status: pass
+check: checks/check_fetch.py
+result: 44 assertions. Live EDGAR, 20 tickers, 30d lookback, clean slate: run 1 = 3013 new / 0 duplicate, run 2 = **0 new**, run 3 (watermark rolled back, whole window re-delivered) = 3013 seen / **0 new** / 3013 duplicate. Plus SPEC §12 semantics on a throwaway DB: append-only audit enforced by sqlite triggers, one watermark row per exchange, naive datetimes refused, dead-letter capture. Exit 0.
+commit: <pending>
+elapsed: 22m
+spend: NZ$0.00
+notes: Run 2 alone is a weaker proof than it looks — the watermark filters the feed before dedupe is ever consulted, so it returns 0 without the announcement_id hash doing any work. Added run 3, which rolls the watermark back to the bootstrap point so EDGAR re-delivers all 3013 filings and only the hash can stop them being written twice. That is the property SPEC §12 actually asks for (at-least-once, "re-running any window must be safe"). `fetch()` now returns a `FetchResult(new, duplicate, seen, watermark_advanced)` instead of a bare int so the replay assertion can distinguish the two; it also takes optional `db_path` / `raw_dir` so the check runs from a clean slate rather than against the build's own state.db. No S2: zero dead-letters, no throttling, no auth required — data.sec.gov is key-free and the configured User-Agent carries a contact address as EDGAR requires. The build's own store was then populated by two real runs (3013 new, then 0 new); 3013 raw JSON in data/raw/.
