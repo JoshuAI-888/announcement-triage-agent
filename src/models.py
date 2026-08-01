@@ -51,6 +51,7 @@ class Announcement(BaseModel):
     headline: str
     doc_type: Category  # canonical enum (§6.2)
     native_doc_type: str  # as supplied by the source, kept for audit
+    native_id: str  # source's own unique id (EDGAR: accession number); folded into announcement_id
     issuer_price_sensitive_flag: Optional[bool] = None  # None where the exchange supplies none
     body_text: str  # plain text, whitespace-normalised
     char_count: int
@@ -60,10 +61,18 @@ class Announcement(BaseModel):
 
     @staticmethod
     def compute_id(
-        exchange: str, ticker: str, published_at: datetime, headline: str
+        exchange: str,
+        ticker: str,
+        published_at: datetime,
+        headline: str,
+        native_id: str,
     ) -> str:
-        """Deterministic primary key: sha256 of exchange|ticker|iso-time|headline."""
-        raw = f"{exchange}|{ticker}|{published_at.isoformat()}|{headline}"
+        """Deterministic primary key: sha256 of exchange|ticker|iso-time|headline|native_id.
+
+        native_id (the source's own unique id) guarantees distinct filings never
+        collide even when exchange/ticker/time/headline are identical (SPEC.md §5.1).
+        """
+        raw = f"{exchange}|{ticker}|{published_at.isoformat()}|{headline}|{native_id}"
         return hashlib.sha256(raw.encode("utf-8")).hexdigest()
 
 

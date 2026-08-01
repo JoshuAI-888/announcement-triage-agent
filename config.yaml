@@ -1,31 +1,32 @@
 exchange:
-  reference: "NZX"              # NZX | ASX | EDGAR — set at build time
+  reference: "EDGAR"           # NZX | ASX | EDGAR — set at build time
   poll_interval_minutes: 10
   request_timeout_seconds: 30
   rate_limit_requests_per_second: 1    # respect the source's published limit
   user_agent: "ATA research prototype - joshuafang@gmail.com"
+  bootstrap_lookback_days: 30  # first run only (no watermark yet): how far back to seed
 
 watchlist:
-  - FBU
-  - MFT
-  - ATM
-  - SPK
-  - AIA
-  - CEN
-  - MEL
-  - FPH
-  - EBO
-  - RYM
-  - IFT
-  - CNU
-  - GNE
-  - POT
-  - SUM
-  - MCY
-  - KMD
-  - THL
-  - PCT
-  - VCT
+  - AAPL
+  - MSFT
+  - AMZN
+  - GOOGL
+  - META
+  - NVDA
+  - TSLA
+  - JPM
+  - BAC
+  - WMT
+  - XOM
+  - JNJ
+  - PG
+  - KO
+  - DIS
+  - NFLX
+  - INTC
+  - CSCO
+  - PFE
+  - T
 
 models:
   primary: "claude-haiku-4-5-20251001"    # bulk classification

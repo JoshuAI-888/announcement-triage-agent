@@ -172,7 +172,7 @@ Define these in `src/models.py` as Pydantic models. These are the contract betwe
 
 | Field | Type | Notes |
 |---|---|---|
-| `announcement_id` | str | **sha256 of `f"{exchange}\|{ticker}\|{published_at.isoformat()}\|{headline}"`**. Primary key. This is what makes the system idempotent |
+| `announcement_id` | str | **sha256 of `f"{exchange}\|{ticker}\|{published_at.isoformat()}\|{headline}\|{native_id}"`**. Primary key. This is what makes the system idempotent |
 | `exchange` | Literal["NZX","ASX","EDGAR"] | |
 | `ticker` | str | Uppercase |
 | `company_name` | str | |
@@ -180,6 +180,7 @@ Define these in `src/models.py` as Pydantic models. These are the contract betwe
 | `headline` | str | |
 | `doc_type` | str | Canonical enum — see §6.2 |
 | `native_doc_type` | str | As supplied by the source, kept for audit |
+| `native_id` | str | Source's own unique id for the announcement (EDGAR: accession number). Folded into `announcement_id` so distinct same-second filings never collide (amended v1.1) |
 | `issuer_price_sensitive_flag` | bool \| None | `None` where the exchange does not supply one (e.g. EDGAR) |
 | `body_text` | str | Plain text, whitespace-normalised |
 | `char_count` | int | |
