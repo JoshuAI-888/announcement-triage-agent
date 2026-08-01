@@ -1,0 +1,57 @@
+exchange:
+  reference: "NZX"              # NZX | ASX | EDGAR — set at build time
+  poll_interval_minutes: 10
+  request_timeout_seconds: 30
+  rate_limit_requests_per_second: 1    # respect the source's published limit
+  user_agent: "ATA research prototype - joshuafang@gmail.com"
+
+watchlist:
+  - FBU
+  - MFT
+  - ATM
+  - SPK
+  - AIA
+  - CEN
+  - MEL
+  - FPH
+  - EBO
+  - RYM
+  - IFT
+  - CNU
+  - GNE
+  - POT
+  - SUM
+  - MCY
+  - KMD
+  - THL
+  - PCT
+  - VCT
+
+models:
+  primary: "claude-haiku-4-5-20251001"    # bulk classification
+  escalation: "claude-sonnet-5"           # low confidence or long documents
+  temperature: 0.0
+  max_output_tokens: 1024
+
+pricing_usd_per_mtok:          # VERIFY against the current Anthropic pricing page
+  primary_input: null
+  primary_output: null
+  escalation_input: null
+  escalation_output: null
+fx_usd_nzd: null               # set manually
+
+thresholds:
+  confidence_floor: 0.65        # below this -> coerce to insufficient_info
+  escalate_below_confidence: 0.65
+  escalate_above_chars: 20000
+  truncate_input_chars: 60000   # hard ceiling; log every truncation
+
+ranking:
+  materiality_weight:
+    material: 1.0
+    insufficient_info: 0.4
+    immaterial: 0.0
+  recency_half_life_hours: 12
+  watchlist_weight_default: 1.0
+
+prompt_version: "v3"
