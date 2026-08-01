@@ -1,9 +1,9 @@
 """edgar.py — reference ExchangeAdapter for SEC EDGAR (SPEC.md §6.1).
 
-Increment 2 implements `poll` / `fetch_ticker` (fetch only). `normalise` and
-`map_doc_type` belong to Increment 3 and raise NotImplementedError until then.
-`price_sensitive_flag` returns None because EDGAR supplies no such signal
-(SPEC.md §5.1).
+`poll` / `fetch_ticker` return raw submission payloads; `normalise` turns one
+into a canonical `Announcement`, fetching the primary document and reducing it
+to plain text. `price_sensitive_flag` returns None because EDGAR supplies no
+such signal (SPEC.md §5.1).
 
 Data source: the free, key-free data.sec.gov JSON API. EDGAR requires a
 descriptive User-Agent with a contact address, taken from config.
@@ -12,11 +12,15 @@ descriptive User-Agent with a contact address, taken from config.
 from __future__ import annotations
 
 import time
-from datetime import datetime
+import warnings
+from datetime import datetime, timezone
+from pathlib import Path
 from typing import Optional
 
 import requests
 
+from src.adapters import UNKNOWN_DOC_TYPE, html_to_text, normalise_whitespace
+from src.models import Announcement
 from src.store import parse_iso
 
 TICKERS_URL = "https://www.sec.gov/files/company_tickers.json"
@@ -34,9 +38,15 @@ class EdgarAdapter:
         user_agent: str,
         timeout_seconds: int,
         rate_limit_rps: float,
+        doc_type_map: Optional[dict[str, str]] = None,
+        truncate_chars: Optional[int] = None,
+        text_cache_dir: Optional[Path] = None,
     ) -> None:
         self.watchlist = [t.upper() for t in watchlist]
         self.timeout = timeout_seconds
+        self.doc_type_map = doc_type_map or {}
+        self.truncate_chars = truncate_chars
+        self.text_cache_dir = Path(text_cache_dir) if text_cache_dir else None
         self._min_interval = 1.0 / rate_limit_rps if rate_limit_rps > 0 else 0.0
         self._session = requests.Session()
         self._session.headers.update(
@@ -157,13 +167,111 @@ class EdgarAdapter:
             )
         return out
 
+    # --- document text -------------------------------------------------------
+
+    def _get_text(self, url: str) -> str:
+        """GET a document body with the same throttle and retry policy as the JSON API."""
+        backoffs = [2, 8]
+        attempt = 0
+        while True:
+            self._throttle()
+            try:
+                resp = self._session.get(url, timeout=self.timeout)
+                self._last_request_at = time.monotonic()
+                resp.raise_for_status()
+                return resp.text
+            except requests.RequestException:
+                self._last_request_at = time.monotonic()
+                if attempt >= len(backoffs):
+                    raise
+                time.sleep(backoffs[attempt])
+                attempt += 1
+
+    def fetch_document_text(self, raw: dict) -> str:
+        """Plain text of the filing's primary document, whitespace-normalised.
+
+        Cached next to the raw payload so re-normalising a corpus costs no
+        further requests against EDGAR.
+        """
+        if not raw.get("primary_document"):
+            raise ValueError(
+                f"filing {raw['accession_number']} has no primary document to fetch"
+            )
+
+        cache_path = None
+        if self.text_cache_dir is not None and raw.get("announcement_id"):
+            cache_path = self.text_cache_dir / f"{raw['announcement_id']}.txt"
+            if cache_path.is_file():
+                return cache_path.read_text(encoding="utf-8")
+
+        text = normalise_whitespace(html_to_text(self._get_text(raw["source_url"])))
+        if not text:
+            raise ValueError(
+                f"filing {raw['accession_number']} produced no text from {raw['source_url']}"
+            )
+        if cache_path is not None:
+            cache_path.parent.mkdir(parents=True, exist_ok=True)
+            cache_path.write_text(text, encoding="utf-8")
+        return text
+
+    # --- ExchangeAdapter protocol (continued) --------------------------------
+
     def map_doc_type(self, native_type: str) -> str:
-        raise NotImplementedError(
-            "doc_type mapping is Increment 3 (normalise.py + config/doc_type_map.yaml)"
+        """Native EDGAR form -> canonical enum. Unknown -> 'admin', with a warning."""
+        key = (native_type or "").strip().upper()
+        mapped = self.doc_type_map.get(key)
+        if mapped is None:
+            warnings.warn(
+                f"unmapped EDGAR form {native_type!r}; falling back to {UNKNOWN_DOC_TYPE!r} "
+                f"(add it to config/doc_type_map.yaml)",
+                stacklevel=2,
+            )
+            return UNKNOWN_DOC_TYPE
+        return mapped
+
+    def normalise(self, raw: dict) -> Announcement:
+        """Raw EDGAR payload -> canonical Announcement (SPEC.md §5.1)."""
+        published_at = parse_iso(raw["published_at"])
+        ticker = raw["ticker"].upper()
+        headline = normalise_whitespace(raw["headline"])
+        native_id = raw["accession_number"]
+
+        body_text = self.fetch_document_text(raw)
+        truncated = self.truncate_chars is not None and len(body_text) > self.truncate_chars
+        if truncated:
+            print(
+                f"TRUNCATION: {ticker} {raw['form']} {native_id} cut from "
+                f"{len(body_text)} to {self.truncate_chars} chars"
+            )
+            # rstrip so the hard cut cannot leave a ragged trailing space.
+            body_text = body_text[: self.truncate_chars].rstrip()
+
+        return Announcement(
+            announcement_id=Announcement.compute_id(
+                self.exchange_code, ticker, published_at, headline, native_id
+            ),
+            exchange=self.exchange_code,
+            ticker=ticker,
+            company_name=raw["company_name"],
+            published_at=published_at,
+            headline=headline,
+            doc_type=self.map_doc_type(raw["form"]),
+            native_doc_type=self._native_doc_type(raw),
+            native_id=native_id,
+            issuer_price_sensitive_flag=self.price_sensitive_flag(raw),
+            body_text=body_text,
+            char_count=len(body_text),
+            truncated=truncated,
+            source_url=raw["source_url"],
+            fetched_at=datetime.now(timezone.utc),
         )
 
-    def normalise(self, raw: dict):
-        raise NotImplementedError("normalisation is Increment 3 (normalise.py)")
+    @staticmethod
+    def _native_doc_type(raw: dict) -> str:
+        """The source's own label, kept for audit. 8-K item codes are part of it."""
+        form = raw["form"]
+        items = (raw.get("items") or "").strip()
+        return f"{form} [{items}]" if items else form
 
     def price_sensitive_flag(self, raw: dict) -> Optional[bool]:
         return None  # EDGAR supplies no price-sensitive signal (SPEC.md §5.1)

@@ -41,6 +41,11 @@ pricing_usd_per_mtok:          # VERIFY against the current Anthropic pricing pa
   escalation_output: null
 fx_usd_nzd: null               # set manually
 
+normalise:
+  # How many raw payloads to turn into canonical records. Selected round-robin
+  # across native form types so every form is represented — see src/normalise.py.
+  sample_limit: 120
+
 thresholds:
   confidence_floor: 0.65        # below this -> coerce to insufficient_info
   escalate_below_confidence: 0.65

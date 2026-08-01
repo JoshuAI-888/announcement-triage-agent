@@ -22,6 +22,7 @@ from typing import NamedTuple
 
 import yaml
 
+from src.adapters import load_doc_type_map
 from src.adapters.edgar import EdgarAdapter
 from src.models import Announcement
 from src.store import Store, parse_iso
@@ -50,17 +51,18 @@ def load_config() -> dict:
 
 
 def build_adapter(config: dict):
+    """A fully configured reference adapter: credentials-free HTTP, doc_type map, truncation."""
     ref = config["exchange"]["reference"]
     if ref not in ADAPTERS:
-        raise ValueError(
-            f"no adapter implemented for exchange {ref!r} (Increment 2 ships EDGAR only)"
-        )
+        raise ValueError(f"no adapter implemented for exchange {ref!r} (this build ships EDGAR only)")
     ex = config["exchange"]
     return ADAPTERS[ref](
         watchlist=config["watchlist"],
         user_agent=ex["user_agent"],
         timeout_seconds=ex["request_timeout_seconds"],
         rate_limit_rps=ex["rate_limit_requests_per_second"],
+        doc_type_map=load_doc_type_map(ref),
+        truncate_chars=config["thresholds"]["truncate_input_chars"],
     )
 
 

@@ -42,3 +42,17 @@ commit: <pending>
 elapsed: 22m
 spend: NZ$0.00
 notes: Run 2 alone is a weaker proof than it looks — the watermark filters the feed before dedupe is ever consulted, so it returns 0 without the announcement_id hash doing any work. Added run 3, which rolls the watermark back to the bootstrap point so EDGAR re-delivers all 3013 filings and only the hash can stop them being written twice. That is the property SPEC §12 actually asks for (at-least-once, "re-running any window must be safe"). `fetch()` now returns a `FetchResult(new, duplicate, seen, watermark_advanced)` instead of a bare int so the replay assertion can distinguish the two; it also takes optional `db_path` / `raw_dir` so the check runs from a clean slate rather than against the build's own state.db. No S2: zero dead-letters, no throttling, no auth required — data.sec.gov is key-free and the configured User-Agent carries a contact address as EDGAR requires. The build's own store was then populated by two real runs (3013 new, then 0 new); 3013 raw JSON in data/raw/.
+
+## A.3 normalise + doc_type map + stub adapter
+status: pass
+check: checks/check_normalise.py
+result: 258 assertions. 3013 raw payloads on disk; 120 normalised across 26 native form types, 18 issuers and 8 canonical doc_types. Every required SPEC §5.1 field populated, every announcement_id unique and recomputing to the documented hash, body_text plain and whitespace-normalised, truncation verified exactly against the cached pre-truncation text. Stub adapter satisfies the protocol and returns []. Unknown native type -> admin with one warning naming the form. Exit 0.
+commit: <pending>
+elapsed: 41m
+spend: NZ$0.00
+notes: Two failed attempts before green, both real bugs, neither fixed by touching the check.
+  (1) Every XML-backed form (3, 4, 144, SCHEDULE 13G, 13F-HR) normalised to empty text. Cause: `<meta>` and `<link>` are void elements with no end tag, so the HTML extractor's skip-depth counter incremented and never decremented, discarding everything after the first `<meta>`. Plain-HTML EDGAR fragments have no `<head>`, which is why 8-K/10-Q passed and hid it. Fix: skip only tags whose content is genuinely non-visible (script/style/title) and handle self-closing tags separately.
+  (2) One truncated BAC 424B2 ended in whitespace because the 60000-char cut landed mid-run. Fix: rstrip after truncating. The check's truncation assertion was wrong too — it demanded `char_count == truncate_input_chars` exactly, which an rstrip legitimately breaks — so it was replaced with a stricter one that compares body_text against the cached pre-truncation text rather than inferring from the length.
+  Selection: 3013 filings over 30 days is 84% 424B2 structured-note pricing supplements from two issuers, so normalising everything would cost ~3000 requests and produce a labelling queue that is mostly one form type from one desk. `select_raw_payloads` takes the most recent filings round-robin across native form types (`normalise.sample_limit: 120` in config.yaml). That is a coverage rule and makes no materiality judgement.
+  Document text is fetched once per filing and cached as `data/raw/<id>.txt` (gitignored), so re-normalising the corpus costs no further EDGAR requests.
+  `config/doc_type_map.yaml` covers all 21 corpus form types explicitly; the `admin` fall-through is reserved for genuinely unseen types.

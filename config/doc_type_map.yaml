@@ -1,0 +1,87 @@
+# doc_type_map.yaml — native source taxonomy -> canonical doc_type (SPEC.md §6.2).
+#
+# This file is a visible artefact of the multi-exchange problem: every exchange
+# names the same document a different thing. Keep it readable.
+#
+# Canonical values are the SPEC.md §5.3 category enum, and nothing else.
+# An unmapped native type resolves to `admin` and emits a warning — an unseen
+# type must never crash a run, and must never be guessed at.
+#
+# A mapping says what kind of document this is. It says nothing about whether
+# the document matters; that is the model's job, measured against the gold set.
+
+NZX:
+  HALFYR: earnings_result
+  FLLYR: earnings_result
+  GENERAL: operational_incident
+
+ASX:
+  "3Y": director_dealing
+  "03001": capital_raise
+
+EDGAR:
+  # Periodic reports
+  "10-K": earnings_result
+  "10-Q": earnings_result
+  "10-K/A": earnings_result
+  "10-Q/A": earnings_result
+  "11-K": admin              # employee benefit plan annual report
+  "20-F": earnings_result
+  "40-F": earnings_result
+
+  # Current reports. 8-K covers everything from a results release to a plant
+  # fire; SPEC §6.2 fixes it at operational_incident and the item codes are
+  # kept in native_doc_type for audit.
+  "8-K": operational_incident
+  "8-K/A": operational_incident
+  "6-K": operational_incident
+
+  # Insider and beneficial ownership
+  "3": director_dealing
+  "3/A": director_dealing
+  "4": director_dealing
+  "4/A": director_dealing
+  "5": director_dealing
+  "5/A": director_dealing
+  "144": director_dealing
+  "144/A": director_dealing
+
+  # Securities offerings and prospectus supplements
+  "424B1": capital_raise
+  "424B2": capital_raise
+  "424B3": capital_raise
+  "424B4": capital_raise
+  "424B5": capital_raise
+  "424B7": capital_raise
+  "424B8": capital_raise
+  "FWP": capital_raise       # free writing prospectus
+  "S-1": capital_raise
+  "S-3": capital_raise
+  "S-3ASR": capital_raise
+  "S-8": capital_raise
+
+  # Business combinations
+  "S-4": m_and_a
+  "S-4/A": m_and_a
+  "SC 13E3": m_and_a
+  "SC TO-T": m_and_a
+  "SC 14D9": m_and_a
+
+  # Ownership, control and proxy
+  "SCHEDULE 13D": governance_change
+  "SCHEDULE 13D/A": governance_change
+  "SCHEDULE 13G": governance_change
+  "SCHEDULE 13G/A": governance_change
+  "DEF 14A": governance_change
+  "DEFA14A": governance_change
+  "PX14A6G": governance_change   # exempt shareholder solicitation
+
+  # Routine regulatory disclosure
+  "13F-HR": regulatory
+  "13F-HR/A": regulatory
+  "IRANNOTICE": regulatory
+  "SD": regulatory               # specialised disclosure
+  "ARS": admin
+
+# The stub adapter maps nothing; it exists to prove the interface generalises.
+STUB: {}
