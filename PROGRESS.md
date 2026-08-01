@@ -61,7 +61,7 @@ notes: Two failed attempts before green, both real bugs, neither fixed by touchi
 status: pass
 check: checks/check_candidates.py
 result: 11 assertions. `data/gold/candidates.csv` holds 120 candidates across 18 issuers and 8 doc_types. Header opens with the SPEC §13.1 gold columns in order. All 9 owner-only columns (4x `label_*`, `slice_tag`, `difficulty`, `labelled_at`, `labeller`, `pass_number`) verified EMPTY on every row — 1080 cells, one distinct value: the empty string. Identifying columns verified against the canonical record they point at. Exit 0.
-commit: A4
+commit: de3228c
 elapsed: 14m
 spend: NZ$0.00
 notes: No labels were written, suggested or inferred, and `data/gold/gold.csv` and `data/gold/RUBRIC.md` were not created — both remain absent for the owner to write. Exporter lives at `evals/export_candidates.py`; the export is the eval-set concern of SPEC §13.1, and putting it there leaves `src/` exactly as SPEC §2 specifies. Five source-fact columns (headline, native_doc_type, char_count, truncated, source_url) are appended AFTER the §13.1 set so the owner can read and open each filing while labelling; the file stays a prefix-compatible superset of the gold schema. Rows are ordered by publication time, newest first — no ordering, filtering or emphasis in this file encodes a view about materiality. `issuer_price_sensitive_flag` is empty throughout because EDGAR supplies no such signal (SPEC §5.1), which is an absent source field rather than an unmade judgement.
