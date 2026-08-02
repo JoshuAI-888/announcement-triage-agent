@@ -76,6 +76,36 @@ fx_usd_nzd: 1.6976             # XE mid-market spot, retrieved 2026-08-02.
                                # so treat NZD cost figures as +/-2%. Override if your
                                # team standardises on a period average instead of spot.
 
+# --- Provider comparison (added 2026-08-03) ------------------------------------
+# Alternative classifier providers, evaluated on the identical gold set + prompt.
+# Claude reads the models:/pricing_usd_per_mtok: blocks above (kept for back-compat).
+# openai + glm use the OpenAI-compatible client (src/providers.py). Keys come from
+# .env via api_key_env — NEVER put a key in this file. Pricing is USD per Mtok.
+# FILL the null model ids and pricing before running those providers.
+providers:
+  claude:
+    kind: anthropic
+    model: "claude-haiku-4-5-20251001"
+    pricing: {input: 1.00, output: 5.00}
+  openai:
+    kind: openai
+    api_key_env: "OPENAI_API_KEY"
+    base_url: null                 # default OpenAI endpoint
+    model: null                    # e.g. "gpt-5.x" — you provide the exact id
+    pricing: {input: null, output: null}
+  glm:
+    kind: openai
+    api_key_env: "GLM_API_KEY"
+    base_url: "https://open.bigmodel.cn/api/paas/v4/"   # Zhipu OpenAI-compatible endpoint
+    model: null                    # e.g. "glm-5.2" — you provide the exact id
+    pricing: {input: null, output: null}
+
+eval:
+  # Concurrency for the eval harness (independent of the EDGAR rate limit above).
+  # The classify calls are I/O-bound; ~12 parallel workers takes a full run from
+  # ~50 min to ~4 min. Lower it if a provider rate-limits you.
+  concurrency: 12
+
 normalise:
   # How many raw payloads to turn into canonical records. Selected round-robin
   # across native form types so every form is represented — see src/normalise.py.

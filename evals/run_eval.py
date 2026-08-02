@@ -148,15 +148,28 @@ def evaluate(
     config: dict,
     client,
     predictor: Optional[Callable[[Announcement], Classification]] = None,
+    concurrency: int = 1,
 ) -> list[dict]:
-    """Run one system (the agent, or a baseline) over the gold set `runs` times."""
-    items: list[dict] = []
-    for run_idx in range(1, runs + 1):
-        for row in gold_rows:
-            ann = announcements[row["announcement_id"]]
-            pred = predictor(ann) if predictor else run_agent(ann, config, prompt_version, client)
-            items.append(build_item(run_idx, row, ann, pred))
-    return items
+    """Run one system (the agent, or a baseline) over the gold set `runs` times.
+
+    The classify calls are I/O-bound; `concurrency` > 1 runs them in a thread pool
+    (ThreadPoolExecutor.map preserves order, so item ordering is unchanged). The
+    per-item work is pure + the SDK clients are thread-safe, so this is safe.
+    """
+    tasks = [(run_idx, row) for run_idx in range(1, runs + 1) for row in gold_rows]
+
+    def _work(task):
+        run_idx, row = task
+        ann = announcements[row["announcement_id"]]
+        pred = predictor(ann) if predictor else run_agent(ann, config, prompt_version, client)
+        return build_item(run_idx, row, ann, pred)
+
+    if concurrency and concurrency > 1:
+        from concurrent.futures import ThreadPoolExecutor
+
+        with ThreadPoolExecutor(max_workers=concurrency) as pool:
+            return list(pool.map(_work, tasks))
+    return [_work(task) for task in tasks]
 
 
 def _dataset_hash(path: Path) -> str:
@@ -174,44 +187,62 @@ def run_eval(
     out_root: Path = EVAL_DIR,
     ledger_path: Path = LEDGER_PATH,
     announcements: Optional[dict[str, Announcement]] = None,
+    provider: str = "claude",
+    concurrency: int = 1,
 ) -> Path:
-    """Full harness run for one prompt version. Returns the run directory."""
-    config = config or load_config()
-    if client is None:
-        from anthropic import Anthropic
+    """Full harness run for one prompt version + provider. Returns the run directory.
 
-        client = Anthropic()
+    `provider` selects the classifier (claude / openai / glm); the effective config
+    swaps in that provider's model id + pricing, and non-Claude providers run with
+    escalation off (they have no escalation model). Scorecard rows are labelled by
+    provider so v3 (claude) / v3 (openai) / v3 (glm) sit side by side.
+    """
+    import copy
+
+    from src.providers import build_client, provider_config
+
+    base = config or load_config()
+    pconf = provider_config(provider, base)
+    cfg = copy.deepcopy(base)
+    cfg["models"]["primary"] = pconf["model"]
+    cfg["pricing_usd_per_mtok"]["primary_input"] = pconf["pricing"]["input"]
+    cfg["pricing_usd_per_mtok"]["primary_output"] = pconf["pricing"]["output"]
+    if provider != "claude":
+        cfg["thresholds"]["escalate_above_chars"] = 10 ** 12
+        cfg["thresholds"]["escalate_below_confidence"] = 0.0
+
+    if client is None:
+        client = build_client(provider, base)
     baselines = baselines or {}
+    label = prompt_version if provider == "claude" else f"{prompt_version} ({provider})"
 
     gold_rows = load_gold(gold_path)
     if limit:
         gold_rows = gold_rows[:limit]
     if announcements is None:
-        announcements = load_announcements(config)
+        announcements = load_announcements(cfg)
 
     timestamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out_dir = out_root / f"{timestamp}_{prompt_version}"
+    out_dir = out_root / f"{timestamp}_{prompt_version}_{provider}"
     out_dir.mkdir(parents=True, exist_ok=True)
 
     started = time.monotonic()
-    items = evaluate(prompt_version, runs, gold_rows, announcements, config, client)
+    items = evaluate(prompt_version, runs, gold_rows, announcements, cfg, client, concurrency=concurrency)
     metrics = report.compute_metrics(items, runs)
 
-    # Baselines on the identical set (§13.4), each measured once. Baseline callables
-    # take (ann, config, client); bind them to a 1-arg predictor for evaluate().
-    for label, fn in baselines.items():
-        predictor = resilient(lambda ann, fn=fn: fn(ann, config, client), config, prompt_version)
-        b_items = evaluate(prompt_version, 1, gold_rows, announcements, config, client, predictor=predictor)
+    for blabel, fn in baselines.items():
+        predictor = resilient(lambda ann, fn=fn: fn(ann, cfg, client), cfg, prompt_version)
+        b_items = evaluate(prompt_version, 1, gold_rows, announcements, cfg, client,
+                           predictor=predictor, concurrency=concurrency)
         b_metrics = report.compute_metrics(b_items, 1)
-        report.update_ledger(ledger_path, f"baseline: {label}",
-                             b_metrics["headline"], b_metrics["stability"],
+        blabel_full = f"baseline: {blabel}" if provider == "claude" else f"baseline: {blabel} ({provider})"
+        report.update_ledger(ledger_path, blabel_full, b_metrics["headline"], b_metrics["stability"],
                              {"n": b_metrics["n_items"], "runs": 1})
 
-    detail = {"label": prompt_version, **metrics}
-    ledger = report.update_ledger(ledger_path, prompt_version, metrics["headline"], metrics["stability"],
+    detail = {"label": label, **metrics}
+    ledger = report.update_ledger(ledger_path, label, metrics["headline"], metrics["stability"],
                                   {"n": metrics["n_items"], "runs": runs})
 
-    # Artefacts (SPEC §13.2).
     report.write_per_item_csv(items, out_dir / "per_item.csv")
     report.write_failures_csv(items, out_dir / "failures.csv")
     report.write_confusion_csv(metrics["confusion"], out_dir / "confusion_matrix.csv")
@@ -220,16 +251,19 @@ def run_eval(
     report.write_manifest(
         {
             "prompt_version": prompt_version,
+            "provider": provider,
             "prompt_file_sha256": hashlib.sha256(load_prompt(prompt_version).encode()).hexdigest(),
             "dataset": (str(gold_path.relative_to(ROOT)) if gold_path.is_relative_to(ROOT) else str(gold_path)),
             "dataset_sha256": _dataset_hash(gold_path),
             "n_items": metrics["n_items"],
             "runs": runs,
-            "model_ids": {"primary": config["models"]["primary"], "escalation": config["models"]["escalation"]},
-            "temperature": config["models"]["temperature"],
-            "escalate_below_confidence": config["thresholds"]["escalate_below_confidence"],
-            "escalate_above_chars": config["thresholds"]["escalate_above_chars"],
+            "model_ids": {"primary": cfg["models"]["primary"],
+                          "escalation": cfg["models"]["escalation"] if provider == "claude" else None},
+            "temperature": cfg["models"]["temperature"],
+            "escalate_below_confidence": cfg["thresholds"]["escalate_below_confidence"],
+            "escalate_above_chars": cfg["thresholds"]["escalate_above_chars"],
             "total_cost_nzd": metrics["cost_latency"]["total_cost_nzd"],
+            "concurrency": concurrency,
             "timestamp": timestamp,
             "wall_seconds": round(time.monotonic() - started, 1),
             "baselines": list(baselines),
@@ -260,8 +294,11 @@ def eval_config(config: dict, no_escalation: bool) -> dict:
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--prompt-version", required=True)
-    parser.add_argument("--runs", type=int, default=3)
+    parser.add_argument("--runs", type=int, default=1,
+                        help="repeat count for the stability metric; 1 is enough at temperature 0")
     parser.add_argument("--limit", type=int, default=None, help="evaluate only the first N gold rows (cost control)")
+    parser.add_argument("--provider", default="claude", help="claude | openai | glm (see config.yaml providers:)")
+    parser.add_argument("--concurrency", type=int, default=None, help="parallel classify calls (default: config eval.concurrency)")
     parser.add_argument("--no-baselines", action="store_true")
     parser.add_argument("--no-escalation", action="store_true",
                         help="keep long filings on the primary model (cost deviation; recorded in the manifest)")
@@ -276,10 +313,14 @@ def main() -> None:
         except Exception as exc:  # baselines land in B4
             print(f"(baselines not available yet: {exc})")
 
-    config = eval_config(load_config(), args.no_escalation)
+    raw_config = load_config()
+    config = eval_config(raw_config, args.no_escalation)
+    concurrency = args.concurrency if args.concurrency is not None else (raw_config.get("eval") or {}).get("concurrency", 1)
     if args.no_escalation:
         print("NOTE: escalation disabled for this eval (owner cost deviation) — primary model only.")
-    out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines, config=config)
+    print(f"provider={args.provider}  runs={args.runs}  concurrency={concurrency}")
+    out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines, config=config,
+                       provider=args.provider, concurrency=concurrency)
     print(f"\nWrote {out_dir.relative_to(ROOT)}")
     print((out_dir / "scorecard.md").read_text())
 

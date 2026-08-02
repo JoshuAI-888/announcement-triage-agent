@@ -108,6 +108,8 @@ requests
 python-dotenv
 pandas
 pyyaml
+matplotlib   # added 2026-08-02 (owner-approved): scorecard.pdf (§13.2)
+openai       # added 2026-08-03 (owner-approved): OpenAI + GLM providers (§ provider comparison)
 ```
 
 Nothing else without asking.
