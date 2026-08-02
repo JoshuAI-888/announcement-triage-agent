@@ -295,3 +295,23 @@ commit: 10449b8
 elapsed: ~40m
 spend: NZ$0.00 — offline. (A live ≤5-record brief smoke to drop a real dated file in out/briefs/ will follow.)
 notes: Built while the end-of-B v1 eval ran in the background. Offline suite now 601 assertions across 8 checks.
+
+---
+
+## Batch B complete — end-of-B v1 eval (the deliverable)
+The full v1 eval ran: 220 items × 3 runs + 3 baselines, **NZ$10.54**, 48 min, escalation cut per the owner's cost decision (`--no-escalation`, recorded in run_manifest.json with dataset+prompt hashes). v1 (naive: Role + schema only) scored **recall 1.000 / precision 0.220 / grounded 0.258 / confidently-wrong 0.532**. It over-flags like `flag_all` (precision 0.15) and hallucinates its evidence quote ~74% of the time — the naive baseline the rubric/verbatim prompts are built to beat. Two harness fixes landed here: over-long quote/rationale clamping (b1331ce) and eval resilience to transient API errors (343cd04, after a transient failure crashed the first v2 run). Batch B is complete on all four sub-step checks + the v1 scorecard.
+
+## C.2 prompt v2 + eval
+status: pass
+check: checks/check_prompt_v2.py — 20 assertions, offline: the materiality rubric (RUBRIC §§1–6) is **byte-identical** in classify_v2.md (no paraphrase), plus all 11 category defs. Verbatim copy is what makes the eval valid.
+result: v2 (v1 + rubric) eval — **precision 0.402 (≈2× v1), recall 0.929, ranking P@5 0.80 (from 0.00), confidently-wrong 0.232 (from 0.53)**. Grounding still 0.164 — the rubric doesn't force verbatim quotes; that's v3's job. NZ$11.60, 3 runs.
+commit: 61e11c1 (prompt+check); eval artefacts in out/eval_runs/ (gitignored)
+spend: cumulative eval NZ$22.1 (v1 10.54 + v2 11.60)
+notes: grounded% metric fixed to a direct G2 measurement (343cd04→b66b39d) so baselines read correctly; naive_prompt now 0.264 (matches v1, same prompt) not a false 1.0.
+
+## C.3 prompt v3 + contamination check + eval
+status: prompt + contamination check PASS; eval running
+check: checks/check_prompt_v3.py — 12 assertions, offline. v3 = v2 rubric + forced-verbatim-quote rule + explicit abstention rule + exactly 3 few-shots (material/immaterial/abstention). **Contamination guard PASSED**: the 3 few-shot announcement_ids (IONS 8-K, BAC 424B2, FANG 8-K) are all confirmed NOT in gold.csv — drawn from the raw EDGAR corpus outside the 220-row pool. Confirmed to the owner in writing.
+commit: (C3 prompt+check committed; eval pending)
+spend: eval running (~NZ$10 projected, 3 runs)
+notes: Final v1/v2/v3 progression table to follow on completion.
