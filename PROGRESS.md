@@ -257,3 +257,12 @@ commit: (this commit)
 elapsed: ~35m
 spend: NZ$0.00 — no API call has succeeded.
 notes: The ≤5-record real-API smoke is **BLOCKED**. `ANTHROPIC_API_KEY` in `.env` returns HTTP 401 "invalid x-api-key"; the value is 167 chars and does not start with `sk-ant-`, i.e. not an Anthropic key. classify.py is therefore unverified against the live model, and cost/latency are unmeasured. This is stop-condition S2 and blocks the B1 smoke, the end-of-B full eval, and the C2/C3 evals. Everything offline (B2 guardrails, and the B3/B4 checks via stub clients) can still proceed.
+
+## B.2 guardrails G1–G6 + synthetic fixtures
+status: pass
+check: checks/check_verify.py
+result: 20 assertions, offline (no API). All six guardrails implemented in `src/verify.py`, deterministic, zero LLM calls. G1 parse+schema-validate (rejects non-JSON, bad enum, missing fields). **G2 shown FIRING** on an ungrounded evidence_quote → `G2_ungrounded_quote` + needs_human_review; passes on a verbatim quote and tolerates whitespace/case (ws-normalise + casefold). G3 strips an unverified amount. G4 drops an off-watchlist ticker (returns None). G5 coerces sub-floor confidence to insufficient_info. **G6 shown FIRING** on "we recommend / overweight" and on a "target price" evidence_quote → `G6_directional_language` + not brief-ready; passes on neutral text and does not false-fire on "buyback" (word-boundary regex). Exit 0.
+commit: (this commit)
+elapsed: ~25m
+spend: NZ$0.00 — deterministic, no API.
+notes: Implemented all six (not just G1/G2/G6) because C1's run.py pipeline needs G4/G5 to function; the AUTONOMY graph names G1/G2/G6 as the non-negotiable core and those are the ones shown firing. The fixture output for G2 and G6 is printed by the check (see the `--- G2/G6 fixture (FIRING) ---` blocks) per the owner's requirement that a guardrail be observed failing. No regression: offline suite (skeleton/candidates/normalise/classify/verify) = 538 assertions green.
