@@ -284,3 +284,14 @@ commit: 9eac746  (shared with B3 — a `git add -A` staged both; not split, forw
 elapsed: ~20m
 spend: NZ$0.00 — offline (flag_all/rules no LLM; naive_prompt via fake client).
 notes: Offline suite now 578 assertions across 7 checks. **All four B sub-steps are green on their checks.** The end-of-B full v1 eval (the deliverable) is the only remaining B step and is gated on the owner's go-ahead for real spend (~NZ$280 at n=220×3runs×[v1,v2,v3]+baselines; the B-end v1-only slice is smaller).
+
+---
+
+## C.1 rank + brief + run CLI
+status: pass (offline check)
+check: checks/check_run.py
+result: 21 assertions, offline (stub client, throwaway sqlite, no-op sleeper). `src/rank.py` — the SPEC §10 hand-set score with a one-sentence `reason` per item; material+clean → ranked (recency orders correctly), abstention/guardrail-flagged → "Needs a look" (never mixed in), immaterial+clean → excluded. `src/brief.py` — dated markdown to out/briefs/, three sections + self-reporting footer (cost, counts, flags). `src/run.py` — orchestrator with §12 semantics verified firing: idempotency (audited records skipped on re-run), dead-letter (bad-JSON record captured, run continued, brief still written), 2s/8s retry backoff, --dry-run (no brief, no watermark), watermark advance only after a successful full run. `src/store.py` gained `is_audited()`. Exit 0.
+commit: 10449b8
+elapsed: ~40m
+spend: NZ$0.00 — offline. (A live ≤5-record brief smoke to drop a real dated file in out/briefs/ will follow.)
+notes: Built while the end-of-B v1 eval ran in the background. Offline suite now 601 assertions across 8 checks.

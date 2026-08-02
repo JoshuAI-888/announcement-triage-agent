@@ -173,6 +173,17 @@ class Store:
         )
         self.conn.commit()
 
+    def is_audited(self, announcement_id: str) -> bool:
+        """True if this announcement already has an audit row (classify→brief done).
+
+        The pipeline (run.py) uses this for idempotency: re-running any window must
+        be safe, so an already-decided announcement is skipped (SPEC §12).
+        """
+        row = self.conn.execute(
+            "SELECT 1 FROM audit WHERE announcement_id = ? LIMIT 1", (announcement_id,)
+        ).fetchone()
+        return row is not None
+
     # --- dead-letter ---------------------------------------------------------
 
     def add_dead_letter(
