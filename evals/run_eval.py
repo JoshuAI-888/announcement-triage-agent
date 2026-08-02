@@ -61,30 +61,48 @@ def load_announcements(config: dict | None = None) -> dict[str, Announcement]:
     return {a.announcement_id: a for a in normalise_all(config=config)}
 
 
-def run_agent(ann: Announcement, config: dict, prompt_version: str, client) -> Classification:
-    """The full agent for one item: classify (with transient-error retries) then verify.
+def _failed_sentinel(ann: Announcement, config: dict, prompt_version: str) -> Classification:
+    """A flagged placeholder so a persistent classify failure is visible, not fatal."""
+    from src.models import Entities
 
-    A long eval makes ~1k API calls; a single transient hiccup must not crash the
-    whole run (the harness, unlike run.py, has no dead-letter path). Retry on
-    transport/G1 failures, and on persistent failure record a flagged sentinel so
-    the run completes and the failure is visible in the results rather than fatal.
+    return Classification(
+        announcement_id=ann.announcement_id, materiality="insufficient_info", confidence=0.0,
+        categories=["admin"], evidence_quote="EVAL_CLASSIFY_FAILED", rationale="eval: classify failed",
+        entities=Entities(), previously_disclosed=False, needs_human_review=True,
+        model_id=config["models"]["primary"], prompt_version=prompt_version, cost_nzd=0.0,
+        guardrail_flags=["EVAL_CLASSIFY_FAILED"],
+    )
+
+
+def resilient(predictor: Callable[[Announcement], Classification], config: dict, prompt_version: str):
+    """Wrap ANY predictor (agent or baseline) so a persistent failure yields a sentinel.
+
+    A long eval makes ~1k API calls; one persistent failure (a transient hiccup, or
+    an exhausted credit balance) must not crash the whole run — the harness, unlike
+    run.py, has no dead-letter path. Applies to baselines too (naive_prompt calls
+    the model), which is what crashed the first v3 run.
     """
+    def _wrapped(ann: Announcement) -> Classification:
+        try:
+            return predictor(ann)
+        except Exception as exc:
+            print(f"EVAL: prediction failed for {ann.ticker} {ann.announcement_id[:10]}: {exc}")
+            return _failed_sentinel(ann, config, prompt_version)
+
+    return _wrapped
+
+
+def run_agent(ann: Announcement, config: dict, prompt_version: str, client) -> Classification:
+    """The full agent for one item: classify (with transient-error retries) then verify."""
     import time as _time
 
-    from src.models import Entities
     from src.run import _classify_with_retries
 
     try:
         c = _classify_with_retries(ann, config, client, prompt_version, _time.sleep)
     except Exception as exc:
         print(f"EVAL: classify failed for {ann.ticker} {ann.announcement_id[:10]} after retries: {exc}")
-        c = Classification(
-            announcement_id=ann.announcement_id, materiality="insufficient_info", confidence=0.0,
-            categories=["admin"], evidence_quote="EVAL_CLASSIFY_FAILED", rationale="eval: classify failed",
-            entities=Entities(), previously_disclosed=False, needs_human_review=True,
-            model_id=config["models"]["primary"], prompt_version=prompt_version, cost_nzd=0.0,
-            guardrail_flags=["EVAL_CLASSIFY_FAILED"],
-        )
+        c = _failed_sentinel(ann, config, prompt_version)
     v = verify(c, ann, config)
     if v is None:  # G4 drop — shouldn't happen for gold (all watchlisted); keep + flag
         c.guardrail_flags = [*c.guardrail_flags, "G4_off_watchlist"]
@@ -182,7 +200,7 @@ def run_eval(
     # Baselines on the identical set (§13.4), each measured once. Baseline callables
     # take (ann, config, client); bind them to a 1-arg predictor for evaluate().
     for label, fn in baselines.items():
-        predictor = lambda ann, fn=fn: fn(ann, config, client)
+        predictor = resilient(lambda ann, fn=fn: fn(ann, config, client), config, prompt_version)
         b_items = evaluate(prompt_version, 1, gold_rows, announcements, config, client, predictor=predictor)
         b_metrics = report.compute_metrics(b_items, 1)
         report.update_ledger(ledger_path, f"baseline: {label}",
