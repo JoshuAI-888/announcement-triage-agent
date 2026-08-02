@@ -27,7 +27,7 @@ from typing import Callable, Optional
 from src.classify import classify, load_prompt
 from src.fetch import load_config
 from src.models import Announcement, Classification
-from src.verify import verify
+from src.verify import verify, _normalise_ws
 from evals import report
 from evals.validate_gold import GOLD_PATH
 
@@ -86,7 +86,10 @@ def build_item(run_idx: int, gold_row: dict, ann: Announcement, pred: Classifica
         "pred_materiality": pred.materiality,
         "correct": pred.materiality == gold_mat,
         "confidence": pred.confidence,
-        "grounded": "G2_ungrounded_quote" not in pred.guardrail_flags,
+        # Grounded% is a MEASUREMENT (the G2 rule applied to the quote), not a flag
+        # lookup — so it is computed identically for the agent and every baseline,
+        # even baselines that never run verify.
+        "grounded": _normalise_ws(pred.evidence_quote) in _normalise_ws(ann.body_text),
         "guardrail_flags": pred.guardrail_flags,
         "gold_categories": gold_cats,
         "pred_categories": pred.categories,
