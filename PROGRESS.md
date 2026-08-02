@@ -312,6 +312,6 @@ notes: grounded% metric fixed to a direct G2 measurement (343cd04→b66b39d) so 
 ## C.3 prompt v3 + contamination check + eval
 status: prompt + contamination check PASS; eval running
 check: checks/check_prompt_v3.py — 12 assertions, offline. v3 = v2 rubric + forced-verbatim-quote rule + explicit abstention rule + exactly 3 few-shots (material/immaterial/abstention). **Contamination guard PASSED**: the 3 few-shot announcement_ids (IONS 8-K, BAC 424B2, FANG 8-K) are all confirmed NOT in gold.csv — drawn from the raw EDGAR corpus outside the 220-row pool. Confirmed to the owner in writing.
-commit: (C3 prompt+check committed; eval pending)
-spend: eval running (~NZ$10 projected, 3 runs)
-notes: Final v1/v2/v3 progression table to follow on completion.
+commit: b4b281e (prompt+check); f96bcea (baseline resilience)
+spend: cumulative eval **NZ$22.14** (v1 10.54 + v2 11.60). v3 eval spent ~NZ$0 — every call was rejected.
+notes: **v3 eval BLOCKED — the Anthropic account ran out of API credits.** All 660 v3 agent calls returned HTTP 400 "credit balance is too low"; the agent path degraded them to sentinels, but the unwrapped baseline path (naive_prompt) then crashed the run — fixed in f96bcea (baselines now wrapped in the same resilience). No valid v3 scorecard exists; the final v1/v2/v3 table cannot be produced until credits are added. This is stop-condition S2 (external service now blocks requests). To finish: add credits, then `.venv/bin/python -m evals.run_eval --prompt-version v3 --runs 3 --no-escalation` (~NZ$10) → final table. The v3 PROMPT and its contamination guard are complete and green; only the eval run is outstanding.
