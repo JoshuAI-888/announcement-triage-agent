@@ -1,0 +1,121 @@
+id,triage,proposed_label,evidence_span,reason,suggested_slice
+1,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+2,HUMAN,,,§4 m_and_a: deal registration; a material deal or a routine notes exchange,ambiguous
+3,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+4,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+5,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+6,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+7,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+8,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+9,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+10,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+11,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+12,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+13,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+14,OBVIOUS,immaterial,424B2,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+15,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+16,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+17,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+18,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+19,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+20,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+21,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+22,OBVIOUS,material,"8-K [2.02,7.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+23,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+24,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+25,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+26,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+27,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+28,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+29,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+30,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+31,OBVIOUS,material,"8-K [2.02,9.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+32,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+33,OBVIOUS,material,"8-K [2.02,9.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+34,HUMAN,,,Item 5.02 officer/director change; CEO exit vs routine appointment,ambiguous
+35,OBVIOUS,immaterial,FWP,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+36,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+37,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+38,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+39,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+40,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+41,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+42,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+43,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+44,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+45,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+46,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+47,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+48,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+49,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+50,OBVIOUS,immaterial,424B3,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+51,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+52,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+53,OBVIOUS,material,"8-K [2.02,9.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+54,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+55,HUMAN,,,Item 7.01 Reg FD catch-all; content not determinable from the item code,ambiguous
+56,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+57,OBVIOUS,material,"8-K [2.02,9.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+58,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+59,HUMAN,,,Item 7.01 Reg FD catch-all; content not determinable from the item code,ambiguous
+60,HUMAN,,,Item 5.02 officer/director change; CEO exit vs routine appointment,ambiguous
+61,OBVIOUS,material,"8-K [2.02,9.01]","§5: release of quarterly results is itself material, regardless of beat/miss direction",clear_material
+62,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+63,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+64,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+65,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+66,HUMAN,,,§5 insider form: immaterial by default; material only if the trade is unusually large,hard_negative
+67,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+68,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+69,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+70,HUMAN,,,Item 2.03 new financial obligation; materiality depends on the debt amount,hard_positive
+71,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+72,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+73,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+74,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+75,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+76,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+77,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+78,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+79,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+80,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+81,HUMAN,,,§5 passive stake amendment: routine unless it shows a large change,hard_negative
+82,OBVIOUS,immaterial,S-8,§5: administrative registration of employee-plan shares; immaterial,clear_immaterial
+83,OBVIOUS,immaterial,S-8,§5: administrative registration of employee-plan shares; immaterial,clear_immaterial
+84,HUMAN,,,"§6: materiality turns on the activity disclosed, which the form does not state",ambiguous
+85,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+86,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+87,OBVIOUS,immaterial,S-8,§5: administrative registration of employee-plan shares; immaterial,clear_immaterial
+88,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+89,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+90,HUMAN,,,§5 insider form: initial ownership; could flag a new significant holder,ambiguous
+91,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+92,HUMAN,,,"Exempt solicitation; activist campaign vs minor advocacy, content-dependent",ambiguous
+93,HUMAN,,,§5 carve-out: shelf takedown; could be a material benchmark offering or a routine draw,ambiguous
+94,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+95,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+96,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+97,HUMAN,,,§5: material only if it carries new disclosures; may restate a prior 8-K release,ambiguous
+98,OBVIOUS,immaterial,11-K,§4 admin: employee benefit plan annual report; immaterial,clear_immaterial
+99,OBVIOUS,immaterial,11-K,§4 admin: employee benefit plan annual report; immaterial,clear_immaterial
+100,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+101,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+102,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+103,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+104,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+105,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+106,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+107,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+108,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+109,HUMAN,,,§5 passive stake: immaterial unless size changes the control or float picture,hard_negative
+110,HUMAN,,,§5 insider form: initial ownership; could flag a new significant holder,ambiguous
+111,HUMAN,,,§5 insider form: proposed sale; magnitude not framed by the form,hard_negative
+112,OBVIOUS,immaterial,13F-HR,"§5: institutional holdings report, not an issuer disclosure; immaterial",clear_immaterial
+113,HUMAN,,,§5 insider form: initial ownership; could flag a new significant holder,ambiguous
+114,HUMAN,,,§5 insider form: initial ownership; could flag a new significant holder,ambiguous
+115,HUMAN,,,§5 insider form: initial ownership; could flag a new significant holder,ambiguous
+116,OBVIOUS,immaterial,S-8,§5: administrative registration of employee-plan shares; immaterial,clear_immaterial
+117,HUMAN,,,§5 carve-out: shelf takedown; could be a material benchmark offering or a routine draw,ambiguous
+118,OBVIOUS,immaterial,424B8,§5: pricing supplement for a continuous retail note programme; immaterial by form type,hard_negative
+119,HUMAN,,,§5 carve-out: shelf takedown; could be a material benchmark offering or a routine draw,ambiguous
+120,HUMAN,,,"Exempt solicitation; activist campaign vs minor advocacy, content-dependent",ambiguous

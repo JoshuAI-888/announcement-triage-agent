@@ -21,7 +21,8 @@ A4 check note (owner-only columns).
    ```
    (Trailing extra columns like candidates.csv's `headline,…,source_url` are
    tolerated only if you keep these 16 first, in order. Safest: just these 16.)
-4. **Exactly 60 data rows** (target n=60), + header = 61 lines.
+4. **Every candidate labelled** (full pool, currently 220 rows), + header. *(Owner
+   deviation 2026-08-02: was "exactly 60 data rows" — see §B.)*
 5. **Every row must be drawn from `data/gold/candidates.csv`.** The harness (B3)
    loads each item by `announcement_id` and runs the live agent on the canonical
    record in the store — so an `id`/`announcement_id` that isn't in the exported
@@ -32,23 +33,18 @@ A4 check note (owner-only columns).
 
 ---
 
-## B. Stratification — must match SPEC §13.1 exactly
+## B. Stratification — DROPPED (owner deviation 2026-08-02)
 
-`slice_tag` counts across the 60 rows must be **exactly**:
+The original design required `slice_tag` counts across exactly 60 rows to be exactly
+**15 `clear_material` / 15 `clear_immaterial` / 12 `hard_negative` / 10 `hard_positive`
+/ 8 `ambiguous`**. **That is no longer enforced.** The gold set is the full labelled
+pool (all 220 candidates), and `evals/validate_gold.py` checks only that every
+candidate is labelled — not the per-slice counts.
 
-| slice_tag        | required n | purpose                         |
-|------------------|-----------:|---------------------------------|
-| `clear_material`   | 15 | baseline competence           |
-| `clear_immaterial` | 15 | over-flagging                 |
-| `hard_negative`    | 12 | looks material, isn't         |
-| `hard_positive`    | 10 | buried materiality            |
-| `ambiguous`        |  8 | tests abstention, not accuracy|
-| **total**          | **60** |                             |
-
-Not "about" these numbers — the per-slice metrics in §13.3 assume these exact
-counts. (This is the composition that the *first* 120-row pool could not fill;
-the widened 220-row candidates.csv is what makes it reachable. Ask me to verify
-feasibility before you label — read-only, see §E.)
+`slice_tag` is still a **required, enum-valid** per-row field (it drives the §13.3
+per-slice breakdowns), but any of the five values is legal in any quantity. The actual
+composition of the 220-row set is ~26/42/135/7/10 — dominated by `hard_negative`. See
+SPEC §13.1 for the accepted consequences (uneven denominators, ~3.7× eval cost).
 
 ---
 
@@ -127,18 +123,19 @@ exact 15/15/12/10/8 split is comfortably reachable. Labelling can proceed.
 ---
 
 ## F. Definition of "cleared"
-`data/gold/gold.csv` exists with: exactly 60 rows; the 16 columns in order;
-every `label_*`, `slice_tag`, `difficulty` non-empty; all enum values legal;
-slice counts exactly 15/15/12/10/8; every `announcement_id` resolvable in the
-store; conventions §D fixed. On that, B1 starts.
+`data/gold/gold.csv` exists with: every candidate labelled (full pool); the 16
+columns in order; every `label_*`, `slice_tag`, `difficulty` non-empty; all enum
+values legal; evidence spans verbatim; every `announcement_id` resolvable in the
+store; conventions §D fixed. *(Owner deviation 2026-08-02: the exact
+15/15/12/10/8 slice quota is no longer part of this definition — see §B.)* On
+that, B1 starts.
 
-### Status 2026-08-02
-- §B stratification — **reachable**, verified in §E.
+### Status 2026-08-02 — CLEARED
+- `data/gold/gold.csv` — **present, 220 labelled rows, gate PASSED.**
+  `.venv/bin/python -m evals.validate_gold` → *"ACCEPTED — full labelled candidate
+  pool, all enums legal, evidence spans verbatim, 8 warning(s)"*, exit 0.
+- §B stratification — **dropped by owner decision**; full pool used instead.
 - §D conventions — **fixed** (semicolon / span-on-abstention / easy|medium|hard).
-- Escalation model vs pricing — **reconciled**: `models.escalation:
-  "claude-opus-4-6"` with `escalation_input: 5.00` / `escalation_output: 25.00`.
-  (The earlier `claude-sonnet-5` would have returned a 400 on every escalation
-  call, because it rejects the `temperature: 0.0` that SPEC §4 mandates.)
-- `data/gold/gold.csv` — **still absent. This is the only remaining blocker, and
-  it is the one I cannot clear.** 60 labelled rows, by you. Everything the
-  labelling needs is now in place: pool, conventions, tool, feasibility.
+- Escalation model vs pricing — **reconciled** (`models.escalation: "claude-opus-4-6"`).
+- 8 non-blocking warnings — `insufficient_info` rows with empty evidence spans
+  (rows 18, 87, 143, 144, 181, 182, 205, 206); allowed by §D.2.

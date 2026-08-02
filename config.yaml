@@ -27,24 +27,80 @@ watchlist:
   - CSCO
   - PFE
   - T
+  # --- top-up draw, added 2026-08-02 -------------------------------------
+  # The 20 mega-caps above yield ~84% 424B2 structured-note supplements and
+  # insider forms, which cannot fill the SPEC §13.1 clear_material,
+  # clear_immaterial or hard_positive slices (see PROGRESS.md human-gate note).
+  # These 20 mid-caps run no structured-note programmes: a 90-day index probe
+  # returned 0% 424B2 and 75 material-bearing filings (50x 8-K, 20x 10-Q).
+  # They must stay in the watchlist permanently or guardrail G4 will drop
+  # every gold item drawn from them.
+  - LDOS      # defense / industrial — contract awards
+  - CACI
+  - HII
+  - TXT
+  - AXON
+  - NBIX      # biotech / pharma — regulatory, M&A
+  - JAZZ
+  - IONS
+  - ALKS
+  - INCY
+  - ZS        # software — guidance changes
+  - DDOG
+  - HUBS
+  - TWLO
+  - PATH
+  - DECK      # consumer / energy — guidance
+  - CROX
+  - ULTA
+  - FIVE
+  - FANG
 
 models:
   primary: "claude-haiku-4-5-20251001"    # bulk classification
-  escalation: "claude-sonnet-5"           # low confidence or long documents
+  escalation: "claude-opus-4-6"           # low confidence or long documents
+  # Escalation was claude-sonnet-5 until 2026-08-02. Sonnet 5 (and every model
+  # from Opus 4.7 / Sonnet 5 onward) REJECTS non-default sampling parameters
+  # with a 400, so `temperature: 0.0` below made every escalation call fail.
+  # Opus 4.6 still accepts temperature, which keeps SPEC §4 valid unamended.
   temperature: 0.0
   max_output_tokens: 1024
 
-pricing_usd_per_mtok:          # VERIFY against the current Anthropic pricing page
-  primary_input: null
-  primary_output: null
-  escalation_input: null
-  escalation_output: null
-fx_usd_nzd: null               # set manually
+pricing_usd_per_mtok:          # verified 2026-08-02 against current Anthropic pricing
+  primary_input: 1.00          # claude-haiku-4-5
+  primary_output: 5.00
+  escalation_input: 5.00       # claude-opus-4-6
+  escalation_output: 25.00
+fx_usd_nzd: 1.6976             # XE mid-market spot, retrieved 2026-08-02.
+                               # Sources spread ~2% on the day (1.6976 XE / 1.7221 / 1.73),
+                               # so treat NZD cost figures as +/-2%. Override if your
+                               # team standardises on a period average instead of spot.
 
 normalise:
   # How many raw payloads to turn into canonical records. Selected round-robin
   # across native form types so every form is represented — see src/normalise.py.
   sample_limit: 120
+
+  # --- top-up draw, added 2026-08-02 -------------------------------------
+  # pin_file holds the original 120-candidate draw by announcement_id, so
+  # candidates.csv row ids 1..120 survive the re-draw unchanged.
+  pin_file: "config/candidate_pin.txt"
+  # The top-up is drawn per GROUP, each round-robin across its own form types.
+  # This is a COVERAGE rule, not a materiality judgement.
+  #
+  # Why groups rather than one pool: a single round-robin caps 8-K at the same
+  # depth as S-8 and SD. The first attempt did exactly that and drew only 12 of
+  # 115 available 8-Ks — starving the very slices (clear_material,
+  # hard_positive) the top-up exists to fill. Sizing the two ends separately
+  # fixes it. Which slice any given row lands in stays the owner's call.
+  topup_groups:
+    - name: substantive     # where guidance, M&A, contracts, departures appear
+      limit: 65
+      forms: ["8-K", "8-K/A", "10-Q", "10-K", "DEF 14A", "PRE 14A",
+              "SCHEDULE 13D", "SCHEDULE 13D/A", "SC TO-T/A", "425", "S-4"]
+    - name: routine         # registration / administrative housekeeping
+      limit: 35
+      forms: ["S-8", "S-8 POS", "11-K", "SD", "ARS", "DEFA14A"]
 
 thresholds:
   confidence_floor: 0.65        # below this -> coerce to insufficient_info

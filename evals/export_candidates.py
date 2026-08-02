@@ -98,7 +98,11 @@ def candidate_row(index: int, record: Announcement) -> dict[str, str]:
 def export(records: list[Announcement] | None = None, path: Path | None = None) -> Path:
     config = load_config()
     records = records if records is not None else normalise_all(config=config)
-    records = sorted(records, key=lambda r: (r.published_at, r.announcement_id), reverse=True)
+    # With a pin file the selection order is load-bearing: the pinned block must
+    # keep the row ids it already has in a previously-exported candidates.csv.
+    # Re-sorting here would renumber them and invalidate labelling in progress.
+    if not config["normalise"].get("pin_file"):
+        records = sorted(records, key=lambda r: (r.published_at, r.announcement_id), reverse=True)
 
     path = path or CANDIDATES_PATH
     path.parent.mkdir(parents=True, exist_ok=True)

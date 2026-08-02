@@ -33,10 +33,12 @@ from src.models import Category, Materiality
 ROOT = Path(__file__).resolve().parent.parent
 GOLD_PATH = ROOT / "data" / "gold" / "gold.csv"
 
-REQUIRED_ROWS = 60
-
-# GOLD_REQUIREMENTS.md §B — exact, not approximate. The §13.3 per-slice metrics
-# assume these denominators.
+# Owner deviation 2026-08-02 (SPEC §13.1): the gold set is the FULL labelled
+# candidate pool, not a stratified n=60. There is no fixed row count — every
+# candidate in candidates.csv must be labelled. The numbers below are the
+# ORIGINAL stratification, kept only as a printed reference and as the set of
+# legal slice_tag values (the enum check in check_provenance); they are NO
+# LONGER ENFORCED as quotas.
 SLICE_TARGETS = {
     "clear_material": 15,
     "clear_immaterial": 15,
@@ -98,8 +100,8 @@ class Report:
             print(f"\ngold.csv REJECTED — {len(self.errors)} problem(s), "
                   f"{len(self.warnings)} warning(s). The gate is not cleared.")
             return 1
-        print(f"\ngold.csv ACCEPTED — {REQUIRED_ROWS} rows, stratification exact, "
-              f"all enums legal, {len(self.warnings)} warning(s). The §F gate is cleared.")
+        print(f"\ngold.csv ACCEPTED — full labelled candidate pool, all enums legal, "
+              f"evidence spans verbatim, {len(self.warnings)} warning(s). The §F gate is cleared.")
         return 0
 
 
@@ -289,8 +291,6 @@ def validate(check_bodies: bool = True) -> int:
         check_header(reader.fieldnames, report)
         rows = list(reader)
 
-    if len(rows) != REQUIRED_ROWS:
-        report.error(f"expected exactly {REQUIRED_ROWS} data rows (§A.4), found {len(rows)}")
     report.note(f"{len(rows)} data row(s) read")
 
     bodies: dict[str, str] = {}
@@ -325,20 +325,22 @@ def validate(check_bodies: bool = True) -> int:
         check_labels(row, bodies.get(announcement_id) if check_bodies else None, line, report)
         check_provenance(row, line, report)
 
+    missing = set(candidates) - seen_announcements
+    if missing:
+        report.error(
+            f"{len(missing)} candidate(s) in candidates.csv are not labelled in gold.csv — "
+            "the gold set is the FULL labelled pool (SPEC §13.1, owner deviation "
+            "2026-08-02), so every candidate must be labelled"
+        )
+
     counts = Counter(row.get("slice_tag", "").strip() for row in rows)
-    print("\n  slice_tag           actual  required")
-    for tag, required in SLICE_TARGETS.items():
-        actual = counts.get(tag, 0)
-        mark = "ok  " if actual == required else "FAIL"
-        print(f"  {mark} {tag:<18} {actual:>4}  {required:>8}")
-        if actual != required:
-            report.error(
-                f"slice_tag {tag!r}: {actual} row(s), §B requires exactly {required} "
-                "— the §13.3 per-slice metrics assume this denominator"
-            )
+    print("\n  slice_tag           count  (orig. reference)")
+    for tag, reference in SLICE_TARGETS.items():
+        print(f"  {tag:<18} {counts.get(tag, 0):>5}  {reference:>8}")
+    print("  stratification dropped — counts are descriptive only (SPEC §13.1)")
     unknown = set(counts) - set(SLICE_TARGETS) - {""}
     for tag in sorted(unknown):
-        report.error(f"slice_tag {tag!r} is not one of the five §B tags ({counts[tag]} row(s))")
+        report.error(f"slice_tag {tag!r} is not one of the five valid tags ({counts[tag]} row(s))")
 
     print()
     return report.emit()

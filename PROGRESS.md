@@ -235,3 +235,25 @@ but still counted the row complete, which would have let the quota counters read
 
 `data/gold/gold.csv` remains unwritten — it is the owner's to fill, and the tool is
 how.
+
+---
+
+## Human gate CLEARED + owner deviation (2026-08-02)
+
+Owner labelled all 220 candidates and, by explicit decision, **dropped the stratified
+n=60 in favour of the full labelled pool**. SPEC §13.1, `GOLD_REQUIREMENTS.md` §B/§F and
+`evals/validate_gold.py` updated to match: the gate requires every candidate labelled and
+no longer enforces per-slice counts; `slice_tag` retained as a descriptive field.
+`.venv/bin/python -m evals.validate_gold` → ACCEPTED, exit 0 (8 non-blocking abstention
+warnings). No agent-authored labels — prohibition #1 / S4 held. Batch B started.
+
+---
+
+## B.1 classify + prompt v1
+status: pass (offline check) — real-API smoke BLOCKED (S2)
+check: checks/check_classify.py
+result: 30 assertions, offline via a fake client (no spend). Asserts prompt v1 = Role + schema only (no rubric, no few-shots — the naive baseline); the escalation decision as a pure function of (confidence, char_count) at both thresholds; JSON parse into `Classification`; `announcement_id` set by classify(), never trusted from the model; metadata + cost (tokens×pricing×fx in NZD); escalation aggregation (max materiality wins, min confidence carried) on the escalation model; and loud failure on unparseable output. Exit 0.
+commit: (this commit)
+elapsed: ~35m
+spend: NZ$0.00 — no API call has succeeded.
+notes: The ≤5-record real-API smoke is **BLOCKED**. `ANTHROPIC_API_KEY` in `.env` returns HTTP 401 "invalid x-api-key"; the value is 167 chars and does not start with `sk-ant-`, i.e. not an Anthropic key. classify.py is therefore unverified against the live model, and cost/latency are unmeasured. This is stop-condition S2 and blocks the B1 smoke, the end-of-B full eval, and the C2/C3 evals. Everything offline (B2 guardrails, and the B3/B4 checks via stub clients) can still proceed.

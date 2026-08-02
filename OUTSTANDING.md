@@ -1,21 +1,36 @@
 # OUTSTANDING — blockers before Batch B can start
 
-Last verified 2026-08-02 (second pass). Of the two preconditions originally
-recorded here, **one is cleared and one remains**. Batch B is still not started;
-cumulative API spend remains NZ$0.00.
+Last updated 2026-08-02 (third pass). **Both preconditions are now cleared. The
+human gate is satisfied; Batch B can start.** Cumulative API spend remains NZ$0.00
+(no LLM call yet — the first is B1).
 
 ---
 
-## 1. `data/gold/gold.csv` does not exist — human gate not satisfied — **STILL OPEN**
+## 1. `data/gold/gold.csv` — human gate — **CLEARED**
 
-Re-verified: `data/gold/` holds `RUBRIC.md`, `candidates.csv` (220 unlabelled
-rows) and `triage.csv` (suggestions only). `gold.csv` is absent.
+The owner labelled all 220 candidates and, by explicit decision (see below),
+**dropped the stratified n=60 in favour of the full labelled pool**. The gate now
+passes:
 
-This is the one blocker that cannot be cleared from this side. Prohibition #1
-(`AUTONOMY.md:96`) and stop condition S4 (`AUTONOMY.md:81`) forbid creating,
-populating or inferring any `label_*`, `slice_tag` or `difficulty` cell, and the
-reason is not procedural: an agent-labelled gold set measures the agent against
-its own judgement, which makes every number the evaluation produces meaningless.
+```
+.venv/bin/python -m evals.validate_gold
+→ gold.csv ACCEPTED — full labelled candidate pool, all enums legal,
+  evidence spans verbatim, 8 warning(s). The §F gate is cleared.   (exit 0)
+```
+
+### Owner deviation 2026-08-02 — stratification dropped
+Originally `data/gold/gold.csv` was to be a stratified n=60 (15/15/12/10/8). The
+owner instead labelled the whole 220-row pool and chose to use it as-is. SPEC §13.1,
+`GOLD_REQUIREMENTS.md` §B/§F and `evals/validate_gold.py` were updated to match: the
+gate requires every candidate to be labelled and no longer enforces per-slice counts;
+`slice_tag` is retained as a descriptive, enum-validated field for §13.3 breakdowns.
+Accepted consequences: composition ~26/42/135/7/10 (~61% `hard_negative`,
+`hard_positive` ~3%), uneven per-slice denominators, and **~3.7× eval cost** vs n=60 —
+a live risk against the NZ$3.00 batch cap (S7); see the plan's Open Decision 5.
+
+Note: the agent did **not** create or infer any label — prohibition #1 / S4 held
+throughout. The labels are the owner's; only the gate definition changed, on the
+owner's instruction.
 
 ### Sub-blocker: pool composition — **CLEARED**
 The original 120-row pool could not fill the §13.1 stratification (short 9 on
@@ -34,11 +49,10 @@ clears its target 3–5x. The 15/15/12/10/8 split is reachable.
 - `issuer_price_sensitive_flag` empty throughout, as EDGAR supplies no such signal.
 
 **To clear:**
-- [ ] Owner labels 60 rows into `data/gold/gold.csv` per `GOLD_REQUIREMENTS.md`.
-- [x] Pool wide enough to support the stratification.
+- [x] Owner labelled the pool into `data/gold/gold.csv` (220 rows).
+- [x] Gate passes: `.venv/bin/python -m evals.validate_gold` → exit 0.
 - [x] §D conventions fixed (semicolon / span-on-abstention / `easy|medium|hard`).
-- [x] Machine-checkable gate: `python -m evals.validate_gold` (see below).
-- [x] Labelling workbench: `python -m evals.label_gold` (see below).
+- [x] Stratification decision made (full pool; see deviation above).
 
 ---
 

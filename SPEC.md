@@ -392,7 +392,10 @@ label_materiality, label_categories, label_evidence_span, label_rationale,
 slice_tag, difficulty, labelled_at, labeller, pass_number
 ```
 
-Target n=60, stratified:
+The gold set is the **full labelled candidate pool** — every row in `candidates.csv`
+is labelled; there is no fixed sub-sample (currently n=220).
+
+**Owner deviation (2026-08-02).** The original design was a stratified n=60:
 
 | Slice tag | n | Purpose |
 |---|---|---|
@@ -401,6 +404,15 @@ Target n=60, stratified:
 | `hard_negative` | 12 | Looks material, isn't |
 | `hard_positive` | 10 | Buried materiality |
 | `ambiguous` | 8 | Tests abstention, not accuracy |
+
+That stratification is **dropped**. The set now uses the natural composition of the
+pool. `slice_tag` is retained as a descriptive per-row field so the §13.3 metrics can
+still be broken down by slice, but the exact per-slice counts are **no longer
+required** and `evals/validate_gold.py` no longer enforces them — it requires only that
+every candidate is labelled. Consequences accepted by the owner: the set is dominated
+by `hard_negative` (~61%), `hard_positive` is ~3%, per-slice denominators are unequal
+(so per-slice metrics carry uneven confidence), and eval cost scales ~3.7× versus n=60
+— watch the §6 batch spend cap (NZ$3.00 / stop-condition S7).
 
 The agent may export unlabelled `candidates.csv` with these columns empty. **It may not populate any `label_*` column.**
 
