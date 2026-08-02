@@ -38,6 +38,7 @@ clears its target 3–5x. The 15/15/12/10/8 split is reachable.
 - [x] Pool wide enough to support the stratification.
 - [x] §D conventions fixed (semicolon / span-on-abstention / `easy|medium|hard`).
 - [x] Machine-checkable gate: `python -m evals.validate_gold` (see below).
+- [x] Labelling workbench: `python -m evals.label_gold` (see below).
 
 ---
 
@@ -88,6 +89,44 @@ tell from outside whether a span genuinely applies.
 Deliberately **not** registered in `checks/run_all.py`: it fails until the gold
 set exists, and a permanently-red `run_all` teaches people to ignore it.
 `python -m checks.run_all` remains 4 checks / 432 assertions / exit 0.
+
+---
+
+## New this pass: a labelling workbench
+
+`GOLD_REQUIREMENTS.md` §D.1 referred to "the labelling tool"; there wasn't one in
+the repo. There is now:
+
+```bash
+python -m evals.label_gold
+```
+
+Stdlib only (no dependency outside SPEC §3). Serves a local page on
+`127.0.0.1:8765`: filing body on the left, label form on the right.
+
+**It contains no materiality judgement.** No default, no pre-selection, no
+suggestion, no import from `triage.csv`, no heuristic that ticks a box. Every
+`label_*`, `slice_tag` and `difficulty` value in the output comes from the
+owner's input and nowhere else. What it automates is the half that causes most
+gate failures:
+
+- the 7 identifying columns are copied through from `candidates.csv`, so they
+  cannot drift from the canonical record
+- the evidence span is captured from a text selection over the real `body_text`,
+  so it is **verbatim by construction**, and re-verified server-side on save
+- categories encode with the §D.1 semicolon; `labelled_at` is stamped tz-aware
+- slice quotas count against 15/15/12/10/8 **live**, so an over-full
+  `hard_negative` shows up at row 20, not row 60
+- a row counts as complete only if it would survive the gate — a non-verbatim or
+  over-length span makes it incomplete, not merely warned about
+- drafts save to `out/gold_drafts.json` after every change; stop and resume freely
+
+`gold.csv` is written only on pressing "Write gold.csv", from completed rows only.
+
+Exercised end-to-end: 60 synthetic drafts → `compose_gold` → `validate_gold`
+returns ACCEPTED. Completeness probes confirmed a non-verbatim span, an
+over-length span and an empty category list each block completion, while an
+abstention with no span is allowed per §D.2.
 
 ---
 

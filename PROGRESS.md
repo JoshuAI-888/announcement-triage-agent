@@ -208,3 +208,30 @@ needs is in place — pool, rubric, conventions, feasibility, and now a machine 
 delimiter by reference to "the labelling tool". No such tool exists in this repo
 (searched all sources and full git history). The decision is sound on its own terms;
 the justification points at something outside the tree.
+
+---
+
+## Human-gate support — labelling workbench (2026-08-02, second pass)
+
+Owner asked for help labelling and creating `gold.csv`. Built the tool; the
+judgements stay the owner's. **B1 has still not started; API spend NZ$0.00.**
+
+`evals/label_gold.py` — stdlib-only local workbench (`python -m evals.label_gold`,
+serves 127.0.0.1:8765). Filing body left, label form right. Contains no materiality
+judgement: no default, no pre-selection, no suggestion, no read of `triage.csv`, no
+heuristic. Every `label_*`, `slice_tag` and `difficulty` value originates from the
+owner's input. It automates only the mechanical half — copy-through of the 7
+identifying columns, evidence spans captured from selection over real `body_text`
+(verbatim by construction, re-verified server-side), §D.1 semicolon encoding,
+tz-aware `labelled_at`, live 15/15/12/10/8 quota counters, and per-change drafts in
+`out/gold_drafts.json` (gitignored) so labelling can stop and resume.
+
+`gold.csv` is written only on explicit request, from completed rows only.
+
+Verified end-to-end: 60 synthetic drafts -> `compose_gold` -> `validate_gold`
+ACCEPTED. Fixed one bug found in the tool's own testing: a non-verbatim span warned
+but still counted the row complete, which would have let the quota counters read
+60/60 while the gate rejected the file. `is_complete` now gates on span validity.
+
+`data/gold/gold.csv` remains unwritten — it is the owner's to fill, and the tool is
+how.
