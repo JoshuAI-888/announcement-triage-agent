@@ -62,8 +62,29 @@ def load_announcements(config: dict | None = None) -> dict[str, Announcement]:
 
 
 def run_agent(ann: Announcement, config: dict, prompt_version: str, client) -> Classification:
-    """The full agent for one item: classify then verify (guardrails)."""
-    c = classify(ann, config=config, prompt_version=prompt_version, client=client)
+    """The full agent for one item: classify (with transient-error retries) then verify.
+
+    A long eval makes ~1k API calls; a single transient hiccup must not crash the
+    whole run (the harness, unlike run.py, has no dead-letter path). Retry on
+    transport/G1 failures, and on persistent failure record a flagged sentinel so
+    the run completes and the failure is visible in the results rather than fatal.
+    """
+    import time as _time
+
+    from src.models import Entities
+    from src.run import _classify_with_retries
+
+    try:
+        c = _classify_with_retries(ann, config, client, prompt_version, _time.sleep)
+    except Exception as exc:
+        print(f"EVAL: classify failed for {ann.ticker} {ann.announcement_id[:10]} after retries: {exc}")
+        c = Classification(
+            announcement_id=ann.announcement_id, materiality="insufficient_info", confidence=0.0,
+            categories=["admin"], evidence_quote="EVAL_CLASSIFY_FAILED", rationale="eval: classify failed",
+            entities=Entities(), previously_disclosed=False, needs_human_review=True,
+            model_id=config["models"]["primary"], prompt_version=prompt_version, cost_nzd=0.0,
+            guardrail_flags=["EVAL_CLASSIFY_FAILED"],
+        )
     v = verify(c, ann, config)
     if v is None:  # G4 drop — shouldn't happen for gold (all watchlisted); keep + flag
         c.guardrail_flags = [*c.guardrail_flags, "G4_off_watchlist"]
