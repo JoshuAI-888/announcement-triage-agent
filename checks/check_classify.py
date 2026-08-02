@@ -140,6 +140,14 @@ def body(check):
     check.require(esc.input_tokens >= 6000, "escalation cost accrues on top of the primary call")
     check.equal(esc.materiality, "material", "aggregation: max materiality wins across chunks")
 
+    # --- real models overshoot the 200-char limit; classify clamps, does not crash ---
+    long_json = json.dumps({**json.loads(VALID_JSON),
+                            "evidence_quote": "x" * 400, "rationale": "y" * 350})
+    clamp_client = FakeClient([(long_json, 1000, 100)])
+    clamped = C.classify(make_announcement(), config=CONFIG, prompt_version="v1", client=clamp_client)
+    check.equal(len(clamped.evidence_quote), 200, "an over-long evidence_quote is clamped to 200 chars")
+    check.equal(len(clamped.rationale), 200, "an over-long rationale is clamped to 200 chars")
+
     # --- bounded: malformed JSON fails loudly, it does not return garbage ---
     bad_client = FakeClient([("this is not json at all", 100, 10)])
     check.raises(

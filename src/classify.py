@@ -114,6 +114,14 @@ def _parse_classification(text: str, ann: Announcement) -> dict:
         data = {key: raw[key] for key in MODEL_FIELDS}
     except KeyError as exc:
         raise ClassifyError(f"model output missing required field {exc}") from exc
+    # The model is asked for ≤200-char quote/rationale but does not always comply.
+    # Clamp rather than reject: a truncated verbatim quote is still a verbatim
+    # substring of the body (so G2 stays correct), and a truncated rationale is
+    # harmless. This does NOT mask hallucination — a non-verbatim quote is still
+    # non-verbatim after clamping.
+    for field in ("evidence_quote", "rationale"):
+        if isinstance(data.get(field), str) and len(data[field]) > 200:
+            data[field] = data[field][:200]
     data["announcement_id"] = ann.announcement_id  # authoritative, never from the model
     return data
 

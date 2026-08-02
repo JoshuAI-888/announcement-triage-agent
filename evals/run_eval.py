@@ -197,12 +197,32 @@ def run_eval(
     return out_dir
 
 
+def eval_config(config: dict, no_escalation: bool) -> dict:
+    """Optionally disable escalation for eval runs (owner cost deviation 2026-08-02).
+
+    Keeps every long filing on the primary model instead of chunking onto the
+    escalation model — ~10× cheaper, at the cost of not exercising the Opus
+    escalation path. The raised thresholds are written into run_manifest.json, so
+    the deviation is visible and reproducible.
+    """
+    if not no_escalation:
+        return config
+    import copy
+
+    c = copy.deepcopy(config)
+    c["thresholds"]["escalate_above_chars"] = 10 ** 12
+    c["thresholds"]["escalate_below_confidence"] = 0.0
+    return c
+
+
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--prompt-version", required=True)
     parser.add_argument("--runs", type=int, default=3)
     parser.add_argument("--limit", type=int, default=None, help="evaluate only the first N gold rows (cost control)")
     parser.add_argument("--no-baselines", action="store_true")
+    parser.add_argument("--no-escalation", action="store_true",
+                        help="keep long filings on the primary model (cost deviation; recorded in the manifest)")
     args = parser.parse_args()
 
     baselines = {}
@@ -214,7 +234,10 @@ def main() -> None:
         except Exception as exc:  # baselines land in B4
             print(f"(baselines not available yet: {exc})")
 
-    out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines)
+    config = eval_config(load_config(), args.no_escalation)
+    if args.no_escalation:
+        print("NOTE: escalation disabled for this eval (owner cost deviation) — primary model only.")
+    out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines, config=config)
     print(f"\nWrote {out_dir.relative_to(ROOT)}")
     print((out_dir / "scorecard.md").read_text())
 
