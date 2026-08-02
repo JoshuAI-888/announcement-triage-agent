@@ -266,3 +266,21 @@ commit: (this commit)
 elapsed: ~25m
 spend: NZ$0.00 — deterministic, no API.
 notes: Implemented all six (not just G1/G2/G6) because C1's run.py pipeline needs G4/G5 to function; the AUTONOMY graph names G1/G2/G6 as the non-negotiable core and those are the ones shown firing. The fixture output for G2 and G6 is printed by the check (see the `--- G2/G6 fixture (FIRING) ---` blocks) per the owner's requirement that a guardrail be observed failing. No regression: offline suite (skeleton/candidates/normalise/classify/verify) = 538 assertions green.
+
+## B.3 eval harness + manifest + report
+status: pass (offline check) — real full eval deferred to end-of-B, pending cost go-ahead
+check: checks/check_eval.py
+result: 27 assertions, offline (fake client, synthetic 4-item gold, temp out dir). `evals/run_eval.py` loads the gold set, runs the full agent (classify→verify) ×`--runs`, runs baselines on the identical set, and writes the SPEC §13.2 run dir: scorecard.md, **scorecard.pdf (matplotlib)**, per_item.csv, failures.csv, confusion_matrix.csv, run_manifest.json (dataset+prompt hashes, model ids, temperature, cost — reproducibility). `evals/report.py` computes §13.3 metrics (recall/precision on material, 3×3 confusion, P@5/P@10, grounded%=G2, confidently-wrong, abstention on ambiguous, extraction unaveraged, slice breakdowns, cost/latency, cross-run σ) and renders the §13.5 table with one row per prompt version via a ledger. Metric arithmetic verified on a controlled set (recall 0.5, precision 1.0, grounded 1.0, abstention 1.0, confidently-wrong 0.25). Exit 0.
+commit: (this commit)
+elapsed: ~45m
+spend: NZ$0.00 — check is offline; matplotlib dependency added (SPEC §3, owner-approved).
+notes: `--limit N` flag added for a cost-bounded subset run. The real full eval is NOT run in the loop (AUTONOMY §6); it runs once at end-of-B, and only after the owner OKs the measured ~NZ$280 projection.
+
+## B.4 baselines (flag_all, rules, naive_prompt)
+status: pass
+check: checks/check_baselines.py
+result: 13 assertions, offline. `evals/baselines.py`: `flag_all` (all material, no LLM), `rules` (material from doc_type + keyword list, no LLM — the real competitor), `naive_prompt` (the v1 prompt through classify). Verified: flag_all/rules are deterministic and make no model call; rules fires on a material doc_type and on a keyword ('dividend') and abstains-to-immaterial on bare admin; naive_prompt runs v1 via the (fake) client; and all three appear as their own scorecard rows via the harness. Exit 0.
+commit: (this commit)
+elapsed: ~20m
+spend: NZ$0.00 — offline (flag_all/rules no LLM; naive_prompt via fake client).
+notes: Offline suite now 578 assertions across 7 checks. **All four B sub-steps are green on their checks.** The end-of-B full v1 eval (the deliverable) is the only remaining B step and is gated on the owner's go-ahead for real spend (~NZ$280 at n=220×3runs×[v1,v2,v3]+baselines; the B-end v1-only slice is smaller).
