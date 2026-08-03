@@ -172,6 +172,64 @@ def evaluate(
     return [_work(task) for task in tasks]
 
 
+BATCH_DISCOUNT = 0.5  # provider Batch APIs bill at ~50% of the live rate
+
+
+def _batch_pred(res, ann, cfg, prompt_version):
+    """Turn one raw batch completion into a verified Classification (or a sentinel)."""
+    from src.classify import _cost_nzd, _parse_classification
+    from src.models import Classification
+
+    if res is None or res.error or not res.text:
+        return _failed_sentinel(ann, cfg, prompt_version)
+    try:
+        data = _parse_classification(res.text, ann)
+        pricing, fx = cfg["pricing_usd_per_mtok"], cfg["fx_usd_nzd"]
+        cost = _cost_nzd(res.input_tokens, res.output_tokens,
+                         pricing["primary_input"], pricing["primary_output"], fx) * BATCH_DISCOUNT
+        c = Classification(**data, model_id=cfg["models"]["primary"], prompt_version=prompt_version,
+                           input_tokens=res.input_tokens, output_tokens=res.output_tokens,
+                           cost_nzd=cost, escalated=False)
+    except Exception:
+        return _failed_sentinel(ann, cfg, prompt_version)
+    v = verify(c, ann, cfg)
+    return v if v is not None else c
+
+
+def batch_evaluate(prompt_version, runs, gold_rows, announcements, cfg, provider,
+                   backend=None, extra_body=None) -> list[dict]:
+    """Evaluate one prompt version via the provider Batch API (async, ~50% cheaper).
+
+    Builds one request per (run, item), submits as a single batch, polls to
+    completion, then parses + verifies each result exactly as the live path does.
+    """
+    from src.classify import _render_user, load_prompt
+    from evals.batch import build_backend
+
+    system = load_prompt(prompt_version)
+    models = cfg["models"]
+    requests = [
+        {
+            "custom_id": f"{run_idx}:{announcements[row['announcement_id']].announcement_id}",
+            "model": models["primary"], "system": system,
+            "user": _render_user(announcements[row["announcement_id"]]),
+            "max_tokens": models["max_output_tokens"], "temperature": models["temperature"],
+            "extra_body": extra_body,
+        }
+        for run_idx in range(1, runs + 1) for row in gold_rows
+    ]
+    backend = backend or build_backend(provider, cfg)
+    results = backend.run(requests)
+
+    items = []
+    for run_idx in range(1, runs + 1):
+        for row in gold_rows:
+            ann = announcements[row["announcement_id"]]
+            res = results.get(f"{run_idx}:{ann.announcement_id}")
+            items.append(build_item(run_idx, row, ann, _batch_pred(res, ann, cfg, prompt_version)))
+    return items
+
+
 def _dataset_hash(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
 
@@ -189,6 +247,7 @@ def run_eval(
     announcements: Optional[dict[str, Announcement]] = None,
     provider: str = "claude",
     concurrency: int = 1,
+    batch: bool = False,
 ) -> Path:
     """Full harness run for one prompt version + provider. Returns the run directory.
 
@@ -227,7 +286,11 @@ def run_eval(
     out_dir.mkdir(parents=True, exist_ok=True)
 
     started = time.monotonic()
-    items = evaluate(prompt_version, runs, gold_rows, announcements, cfg, client, concurrency=concurrency)
+    if batch:
+        items = batch_evaluate(prompt_version, runs, gold_rows, announcements, cfg, provider,
+                               extra_body=pconf.get("extra_body"))
+    else:
+        items = evaluate(prompt_version, runs, gold_rows, announcements, cfg, client, concurrency=concurrency)
     metrics = report.compute_metrics(items, runs)
 
     for blabel, fn in baselines.items():
@@ -263,7 +326,9 @@ def run_eval(
             "escalate_below_confidence": cfg["thresholds"]["escalate_below_confidence"],
             "escalate_above_chars": cfg["thresholds"]["escalate_above_chars"],
             "total_cost_nzd": metrics["cost_latency"]["total_cost_nzd"],
-            "concurrency": concurrency,
+            "execution": "batch" if batch else "concurrent",
+            "batch_discount": BATCH_DISCOUNT if batch else None,
+            "concurrency": None if batch else concurrency,
             "timestamp": timestamp,
             "wall_seconds": round(time.monotonic() - started, 1),
             "baselines": list(baselines),
@@ -299,6 +364,7 @@ def main() -> None:
     parser.add_argument("--limit", type=int, default=None, help="evaluate only the first N gold rows (cost control)")
     parser.add_argument("--provider", default="claude", help="claude | openai | glm (see config.yaml providers:)")
     parser.add_argument("--concurrency", type=int, default=None, help="parallel classify calls (default: config eval.concurrency)")
+    parser.add_argument("--batch", action="store_true", help="use the provider Batch API (~50%% cheaper, async)")
     parser.add_argument("--no-baselines", action="store_true")
     parser.add_argument("--no-escalation", action="store_true",
                         help="keep long filings on the primary model (cost deviation; recorded in the manifest)")
@@ -318,9 +384,10 @@ def main() -> None:
     concurrency = args.concurrency if args.concurrency is not None else (raw_config.get("eval") or {}).get("concurrency", 1)
     if args.no_escalation:
         print("NOTE: escalation disabled for this eval (owner cost deviation) — primary model only.")
-    print(f"provider={args.provider}  runs={args.runs}  concurrency={concurrency}")
+    mode = "batch" if args.batch else f"concurrent x{concurrency}"
+    print(f"provider={args.provider}  runs={args.runs}  execution={mode}")
     out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines, config=config,
-                       provider=args.provider, concurrency=concurrency)
+                       provider=args.provider, concurrency=concurrency, batch=args.batch)
     print(f"\nWrote {out_dir.relative_to(ROOT)}")
     print((out_dir / "scorecard.md").read_text())
 

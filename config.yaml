@@ -101,7 +101,7 @@ providers:
     # glm-5.2 is a reasoning model — without this it spends the whole token budget
     # thinking and returns empty content. Disabled = direct JSON classification.
     extra_body: {thinking: {type: "disabled"}}
-    pricing: {input: 0.0, output: 0.0}   # PLACEHOLDER — provide real USD/Mtok for a meaningful cost column
+    pricing: {input: 1.40, output: 4.40}   # USD/Mtok, provided 2026-08-03
 
 eval:
   # Concurrency for the eval harness (independent of the EDGAR rate limit above).
