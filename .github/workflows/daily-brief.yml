@@ -1,0 +1,135 @@
+name: daily-brief
+
+# CONTRACTS.md §10 persistence model:
+#   - `main` holds source + runtime_config.json + evals/eval_summary.json +
+#     out/run_log.jsonl + out/briefs/*.email.html.
+#   - `data-state` (this workflow's own branch) holds state.db + data/raw/ —
+#     bulky/binary, restored at the start of each run and committed back after.
+#
+# Cron ticks every 15 minutes; `scripts/ci_gate.py` (CONTRACTS §1 schedule block)
+# is the pure decider that turns that tick into digest / intraday / skip so the
+# *actual* NZT poll time and intraday cadence live in runtime_config.json, not here.
+
+on:
+  schedule:
+    - cron: "*/15 * * * *"
+  workflow_dispatch: {}
+
+permissions:
+  contents: write
+
+# Ticks are frequent (15 min); serialize so a slow run can't overlap the next
+# tick and corrupt state.db / double-fire a digest. Queue rather than cancel.
+concurrency:
+  group: daily-brief
+  cancel-in-progress: false
+
+jobs:
+  brief:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore state.db + data/raw from the data-state branch
+        run: |
+          set -e
+          git fetch origin data-state 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/data-state; then
+            git checkout origin/data-state -- state.db data/raw
+            git reset -- state.db data/raw
+            echo "restored state.db + data/raw from origin/data-state"
+          else
+            echo "no data-state branch yet (first run) — starting fresh; see DEPLOY.md bootstrap"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Decide action (digest | intraday | skip)
+        id: gate
+        run: |
+          set -e
+          RESULT="$(python -m scripts.ci_gate)"
+          echo "gate decision: $RESULT"
+          ACTION="$(python -c "import json,sys; print(json.loads(sys.argv[1])['action'])" "$RESULT")"
+          REASON="$(python -c "import json,sys; print(json.loads(sys.argv[1])['reason'])" "$RESULT")"
+          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
+          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+
+      - name: Run digest
+        if: steps.gate.outputs.action == 'digest'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m src.run
+
+      - name: Run intraday
+        if: steps.gate.outputs.action == 'intraday'
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+        run: python -m src.run --intraday
+
+      - name: Skip
+        if: steps.gate.outputs.action == 'skip'
+        run: |
+          echo "skip: ${{ steps.gate.outputs.reason }}"
+
+      - name: Commit run_log.jsonl + briefs to main
+        if: steps.gate.outputs.action != 'skip'
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add out/run_log.jsonl out/briefs/*.email.html 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no brief/run_log changes to commit"
+          else
+            git commit -m "chore(ci): ${{ steps.gate.outputs.action }} run $(date -u +%FT%TZ) [skip ci]"
+            git push origin HEAD:main
+          fi
+
+      # This workflow only triggers on schedule/workflow_dispatch (no `push:` trigger),
+      # so the commit above can't retrigger it directly; `[skip ci]` is kept anyway
+      # per CONTRACTS.md §10 so any other push-triggered workflow ignores these commits.
+
+      - name: Commit state.db + data/raw to the data-state branch
+        if: steps.gate.outputs.action != 'skip'
+        run: |
+          set -e
+          git fetch origin data-state 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/data-state; then
+            git worktree add /tmp/data-state-wt origin/data-state
+          else
+            git worktree add --detach /tmp/data-state-wt
+            (cd /tmp/data-state-wt && git checkout --orphan data-state && git rm -rf . >/dev/null 2>&1 || true)
+          fi
+          mkdir -p /tmp/data-state-wt/data
+          cp "$GITHUB_WORKSPACE/state.db" /tmp/data-state-wt/state.db 2>/dev/null || true
+          rm -rf /tmp/data-state-wt/data/raw
+          cp -r "$GITHUB_WORKSPACE/data/raw" /tmp/data-state-wt/data/raw 2>/dev/null || true
+          cd /tmp/data-state-wt
+          git checkout -B data-state
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A
+          if git diff --cached --quiet; then
+            echo "no state.db / data/raw changes to commit"
+          else
+            git commit -m "chore(ci): update state.db + data/raw [skip ci]"
+            git push origin data-state
+          fi
+          cd "$GITHUB_WORKSPACE"
+          git worktree remove /tmp/data-state-wt --force
+
+# NOTE: no `vercel deploy` step here on purpose. The Vercel project is connected
+# to this repo via Vercel's own Git integration, so the `main` commit above (run
+# log + brief HTML) triggers Vercel's normal auto-redeploy; the app then reads
+# run_log.jsonl / briefs / eval_summary.json live via the GitHub API. See DEPLOY.md.

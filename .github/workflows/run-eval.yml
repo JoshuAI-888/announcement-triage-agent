@@ -1,0 +1,125 @@
+name: run-eval
+
+# The "Run eval now" button target (CONTRACTS.md §7 `POST /api/run-eval` ->
+# workflow_dispatch this file). Manual only — the eval is NOT run daily
+# (owner cadence: on prompt/provider change + monthly + optional canary; see
+# DEPLOY.md). It runs `evals/run_eval.py` on the config's provider/prompt
+# unless overridden, and commits the refreshed `evals/eval_summary.json` to
+# `main` so the dashboard's trust numbers move.
+
+on:
+  workflow_dispatch:
+    inputs:
+      prompt_version:
+        description: 'Prompt version to evaluate (blank = runtime_config.json run.prompt_version)'
+        required: false
+        default: ""
+      provider:
+        description: 'claude | openai | glm (blank = runtime_config.json eval.provider)'
+        required: false
+        default: ""
+      runs:
+        description: 'Repeat count for the stability metric (temperature 0 -> 1 is usually enough)'
+        required: false
+        default: "1"
+      limit:
+        description: 'Evaluate only the first N gold rows (cost control); blank = full gold set'
+        required: false
+        default: ""
+      no_baselines:
+        description: 'Skip the flag_all/rules/naive_prompt baselines'
+        required: false
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+concurrency:
+  group: run-eval
+  cancel-in-progress: false
+
+jobs:
+  eval:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: main
+          fetch-depth: 0
+
+      - name: Restore data/raw + state.db from the data-state branch
+        # The eval builds its announcement window from the normalised corpus
+        # (src.normalise / src.fetch), which reads data/raw + state.db, same as
+        # daily-brief.yml. See CONTRACTS.md §10.
+        run: |
+          set -e
+          git fetch origin data-state 2>/dev/null || true
+          if git show-ref --verify --quiet refs/remotes/origin/data-state; then
+            git checkout origin/data-state -- state.db data/raw
+            git reset -- state.db data/raw
+          else
+            echo "no data-state branch yet — see DEPLOY.md bootstrap"
+          fi
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: pip install -r requirements.txt
+
+      - name: Resolve prompt/provider defaults from runtime_config.json
+        id: cfg
+        run: |
+          python - <<'PY' >> "$GITHUB_OUTPUT"
+          import json
+          rc = json.load(open("runtime_config.json", encoding="utf-8"))
+          print(f"prompt_version={rc['run']['prompt_version']}")
+          print(f"provider={rc['eval']['provider']}")
+          PY
+
+      - name: Run eval
+        id: run_eval
+        env:
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+          GLM_API_KEY: ${{ secrets.GLM_API_KEY }}
+        run: |
+          set -e
+          PV="${{ github.event.inputs.prompt_version }}"
+          PV="${PV:-${{ steps.cfg.outputs.prompt_version }}}"
+          PROV="${{ github.event.inputs.provider }}"
+          PROV="${PROV:-${{ steps.cfg.outputs.provider }}}"
+          RUNS="${{ github.event.inputs.runs }}"
+          RUNS="${RUNS:-1}"
+
+          ARGS=(--prompt-version "$PV" --provider "$PROV" --runs "$RUNS")
+          if [ -n "${{ github.event.inputs.limit }}" ]; then
+            ARGS+=(--limit "${{ github.event.inputs.limit }}")
+          fi
+          if [ "${{ github.event.inputs.no_baselines }}" = "true" ]; then
+            ARGS+=(--no-baselines)
+          fi
+
+          echo "python -m evals.run_eval ${ARGS[*]}"
+          python -m evals.run_eval "${ARGS[@]}"
+
+      - name: Commit evals/eval_summary.json to main
+        run: |
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add evals/eval_summary.json 2>/dev/null || true
+          if git diff --cached --quiet; then
+            echo "no eval_summary.json change to commit (writer not producing it yet, or no drift)"
+          else
+            git commit -m "chore(eval): refresh eval_summary.json [skip ci]"
+            git push origin HEAD:main
+          fi
+
+# NOTE: no vercel deploy step — same reasoning as daily-brief.yml. Committing
+# evals/eval_summary.json to main triggers Vercel's Git-integration redeploy,
+# and the dashboard's stale-banner check re-reads the fresh fingerprint. See DEPLOY.md.
