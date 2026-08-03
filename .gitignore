@@ -25,3 +25,6 @@ dashboard/.next/
 
 # Runtime logs (Codex/tooling cruft)
 *.log
+
+# Local Claude Code tooling state (settings, agent worktrees)
+.claude/
