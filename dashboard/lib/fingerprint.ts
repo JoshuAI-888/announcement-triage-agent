@@ -53,7 +53,9 @@ function jsonStrOrNull(v: string | null | undefined): string {
  * from YAML exactly as Python's `base_config.get("providers", {})`.
  */
 export function evalFingerprint(rc: RuntimeConfig, providersBlock: ProvidersBlock): string {
-  const provider = rc.eval.provider;
+  // Keyed on run.provider — the classifier the daily brief actually uses — so a
+  // production provider switch flips trust to STALE. Mirrors src/config_schema.py:eval_fingerprint.
+  const provider = rc.run.provider;
   const pconf = providersBlock?.[provider] ?? {};
   const override = rc.run.classification_prompt_override || "";
   const overrideSha = override ? sha256Hex(override) : "";

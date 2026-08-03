@@ -13,7 +13,12 @@ name: daily-brief
 on:
   schedule:
     - cron: "*/15 * * * *"
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Force a digest now, bypassing the schedule gate (the dashboard 'Run now' button)"
+        type: boolean
+        default: true
 
 permissions:
   contents: write
@@ -56,14 +61,24 @@ jobs:
 
       - name: Decide action (digest | intraday | skip)
         id: gate
+        env:
+          # A manual dispatch is "Run now": force a digest immediately, bypassing the
+          # schedule gate (empty string = dispatched via API with no inputs → also force).
+          FORCE: ${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force != 'false' }}
         run: |
           set -e
-          RESULT="$(python -m scripts.ci_gate)"
-          echo "gate decision: $RESULT"
-          ACTION="$(python -c "import json,sys; print(json.loads(sys.argv[1])['action'])" "$RESULT")"
-          REASON="$(python -c "import json,sys; print(json.loads(sys.argv[1])['reason'])" "$RESULT")"
-          echo "action=$ACTION" >> "$GITHUB_OUTPUT"
-          echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+          if [ "$FORCE" = "true" ]; then
+            echo "action=digest" >> "$GITHUB_OUTPUT"
+            echo "reason=forced digest (manual Run now — schedule gate bypassed)" >> "$GITHUB_OUTPUT"
+            echo "forced digest via workflow_dispatch"
+          else
+            RESULT="$(python -m scripts.ci_gate)"
+            echo "gate decision: $RESULT"
+            ACTION="$(python -c "import json,sys; print(json.loads(sys.argv[1])['action'])" "$RESULT")"
+            REASON="$(python -c "import json,sys; print(json.loads(sys.argv[1])['reason'])" "$RESULT")"
+            echo "action=$ACTION" >> "$GITHUB_OUTPUT"
+            echo "reason=$REASON" >> "$GITHUB_OUTPUT"
+          fi
 
       - name: Run digest
         if: steps.gate.outputs.action == 'digest'
@@ -93,7 +108,19 @@ jobs:
             echo "no brief/run_log changes to commit"
           else
             git commit -m "chore(ci): ${{ steps.gate.outputs.action }} run $(date -u +%FT%TZ) [skip ci]"
-            git push origin HEAD:main
+            # A dashboard config-commit can land on main mid-run and make this push
+            # non-fast-forward. run_log.jsonl is append-only and briefs are new files,
+            # so a rebase applies cleanly on a different path/line — retry a few times.
+            pushed=false
+            for i in 1 2 3 4 5; do
+              if git push origin HEAD:main; then pushed=true; break; fi
+              echo "push rejected (attempt $i) — rebasing on latest main and retrying"
+              git pull --rebase origin main || { git rebase --abort || true; }
+              sleep 3
+            done
+            if [ "$pushed" != "true" ]; then
+              echo "::error::failed to push run_log/briefs to main after 5 attempts"; exit 1
+            fi
           fi
 
       # This workflow only triggers on schedule/workflow_dispatch (no `push:` trigger),

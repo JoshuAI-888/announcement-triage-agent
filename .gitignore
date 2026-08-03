@@ -22,3 +22,6 @@ out/gold_drafts.json
 dashboard/node_modules/
 dashboard/.vercel/
 dashboard/.next/
+
+# Runtime logs (Codex/tooling cruft)
+*.log

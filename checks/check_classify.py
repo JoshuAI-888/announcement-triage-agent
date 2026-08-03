@@ -156,6 +156,18 @@ def body(check):
         "unparseable model output raises rather than returning a bad Classification",
     )
 
+    # --- "custom" prompt resolves to the runtime override, not a missing file (QA HIGH-1) ---
+    custom_cfg = {**CONFIG, "_runtime": {"classification_prompt_override": "SYSTEM: be terse and grounded."}}
+    check.equal(C.load_prompt("custom", custom_cfg), "SYSTEM: be terse and grounded.",
+                "load_prompt('custom') returns the runtime override text")
+    check.raises(ValueError, lambda: C.load_prompt("custom", {"_runtime": {}}),
+                 "custom with no override raises a clear error (not FileNotFoundError)")
+    check.raises(ValueError, lambda: C.load_prompt("custom", None),
+                 "custom with no runtime config raises a clear error")
+    ok_client = FakeClient([(VALID_JSON, 100, 10)])
+    c_custom = C.classify(make_announcement(), config=custom_cfg, prompt_version="custom", client=ok_client)
+    check.equal(c_custom.prompt_version, "custom", "classify() runs end-to-end on a custom override prompt")
+
     check.note("offline check — no API calls, no spend")
 
 

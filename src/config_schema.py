@@ -243,6 +243,13 @@ def fingerprint_from(prompt_version: str, prompt_override: str | None, provider:
 
 
 def eval_fingerprint(rc: RuntimeConfig, base_config: dict) -> str:
-    """The eval fingerprint for a RuntimeConfig (uses the eval provider + run prompt)."""
+    """The eval fingerprint for the DAILY system: run.provider + run.prompt (+ override).
+
+    Keyed on run.provider — the classifier the morning brief actually uses — NOT
+    eval.provider, so switching the production provider flips the dashboard's trust
+    to STALE until an eval re-measures that provider. A Run-eval whose evaluated
+    provider matches run.provider stamps the same hash and clears the banner; one that
+    measures a different provider leaves it stale (it didn't validate the daily system).
+    """
     return fingerprint_from(rc.run.prompt_version, rc.run.classification_prompt_override,
-                            rc.eval.provider, base_config)
+                            rc.run.provider, base_config)

@@ -101,10 +101,15 @@ def body(check):
     check.require(C.eval_fingerprint(rc_prompt, base) != fp1,
                   "fingerprint changes when the prompt version changes")
 
-    rc_provider = rc.model_copy(deep=True)
-    rc_provider.eval.provider = "openai"
-    check.require(C.eval_fingerprint(rc_provider, base) != fp1,
-                  "fingerprint changes when the eval provider changes")
+    rc_run_provider = rc.model_copy(deep=True)
+    rc_run_provider.run.provider = "openai"
+    check.require(C.eval_fingerprint(rc_run_provider, base) != fp1,
+                  "fingerprint changes when the RUN provider changes (the daily classifier)")
+
+    rc_eval_provider = rc.model_copy(deep=True)
+    rc_eval_provider.eval.provider = "openai"
+    check.equal(C.eval_fingerprint(rc_eval_provider, base), fp1,
+                "fingerprint is NOT moved by eval.provider alone (it describes the daily run)")
 
     check.note("offline check — no API calls, no spend")
 

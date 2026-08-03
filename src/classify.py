@@ -50,7 +50,19 @@ class ClassifyError(RuntimeError):
     """The model produced output that could not be parsed into a Classification."""
 
 
-def load_prompt(prompt_version: str) -> str:
+def load_prompt(prompt_version: str, config: dict | None = None) -> str:
+    """The system prompt for a version. "custom" resolves to the operator-edited
+    override carried in config["_runtime"] (set by apply_overrides / the eval harness),
+    so the UI's editable classifier prompt actually takes effect instead of looking for
+    a non-existent classify_custom.md."""
+    if prompt_version == "custom":
+        override = ((config or {}).get("_runtime") or {}).get("classification_prompt_override")
+        if not override or not str(override).strip():
+            raise ValueError(
+                "prompt_version 'custom' is selected but runtime config carries no "
+                "classification_prompt_override — set it before running, or pick v1/v2/v3"
+            )
+        return str(override)
     path = PROMPTS_DIR / f"classify_{prompt_version}.md"
     if not path.exists():
         raise FileNotFoundError(f"no prompt file for version {prompt_version!r} at {path}")
@@ -180,7 +192,7 @@ def classify(
     models = config["models"]
     pricing = config["pricing_usd_per_mtok"]
     fx = config["fx_usd_nzd"]
-    system = load_prompt(prompt_version)
+    system = load_prompt(prompt_version, config)
 
     t0 = time.monotonic()
 

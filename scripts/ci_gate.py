@@ -24,7 +24,7 @@ from __future__ import annotations
 
 import argparse
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import Optional
 from zoneinfo import ZoneInfo
@@ -37,6 +37,9 @@ RUN_LOG_PATH = ROOT / "out" / "run_log.jsonl"
 
 DEFAULT_POLL_TIME = "06:00"
 DEFAULT_POLL_FREQUENCY = "daily"
+# Minimum gap between intraday passes so a */15 cron does not fire 4×/hour. Sized just
+# under an hour so it lands on the tick closest to each hour when poll_frequency=hourly.
+INTRADAY_MIN_GAP_MIN = 55
 
 
 def _parse_hhmm(value: str) -> tuple[int, int]:
@@ -87,6 +90,29 @@ def last_digest_date_nzt(run_log_path: Path = RUN_LOG_PATH) -> Optional[str]:
     return latest
 
 
+def last_run_dt(run_log_path: Path = RUN_LOG_PATH) -> Optional[datetime]:
+    """The most recent run timestamp (UTC, tz-aware) across ALL run_log rows, digest or
+    intraday — used to throttle intraday so it can't fire on every 15-minute tick."""
+    if not run_log_path.exists():
+        return None
+    latest: Optional[datetime] = None
+    with run_log_path.open(encoding="utf-8") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+                dt = datetime.fromisoformat(str(row["ts"]).replace("Z", "+00:00"))
+            except (json.JSONDecodeError, KeyError, ValueError):
+                continue
+            if dt.tzinfo is None:
+                dt = dt.replace(tzinfo=timezone.utc)
+            if latest is None or dt > latest:
+                latest = dt
+    return latest
+
+
 def decide(runtime_config: dict, now_utc: datetime, run_log_path: Path = RUN_LOG_PATH) -> dict:
     """Decide the CI action for this tick. Pure: no I/O except reading `run_log_path`."""
     schedule = runtime_config.get("schedule") or {}
@@ -111,9 +137,18 @@ def decide(runtime_config: dict, now_utc: datetime, run_log_path: Path = RUN_LOG
         }
 
     if intraday_alerts and poll_frequency == "hourly":
+        last = last_run_dt(run_log_path)
+        gap_min = None if last is None else (now_utc - last).total_seconds() / 60.0
+        if last is None or gap_min >= INTRADAY_MIN_GAP_MIN:
+            return {
+                "action": "intraday",
+                "reason": ("intraday_alerts on, poll_frequency=hourly, last run "
+                           + ("never" if last is None else f"{int(gap_min)}min ago")
+                           + f" (≥{INTRADAY_MIN_GAP_MIN}min gap)"),
+            }
         return {
-            "action": "intraday",
-            "reason": "intraday_alerts is on and poll_frequency=hourly warrants an off-cycle check",
+            "action": "skip",
+            "reason": f"intraday throttled — last run {int(gap_min)}min ago (< {INTRADAY_MIN_GAP_MIN}min gap)",
         }
 
     if not intraday_alerts:

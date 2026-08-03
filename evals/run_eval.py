@@ -273,6 +273,16 @@ def run_eval(
         cfg["thresholds"]["escalate_above_chars"] = 10 ** 12
         cfg["thresholds"]["escalate_below_confidence"] = 0.0
 
+    # A "custom" eval must classify with the operator's override prompt, not a file.
+    # Load it from runtime_config.json into the config the harness passes to classify().
+    if prompt_version == "custom":
+        try:
+            from src.config_schema import load_runtime_config
+            override = load_runtime_config().run.classification_prompt_override
+        except Exception:
+            override = None
+        cfg.setdefault("_runtime", {})["classification_prompt_override"] = override
+
     if client is None:
         client = build_client(provider, base)
     baselines = baselines or {}
@@ -327,7 +337,7 @@ def run_eval(
         {
             "prompt_version": prompt_version,
             "provider": provider,
-            "prompt_file_sha256": hashlib.sha256(load_prompt(prompt_version).encode()).hexdigest(),
+            "prompt_file_sha256": hashlib.sha256(load_prompt(prompt_version, cfg).encode()).hexdigest(),
             "dataset": (str(gold_path.relative_to(ROOT)) if gold_path.is_relative_to(ROOT) else str(gold_path)),
             "dataset_sha256": _dataset_hash(gold_path),
             "n_items": metrics["n_items"],

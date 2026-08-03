@@ -94,6 +94,15 @@ def body(check):
         check.equal(result["action"], "intraday", "already ran today + intraday_alerts + hourly -> intraday")
         check.require("hourly" in result["reason"], "intraday reason cites hourly cadence")
 
+        # --- 4b. intraday THROTTLE: a recent run (< gap) suppresses the every-15-min fire ---
+        log_recent = _write_log(tmp, [_digest_row(_nzt(2026, 8, 4, 8, 50))])  # 10 min before 09:00
+        result = G.decide(rc_hourly, now, log_recent)
+        check.equal(result["action"], "skip", "intraday throttled when the last run was < 55min ago")
+        check.require("throttled" in result["reason"], "throttle reason says throttled")
+        # exactly at/after the gap it fires again
+        result = G.decide(rc_hourly, _nzt(2026, 8, 4, 9, 46), log_recent)  # 56 min after 08:50
+        check.equal(result["action"], "intraday", "intraday fires again once the 55min gap has passed")
+
         # --- 5. digest already ran today, intraday on but poll_frequency=daily -> skip ---
         rc_daily_intraday = _schedule("06:00", "daily", True)
         result = G.decide(rc_daily_intraday, now, log_today)
