@@ -1,0 +1,34 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Milford Workspace — Sign in</title>
+  <link rel="stylesheet" href="../styles/milford-system.css"><link rel="stylesheet" href="../styles/portal.css">
+</head>
+<body>
+  <main class="login-page">
+    <section class="login-form" aria-labelledby="login-title">
+      <img class="logo" src="../brand/milfordasset.svg" alt="Milford">
+      <p class="eyebrow">Milford Workspace</p>
+      <h1 id="login-title">Welcome back.</h1>
+      <p class="intro">Sign in to research, portfolio information and internal documents.</p>
+      <form id="login-form">
+        <div class="field"><label for="email">Work email</label><input class="input" id="email" type="email" value="alex.morgan@milfordasset.com" autocomplete="username" required></div>
+        <div class="field"><label for="password">Password</label><input class="input" id="password" type="password" value="milforddemo" autocomplete="current-password" required></div>
+        <div class="login-meta"><label><input type="checkbox" checked> Keep me signed in</label><a href="#">Forgot password?</a></div>
+        <button class="btn" type="submit"><span class="fa">&#xf2f6;</span> Sign in securely</button>
+      </form>
+      <div class="sso">or</div>
+      <a class="btn secondary" href="portal.html"><span class="fa">&#xf2bd;</span> Continue with Microsoft</a>
+      <p class="small muted" style="margin-top:28px">Illustrative internal portal template. Connect authentication to your approved identity provider before production use.</p>
+    </section>
+    <aside class="login-visual" aria-label="Milford workspace introduction">
+      <p class="eyebrow">Invested in you</p>
+      <div class="quote">One secure view of the research, decisions and people behind <b>every portfolio.</b></div>
+      <p>Designed around Milford’s public visual system, adapted for focused internal work.</p>
+      <div class="security"><span><i class="fa">&#xf3ed;</i> Protected access</span><span><i class="fa">&#xf017;</i> Session monitoring</span><span><i class="fa">&#xf1d8;</i> NZ data controls</span></div>
+    </aside>
+  </main>
+  <script>document.getElementById('login-form').addEventListener('submit',function(e){e.preventDefault();location.href='portal.html'});</script>
+</body>
+</html>

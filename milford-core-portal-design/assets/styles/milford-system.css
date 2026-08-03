@@ -1,0 +1,26 @@
+@font-face{font-family:Glypha;src:url('../fonts/glypha.woff2') format('woff2');font-display:swap;font-weight:700}
+@font-face{font-family:Montserrat;src:url('../fonts/montserrat-jtuqjig1_i6t8kchkm459wxrys7m.woff2') format('woff2');font-display:swap;font-weight:400}
+@font-face{font-family:Montserrat;src:url('../fonts/montserrat-jtusjig1_i6t8kchkm459wlhyw.woff2') format('woff2');font-display:swap;font-weight:600 800}
+@font-face{font-family:'Font Awesome 5 Free';src:url('../fonts/fa-solid-900.woff2') format('woff2');font-display:block;font-weight:900}
+:root{
+  --milford-slate:#303c42;--milford-slate-2:#46545b;--milford-muted:#77858d;--milford-cloud:#eef1f2;
+  --milford-paper:#ffffff;--milford-ink:#243037;--milford-orange:#e1690e;--milford-orange-dark:#b84f08;
+  --milford-kiwisaver:#1c99d6;--milford-investment:#4bc864;--milford-wealth:#915fb4;
+  --milford-success:#198754;--milford-warning:#f3a83b;--milford-danger:#c94b42;
+  --radius-sm:4px;--radius:8px;--radius-lg:14px;--shadow:0 10px 30px rgba(28,43,50,.10);
+  --font-display:Glypha,Georgia,serif;--font-ui:Montserrat,Arial,sans-serif;
+}
+*{box-sizing:border-box}html{font-size:16px}body{margin:0;background:#f4f6f6;color:var(--milford-ink);font-family:var(--font-ui);line-height:1.5}
+button,input,select,textarea{font:inherit}button,a{cursor:pointer}a{color:inherit}.fa{font-family:'Font Awesome 5 Free';font-style:normal;font-weight:900}
+h1,h2,h3,h4,p{margin-top:0}h1,h2,h3{font-family:var(--font-display);color:var(--milford-slate);letter-spacing:-.015em}h1{font-size:clamp(2rem,4vw,3.75rem);line-height:1.02}h2{font-size:1.7rem;line-height:1.15}h3{font-size:1.12rem;line-height:1.25}
+.eyebrow{margin:0 0 8px;color:var(--milford-orange);font-size:.72rem;font-weight:800;letter-spacing:.16em;text-transform:uppercase}.muted{color:var(--milford-muted)}.small{font-size:.78rem}.tabular{font-variant-numeric:tabular-nums}.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:9px;min-height:42px;padding:0 18px;border:1px solid transparent;border-radius:var(--radius-sm);background:var(--milford-orange);color:white;font-size:.78rem;font-weight:800;text-decoration:none;transition:.2s ease}.btn:hover{background:var(--milford-orange-dark);transform:translateY(-1px)}.btn.secondary{background:white;border-color:#cad1d4;color:var(--milford-slate)}.btn.secondary:hover{background:#f5f7f7}.btn.ghost{background:transparent;color:var(--milford-slate)}
+.field{display:grid;gap:7px}.field label{font-size:.72rem;font-weight:800;color:var(--milford-slate);letter-spacing:.04em}.input,.select{width:100%;min-height:44px;border:1px solid #c9d1d4;border-radius:var(--radius-sm);background:white;padding:0 13px;color:var(--milford-ink);outline:none}.input:focus,.select:focus{border-color:var(--milford-orange);box-shadow:0 0 0 3px rgba(225,105,14,.13)}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:5px 9px;border-radius:999px;background:#eef2f3;color:var(--milford-slate);font-size:.68rem;font-weight:800;white-space:nowrap}.badge.orange{background:#fff1e7;color:#a94b08}.badge.blue{background:#e4f4fb;color:#1277a8}.badge.green{background:#e6f8ea;color:#25783a}.badge.purple{background:#f0e9f6;color:#70448d}.badge.red{background:#fae9e7;color:#983830}
+.card{background:white;border:1px solid #dce2e4;border-radius:var(--radius);box-shadow:0 2px 8px rgba(30,45,51,.04)}.card-pad{padding:22px}.rule{height:1px;background:#e0e5e7;border:0;margin:20px 0}.table-wrap{overflow:auto;border:1px solid #dce2e4;border-radius:var(--radius);background:white}table{width:100%;border-collapse:collapse;font-size:.78rem}th,td{padding:13px 14px;border-bottom:1px solid #e5e9ea;text-align:left;vertical-align:middle}th{background:#f4f6f6;color:var(--milford-muted);font-size:.66rem;letter-spacing:.06em;text-transform:uppercase}tbody tr:hover{background:#fbfcfc}tbody tr:last-child td{border-bottom:0}.align-right{text-align:right}
+.metric{display:grid;gap:5px}.metric strong{font-family:var(--font-display);font-size:1.8rem;color:var(--milford-slate);line-height:1}.metric span{color:var(--milford-muted);font-size:.68rem;font-weight:700}.delta{font-size:.68rem;font-weight:800}.delta.up{color:var(--milford-success)}.delta.down{color:var(--milford-danger)}
+.progress{height:7px;border-radius:999px;background:#e8edef;overflow:hidden}.progress>span{display:block;height:100%;background:var(--milford-orange);border-radius:inherit}.progress.blue>span{background:var(--milford-kiwisaver)}.progress.green>span{background:var(--milford-investment)}.progress.purple>span{background:var(--milford-wealth)}
+.avatar{width:38px;height:38px;border-radius:50%;object-fit:cover;background:#dce2e4}.avatar.initials{display:grid;place-items:center;background:var(--milford-slate);color:#fff;font-family:var(--font-display);font-size:.85rem}
+.empty{padding:42px 20px;text-align:center;color:var(--milford-muted)}
+@media(max-width:760px){h1{font-size:2.25rem}.card-pad{padding:17px}}
+@media print{body{background:white;-webkit-print-color-adjust:exact;print-color-adjust:exact}.no-print{display:none!important}a{text-decoration:none}.card{box-shadow:none}}

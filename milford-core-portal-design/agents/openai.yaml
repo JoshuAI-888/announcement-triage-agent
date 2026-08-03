@@ -1,0 +1,4 @@
+interface:
+  display_name: "Milford Core Portal Design"
+  short_description: "Build Milford-branded internal portals"
+  default_prompt: "Use $milford-core-portal-design to create or extend a Milford internal portal with the approved navigation, components, and brand assets."
