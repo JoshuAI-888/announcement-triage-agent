@@ -1,0 +1,21 @@
+# Dependencies
+node_modules/
+
+# Next.js build output
+.next/
+out/
+next-env.d.ts
+
+# Vercel
+.vercel/
+
+# Local dev mock state (LOCAL DEV MODE's mocked "commits" — never the real repo files)
+.local-data/
+
+# Env
+.env
+.env*.local
+
+# OS / editor
+.DS_Store
+*.log

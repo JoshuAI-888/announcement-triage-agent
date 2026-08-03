@@ -1,0 +1,26 @@
+{
+  "name": "ata-dashboard",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Milford-themed operator dashboard for the announcement-triage-agent (Vercel app, CONTRACTS.md §7).",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint",
+    "test:validation": "node --experimental-strip-types scripts/test-validation.mjs"
+  },
+  "dependencies": {
+    "next": "^16.3.0",
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "yaml": "^2.5.1"
+  },
+  "devDependencies": {
+    "@types/node": "^22.10.2",
+    "@types/react": "^19.0.2",
+    "@types/react-dom": "^19.0.2",
+    "typescript": "^5.7.2"
+  }
+}

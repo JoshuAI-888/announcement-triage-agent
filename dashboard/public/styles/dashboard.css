@@ -1,0 +1,79 @@
+/* dashboard.css — additions on top of milford-system.css + portal.css.
+   Reuses existing tokens/components (--milford-*, .card, .btn, .field, .input,
+   .select, .badge, .table-wrap, .metric, .list, .page-head, .grid) per
+   CONTRACTS.md §9 / milford-core-portal-design SKILL.md. Only net-new pieces
+   this app needs (warning banner, form layout, brief preview frame, mono
+   text) live here. */
+
+textarea.input { min-height: 96px; padding: 10px 13px; resize: vertical; font-family: var(--font-ui); line-height: 1.5; }
+.field .hint { color: var(--milford-muted); font-size: .68rem; font-weight: 600; }
+.field .char-count { color: var(--milford-muted); font-size: .66rem; text-align: right; }
+
+.mono { font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace; font-size: .78rem; }
+
+/* Warning / stale banner — --brand-warning per CONTRACTS §5/§9 */
+.banner {
+  display: flex; align-items: flex-start; gap: 12px;
+  border-radius: var(--radius); padding: 14px 16px; margin-bottom: 16px;
+  border: 1px solid transparent; font-size: .78rem;
+}
+.banner .fa { margin-top: 2px; }
+.banner-warning { background: #fef6e7; border-color: #f0d093; color: #7a5311; }
+.banner-warning strong { color: #7a5311; }
+.banner-danger { background: #fbeceb; border-color: #eabab5; color: #7c2e27; }
+.banner-info { background: var(--milford-cloud); border-color: #dde3e5; color: var(--milford-slate); }
+
+/* Config form */
+.config-section { margin-bottom: 20px; }
+.config-section h2 { margin-bottom: 4px; }
+.config-section .section-intro { color: var(--milford-muted); font-size: .76rem; margin-bottom: 16px; }
+.config-form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 16px; }
+.config-form-grid.narrow { grid-template-columns: minmax(0, 1fr); }
+.config-form-grid .span-2 { grid-column: span 2; }
+.checkbox-field { display: flex; align-items: center; gap: 9px; }
+.checkbox-field input { width: 17px; height: 17px; }
+.kv-editor { display: grid; gap: 8px; }
+.kv-row { display: grid; grid-template-columns: minmax(0,1fr) 120px; gap: 10px; align-items: center; }
+.kv-row label { font-size: .72rem; color: var(--milford-slate); font-weight: 700; }
+.form-actions { display: flex; gap: 10px; align-items: center; margin-top: 22px; padding-top: 18px; border-top: 1px solid #e5e9ea; }
+.form-actions .save-status { font-size: .72rem; color: var(--milford-muted); }
+.form-actions .save-status.ok { color: var(--milford-success); font-weight: 700; }
+.form-actions .save-status.error { color: var(--milford-danger); font-weight: 700; }
+
+/* Watchlist chip editor */
+.chip-list { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 8px; }
+.chip { display: inline-flex; align-items: center; gap: 6px; background: var(--milford-cloud); border-radius: 999px; padding: 4px 10px 4px 12px; font-size: .7rem; font-weight: 700; color: var(--milford-slate); }
+.chip button { border: 0; background: transparent; color: var(--milford-muted); cursor: pointer; font-size: .8rem; line-height: 1; padding: 2px; }
+.chip button:hover { color: var(--milford-danger); }
+
+/* Brief preview */
+.brief-frame-wrap { border: 1px solid #dce2e4; border-radius: var(--radius); overflow: hidden; background: white; }
+.brief-frame { width: 100%; height: 720px; border: 0; display: block; }
+.brief-frame.compact { height: 420px; }
+
+/* Scorecard table emphasis */
+.scorecard-table td.tabular, .scorecard-table th { white-space: nowrap; }
+.metric.attention-warn { border-color: var(--milford-warning); }
+
+.status-dot.warn { background: var(--milford-warning); }
+.status-dot.danger { background: var(--milford-danger); }
+
+/* Simple two-column key/value list for Today / Cadence panels */
+.kv-list { display: grid; grid-template-columns: max-content 1fr; gap: 6px 16px; font-size: .78rem; }
+.kv-list dt { color: var(--milford-muted); font-weight: 700; }
+.kv-list dd { margin: 0; color: var(--milford-ink); }
+
+.pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
+
+@media (max-width: 760px) {
+  .config-form-grid { grid-template-columns: 1fr; }
+  .config-form-grid .span-2 { grid-column: auto; }
+  .kv-row { grid-template-columns: 1fr; }
+
+  /* The topbar's fixed 72px height (portal.css) can't fit the mode text +
+     two action buttons on a narrow screen — let it wrap instead of clipping. */
+  .topbar { height: auto; flex-wrap: wrap; padding: 12px 16px; row-gap: 8px; }
+  .top-actions { width: 100%; justify-content: flex-end; flex-wrap: wrap; margin-left: 0; }
+  .top-actions .small.muted { display: none; }
+  .search { order: 3; flex-basis: 100%; }
+}
