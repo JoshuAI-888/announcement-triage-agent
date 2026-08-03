@@ -208,25 +208,27 @@ def batch_evaluate(prompt_version, runs, gold_rows, announcements, cfg, provider
 
     system = load_prompt(prompt_version)
     models = cfg["models"]
-    requests = [
-        {
-            "custom_id": f"{run_idx}:{announcements[row['announcement_id']].announcement_id}",
-            "model": models["primary"], "system": system,
-            "user": _render_user(announcements[row["announcement_id"]]),
-            "max_tokens": models["max_output_tokens"], "temperature": models["temperature"],
-            "extra_body": extra_body,
-        }
-        for run_idx in range(1, runs + 1) for row in gold_rows
-    ]
+    # Short integer custom_ids (Anthropic caps custom_id at 64 chars; a "run:sha256"
+    # id is 66). `plan` maps each id back to its (run, row).
+    plan: list[tuple[int, dict]] = []
+    requests = []
+    for run_idx in range(1, runs + 1):
+        for row in gold_rows:
+            ann = announcements[row["announcement_id"]]
+            requests.append({
+                "custom_id": str(len(requests)), "model": models["primary"], "system": system,
+                "user": _render_user(ann), "max_tokens": models["max_output_tokens"],
+                "temperature": models["temperature"], "extra_body": extra_body,
+            })
+            plan.append((run_idx, row))
+
     backend = backend or build_backend(provider, cfg)
     results = backend.run(requests)
 
     items = []
-    for run_idx in range(1, runs + 1):
-        for row in gold_rows:
-            ann = announcements[row["announcement_id"]]
-            res = results.get(f"{run_idx}:{ann.announcement_id}")
-            items.append(build_item(run_idx, row, ann, _batch_pred(res, ann, cfg, prompt_version)))
+    for idx, (run_idx, row) in enumerate(plan):
+        ann = announcements[row["announcement_id"]]
+        items.append(build_item(run_idx, row, ann, _batch_pred(results.get(str(idx)), ann, cfg, prompt_version)))
     return items
 
 

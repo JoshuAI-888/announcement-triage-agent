@@ -92,16 +92,23 @@ def body(check):
              "label_rationale": "o"}]
 
     class FakeBackend:
+        def __init__(self):
+            self.seen_ids = []
+
         def run(self, requests, **kw):
             out = {}
             for r in requests:
-                if r["custom_id"].endswith(aapl.announcement_id):
-                    out[r["custom_id"]] = B.BatchResult(r["custom_id"], VALID, 1000, 100)
+                cid = r["custom_id"]
+                self.seen_ids.append(cid)
+                if "Ticker: AAPL" in r["user"]:
+                    out[cid] = B.BatchResult(cid, VALID, 1000, 100)
                 else:  # MSFT → a failed result → must become a sentinel
-                    out[r["custom_id"]] = B.BatchResult(r["custom_id"], None, 0, 0, error="boom")
+                    out[cid] = B.BatchResult(cid, None, 0, 0, error="boom")
             return out
 
-    items = R.batch_evaluate("v1", 1, rows, announcements, CONFIG, "claude", backend=FakeBackend())
+    fb = FakeBackend()
+    items = R.batch_evaluate("v1", 1, rows, announcements, CONFIG, "claude", backend=fb)
+    check.require(all(len(c) <= 64 for c in fb.seen_ids), "custom_ids stay within the 64-char Anthropic limit")
     check.equal(len(items), 2, "batch_evaluate yields one item per gold row")
     by_ticker = {it["ticker"]: it for it in items}
     check.equal(by_ticker["AAPL"]["pred_materiality"], "material", "batch result parsed + reconciled by custom_id")
