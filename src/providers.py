@@ -37,7 +37,9 @@ class _OpenAICompatClient:
         key = os.environ.get(api_key_env)
         if not key:
             raise RuntimeError(f"{api_key_env} is not set — add it to .env before running this provider")
-        self._client = OpenAI(api_key=key, base_url=base_url or None)
+        # High max_retries so the SDK rides out 429s (it honours Retry-After) instead
+        # of surfacing them as failures under a tight tokens-per-minute cap.
+        self._client = OpenAI(api_key=key, base_url=base_url or None, max_retries=8, timeout=120.0)
         self.messages = SimpleNamespace(create=self._create)
 
     def _create(self, *, model, max_tokens, temperature, system, messages):
