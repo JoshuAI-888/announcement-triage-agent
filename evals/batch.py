@@ -109,23 +109,32 @@ class OpenAICompatBatch:
             time.sleep(poll_interval)
         if b.status != "completed":
             raise RuntimeError(f"batch {b.id} ended with status {b.status}")
-        content = self.client.files.content(b.output_file_id).read()
-        if isinstance(content, bytes):
-            content = content.decode("utf-8")
         out: dict[str, BatchResult] = {}
-        for line in content.splitlines():
-            if not line.strip():
-                continue
-            rec = json.loads(line)
-            cid = rec["custom_id"]
-            resp = rec.get("response") or {}
-            if resp.get("status_code") == 200:
-                bd = resp["body"]
-                text = bd["choices"][0]["message"]["content"]
-                us = bd["usage"]
-                out[cid] = BatchResult(cid, text, us["prompt_tokens"], us["completion_tokens"])
-            else:
-                out[cid] = BatchResult(cid, None, 0, 0, error=json.dumps(rec.get("error") or resp)[:300])
+
+        def _ingest(file_id):
+            if not file_id:
+                return
+            content = self.client.files.content(file_id).read()
+            if isinstance(content, bytes):
+                content = content.decode("utf-8")
+            for line in content.splitlines():
+                if not line.strip():
+                    continue
+                rec = json.loads(line)
+                cid = rec["custom_id"]
+                resp = rec.get("response") or {}
+                if resp.get("status_code") == 200:
+                    bd = resp["body"]
+                    us = bd["usage"]
+                    out[cid] = BatchResult(cid, bd["choices"][0]["message"]["content"],
+                                           us["prompt_tokens"], us["completion_tokens"])
+                else:
+                    err = rec.get("error") or resp.get("body") or resp
+                    out[cid] = BatchResult(cid, None, 0, 0, error=json.dumps(err)[:400])
+
+        # A "completed" batch can carry successes in output_file and failures in error_file.
+        _ingest(getattr(b, "output_file_id", None))
+        _ingest(getattr(b, "error_file_id", None))
         return out
 
 

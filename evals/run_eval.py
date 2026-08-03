@@ -208,15 +208,16 @@ def batch_evaluate(prompt_version, runs, gold_rows, announcements, cfg, provider
 
     system = load_prompt(prompt_version)
     models = cfg["models"]
-    # Short integer custom_ids (Anthropic caps custom_id at 64 chars; a "run:sha256"
-    # id is 66). `plan` maps each id back to its (run, row).
+    # custom_id must be 6–64 chars: Anthropic caps at 64 (a "run:sha256" id is 66),
+    # GLM/Zhipu requires a minimum of 6. `req-000000` satisfies both. `plan` maps
+    # each id back to its (run, row).
     plan: list[tuple[int, dict]] = []
     requests = []
     for run_idx in range(1, runs + 1):
         for row in gold_rows:
             ann = announcements[row["announcement_id"]]
             requests.append({
-                "custom_id": str(len(requests)), "model": models["primary"], "system": system,
+                "custom_id": f"req-{len(requests):06d}", "model": models["primary"], "system": system,
                 "user": _render_user(ann), "max_tokens": models["max_output_tokens"],
                 "temperature": models["temperature"], "extra_body": extra_body,
             })

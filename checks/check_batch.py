@@ -108,7 +108,8 @@ def body(check):
 
     fb = FakeBackend()
     items = R.batch_evaluate("v1", 1, rows, announcements, CONFIG, "claude", backend=fb)
-    check.require(all(len(c) <= 64 for c in fb.seen_ids), "custom_ids stay within the 64-char Anthropic limit")
+    check.require(all(6 <= len(c) <= 64 for c in fb.seen_ids),
+                  "custom_ids are 6–64 chars (GLM floor, Anthropic ceiling)")
     check.equal(len(items), 2, "batch_evaluate yields one item per gold row")
     by_ticker = {it["ticker"]: it for it in items}
     check.equal(by_ticker["AAPL"]["pred_materiality"], "material", "batch result parsed + reconciled by custom_id")
