@@ -31,7 +31,7 @@ class _OpenAICompatClient:
     `max_tokens`. We try the standard call and fall back on the specific 400s.
     """
 
-    def __init__(self, api_key_env: str, base_url: str | None = None):
+    def __init__(self, api_key_env: str, base_url: str | None = None, extra_body: dict | None = None):
         from openai import OpenAI
 
         key = os.environ.get(api_key_env)
@@ -40,11 +40,17 @@ class _OpenAICompatClient:
         # High max_retries so the SDK rides out 429s (it honours Retry-After) instead
         # of surfacing them as failures under a tight tokens-per-minute cap.
         self._client = OpenAI(api_key=key, base_url=base_url or None, max_retries=8, timeout=120.0)
+        # Provider-specific body params (e.g. GLM reasoning models need
+        # {"thinking": {"type": "disabled"}} or they spend the whole token budget
+        # thinking and return empty content).
+        self._extra_body = extra_body or None
         self.messages = SimpleNamespace(create=self._create)
 
     def _create(self, *, model, max_tokens, temperature, system, messages):
         oai_messages = [{"role": "system", "content": system}, *messages]
         kwargs = dict(model=model, messages=oai_messages, response_format={"type": "json_object"})
+        if self._extra_body:
+            kwargs["extra_body"] = self._extra_body
         attempts = [
             {**kwargs, "max_tokens": max_tokens, "temperature": temperature},
             {**kwargs, "max_completion_tokens": max_tokens, "temperature": temperature},
@@ -95,5 +101,6 @@ def build_client(provider: str, config: dict):
 
         return Anthropic()
     if kind == "openai":
-        return _OpenAICompatClient(pconf.get("api_key_env", "OPENAI_API_KEY"), pconf.get("base_url"))
+        return _OpenAICompatClient(pconf.get("api_key_env", "OPENAI_API_KEY"),
+                                   pconf.get("base_url"), pconf.get("extra_body"))
     raise ValueError(f"unknown provider kind {kind!r} for {provider!r}")

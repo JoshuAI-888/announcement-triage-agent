@@ -98,6 +98,9 @@ providers:
     api_key_env: "GLM_API_KEY"
     base_url: "https://open.bigmodel.cn/api/paas/v4/"   # Zhipu OpenAI-compatible endpoint
     model: "glm-5.2"
+    # glm-5.2 is a reasoning model — without this it spends the whole token budget
+    # thinking and returns empty content. Disabled = direct JSON classification.
+    extra_body: {thinking: {type: "disabled"}}
     pricing: {input: 0.0, output: 0.0}   # PLACEHOLDER — provide real USD/Mtok for a meaningful cost column
 
 eval:
