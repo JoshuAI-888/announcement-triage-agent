@@ -330,3 +330,10 @@ Same v3 prompt + 220-item gold set across claude-haiku-4.5 / gpt-5.6-terra / glm
 | gpt-5.6-terra | 0.939 | 0.484 | 0.941 | 0.168 | 0.700 | NZ$0.0338 |
 | glm-5.2 | 1.000 | 0.434 | 0.832 | 0.223 | 0.300 | NZ$0 (pricing pending) |
 Headline: grounding (verbatim-quote fidelity) is a MODEL limit, not a prompt limit — Haiku 0.37 vs GPT 0.94 / GLM 0.83 on the identical forced-verbatim v3 prompt. Provider-specific handling built: OpenAI 500k-TPM → concurrency 2 + SDK retries; GLM reasoning-off via extra_body. GLM ran reasoning-disabled. Still outstanding: GLM pricing (cost column), Batch API (#3, all providers), and a per-provider concurrency config knob.
+
+## Follow-on: Batch API (#3) — built + validated 2/3 (2026-08-03)
+evals/batch.py: AnthropicBatch + OpenAICompatBatch behind one run()->{custom_id:BatchResult}; run_eval --batch; 50% discount; offline check 11 assertions. Live-validated by iterating on real-API quirks each fix committed:
+- Anthropic: **WORKS** — custom_id capped at 64 (was 66). Real preds at 0.5x cost.
+- OpenAI (gpt-5.6-terra): **WORKS** — needs max_completion_tokens (not max_tokens) + omit temperature (reasoning model, temp-0 unsupported; note: the live gpt row also ran at default temp). custom_id min handled.
+- GLM: **code-ready, account-blocked** — glm-5.2 is NOT batch-supported (live-only); switched to glm-5.1 on the /v4 endpoint (Zhipu matches model->endpoint). Final blocker is Zhipu real-name verification (实名认证) on the account before Batch API is allowed — owner action, not code.
+custom_id format req-000000 (6-64 chars: GLM floor, Anthropic ceiling). Provider batch quirks are all config-driven (batch_token_param / batch_omit_temperature / batch_endpoint).
