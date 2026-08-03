@@ -1,0 +1,44 @@
+{
+  "version": 1,
+  "run": {
+    "provider": "claude",
+    "prompt_version": "v3",
+    "classification_prompt_override": null
+  },
+  "eval": {
+    "provider": "claude",
+    "concurrency": 12
+  },
+  "schedule": {
+    "poll_time_nzt": "06:00",
+    "poll_frequency": "daily",
+    "intraday_alerts": false
+  },
+  "draft": {
+    "email": "joshuafang@gmail.com",
+    "prompt": "You are writing the morning announcement brief for an investment analyst and portfolio manager. Lead with the material items ranked by the agent, each with the company, what happened in one line, the verbatim evidence quote, and the clickable filing and news links. Keep it terse, factual, and free of directional or advisory language (no buy/sell/overweight/target-price wording). Close with the run footer and a clear note of anything that needs a human look."
+  },
+  "thresholds": {
+    "confidence_floor": 0.65,
+    "escalate_below_confidence": 0.65,
+    "escalate_above_chars": 20000
+  },
+  "ranking": {
+    "recency_half_life_hours": 12,
+    "materiality_weight": {
+      "material": 1.0,
+      "insufficient_info": 0.4,
+      "immaterial": 0.0
+    },
+    "watchlist_weight_default": 1.0
+  },
+  "watchlist": [
+    "AAPL", "MSFT", "AMZN", "GOOGL", "META", "NVDA", "TSLA", "JPM", "BAC", "WMT",
+    "XOM", "JNJ", "PG", "KO", "DIS", "NFLX", "INTC", "CSCO", "PFE", "T",
+    "LDOS", "CACI", "HII", "TXT", "AXON", "NBIX", "JAZZ", "IONS", "ALKS", "INCY",
+    "ZS", "DDOG", "HUBS", "TWLO", "PATH", "DECK", "CROX", "ULTA", "FIVE", "FANG"
+  ],
+  "news_mode": "search",
+  "items_shown": 20,
+  "theme": "milford"
+}

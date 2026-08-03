@@ -1,0 +1,234 @@
+{
+  "$defs": {
+    "DraftCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "email": {
+          "title": "Email",
+          "type": "string"
+        },
+        "prompt": {
+          "maxLength": 8000,
+          "title": "Prompt",
+          "type": "string"
+        }
+      },
+      "required": [
+        "email",
+        "prompt"
+      ],
+      "title": "DraftCfg",
+      "type": "object"
+    },
+    "EvalCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "default": "claude",
+          "enum": [
+            "claude",
+            "openai",
+            "glm"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "concurrency": {
+          "default": 12,
+          "maximum": 32,
+          "minimum": 1,
+          "title": "Concurrency",
+          "type": "integer"
+        }
+      },
+      "title": "EvalCfg",
+      "type": "object"
+    },
+    "RankingCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "recency_half_life_hours": {
+          "default": 12.0,
+          "exclusiveMinimum": 0.0,
+          "title": "Recency Half Life Hours",
+          "type": "number"
+        },
+        "materiality_weight": {
+          "additionalProperties": {
+            "type": "number"
+          },
+          "title": "Materiality Weight",
+          "type": "object"
+        },
+        "watchlist_weight_default": {
+          "default": 1.0,
+          "minimum": 0.0,
+          "title": "Watchlist Weight Default",
+          "type": "number"
+        }
+      },
+      "title": "RankingCfg",
+      "type": "object"
+    },
+    "RunCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "default": "claude",
+          "enum": [
+            "claude",
+            "openai",
+            "glm"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "prompt_version": {
+          "default": "v3",
+          "enum": [
+            "v1",
+            "v2",
+            "v3",
+            "custom"
+          ],
+          "title": "Prompt Version",
+          "type": "string"
+        },
+        "classification_prompt_override": {
+          "anyOf": [
+            {
+              "maxLength": 20000,
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Classification Prompt Override"
+        }
+      },
+      "title": "RunCfg",
+      "type": "object"
+    },
+    "ScheduleCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "poll_time_nzt": {
+          "default": "06:00",
+          "title": "Poll Time Nzt",
+          "type": "string"
+        },
+        "poll_frequency": {
+          "default": "daily",
+          "enum": [
+            "daily",
+            "hourly"
+          ],
+          "title": "Poll Frequency",
+          "type": "string"
+        },
+        "intraday_alerts": {
+          "default": false,
+          "title": "Intraday Alerts",
+          "type": "boolean"
+        }
+      },
+      "title": "ScheduleCfg",
+      "type": "object"
+    },
+    "ThresholdsCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence_floor": {
+          "default": 0.65,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Confidence Floor",
+          "type": "number"
+        },
+        "escalate_below_confidence": {
+          "default": 0.65,
+          "maximum": 1.0,
+          "minimum": 0.0,
+          "title": "Escalate Below Confidence",
+          "type": "number"
+        },
+        "escalate_above_chars": {
+          "default": 20000,
+          "minimum": 0,
+          "title": "Escalate Above Chars",
+          "type": "integer"
+        }
+      },
+      "title": "ThresholdsCfg",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "version": {
+      "minimum": 1,
+      "title": "Version",
+      "type": "integer"
+    },
+    "run": {
+      "$ref": "#/$defs/RunCfg"
+    },
+    "eval": {
+      "$ref": "#/$defs/EvalCfg"
+    },
+    "schedule": {
+      "$ref": "#/$defs/ScheduleCfg"
+    },
+    "draft": {
+      "$ref": "#/$defs/DraftCfg"
+    },
+    "thresholds": {
+      "$ref": "#/$defs/ThresholdsCfg"
+    },
+    "ranking": {
+      "$ref": "#/$defs/RankingCfg"
+    },
+    "watchlist": {
+      "items": {
+        "type": "string"
+      },
+      "minItems": 1,
+      "title": "Watchlist",
+      "type": "array"
+    },
+    "news_mode": {
+      "default": "search",
+      "enum": [
+        "search",
+        "resolved",
+        "off"
+      ],
+      "title": "News Mode",
+      "type": "string"
+    },
+    "items_shown": {
+      "default": 20,
+      "maximum": 100,
+      "minimum": 1,
+      "title": "Items Shown",
+      "type": "integer"
+    },
+    "theme": {
+      "default": "milford",
+      "title": "Theme",
+      "type": "string"
+    }
+  },
+  "required": [
+    "version",
+    "schedule",
+    "draft",
+    "watchlist"
+  ],
+  "title": "runtime_config.json",
+  "type": "object",
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Canonical contract for runtime_config.json. Generated from src/config_schema.py:RuntimeConfig. The Node config UI MUST mirror this; regenerate with this command when the pydantic model changes. NOTE: the no-gold-field rule and email/HH:MM format checks live in config_schema.py and must be re-implemented in JS."
+}
