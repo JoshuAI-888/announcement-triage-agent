@@ -1,0 +1,25 @@
+/* theme.css — the Milford design-token file (CONTRACTS.md §5).
+ *
+ * Exact hexes from milford-core-portal-design/references/brand-language.md
+ * (authoritative — do not invent or adjust a value here without updating that
+ * file's owner and this file together). `src/theme.py` mirrors these same
+ * values for the Python renderers, since email clients drop external
+ * stylesheets and this file is not reachable from an email.
+ */
+:root{
+  --brand-slate:#303c42;
+  --brand-slate-2:#46545b;
+  --brand-muted:#77858d;
+  --brand-cloud:#eef1f2;
+  --brand-paper:#ffffff;
+  --brand-orange:#e1690e;
+  --brand-blue:#1c99d6;
+  --brand-green:#4bc864;
+  --brand-purple:#915fb4;
+  --brand-success:#198754;
+  --brand-warning:#f3a83b;
+  --brand-danger:#c94b42;
+  --radius-control:4px;
+  --radius-card:8px;
+  --radius-surface:14px;
+}

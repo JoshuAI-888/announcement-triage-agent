@@ -14,6 +14,7 @@ import csv
 import json
 import statistics
 from collections import defaultdict
+from datetime import datetime, timezone
 from pathlib import Path
 
 MATERIALITY = ["material", "immaterial", "insufficient_info"]
@@ -135,6 +136,62 @@ def update_ledger(ledger_path: Path, label: str, headline: dict, stability: dict
 
 
 LEDGER_ROW_ORDER = ["v1", "v2", "v3", "baseline: rules", "baseline: flag_all", "baseline: naive_prompt"]
+
+# The v3 finding (PROGRESS.md): grounding is a MODEL limit, not a prompt limit —
+# Haiku 0.374 vs GPT 0.94 / GLM 0.83 on the identical forced-verbatim v3 prompt.
+# Carried into every eval_summary.json so the dashboard always shows it (§2).
+HAIKU_GROUNDING_CAVEAT = (
+    "Grounding ~37% on Haiku is a MODEL limit, not a prompt limit "
+    "(GPT 0.94 / GLM 0.83 on the identical v3 prompt)."
+)
+
+
+def write_eval_summary(ledger: dict, detail: dict, fingerprint: str, out_path: Path) -> dict:
+    """Write `evals/eval_summary.json` in the CONTRACTS.md §2 shape. Returns it too.
+
+    `ledger` is the accumulated `{"rows": {label: {"headline", "stability", "meta"}}}`
+    from `update_ledger` — one row per prompt version / baseline / provider variant.
+    `detail` is the CURRENT run's `compute_metrics()` output; its `ranking`,
+    `n_items` and `runs` populate the top-level fields of the same name. `fingerprint`
+    should be `config_schema.eval_fingerprint()` for the configuration this eval ran
+    under — the dashboard compares it to the LIVE runtime_config fingerprint and
+    shows a stale banner when they differ (§1).
+
+    `providers` is built from ledger rows whose `meta` carries a `"model"` key (the
+    caller records the model id there when it evaluates a named provider/model);
+    rows without it are prompt-version-only scorecard entries and do not appear in
+    `providers`.
+    """
+    scorecard = {
+        label: {key: row["headline"][key] for key, _ in SCORECARD_COLUMNS}
+        for label, row in ledger["rows"].items()
+    }
+    providers = [
+        {
+            "model": row["meta"]["model"],
+            "recall": row["headline"]["recall_material"],
+            "precision": row["headline"]["precision_material"],
+            "grounded": row["headline"]["grounded_pct"],
+            "confidently_wrong": row["headline"]["confidently_wrong"],
+            "abstention": row["headline"]["abstention_ambiguous"],
+            "cost_per_item_nzd": row["headline"]["cost_per_item_nzd"],
+        }
+        for row in ledger["rows"].values()
+        if row.get("meta", {}).get("model")
+    ]
+    summary = {
+        "generated_at": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "eval_config_fingerprint": fingerprint,
+        "n_items": detail.get("n_items", 0),
+        "runs": detail.get("runs", 0),
+        "scorecard": scorecard,
+        "ranking": dict(detail.get("ranking", {"precision_at_5": 0.0, "precision_at_10": 0.0})),
+        "providers": providers,
+        "caveats": [HAIKU_GROUNDING_CAVEAT],
+    }
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(summary, indent=2) + "\n", encoding="utf-8")
+    return summary
 
 
 def _fmt(key: str, value: float) -> str:
