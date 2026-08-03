@@ -220,17 +220,19 @@ def apply_overrides(base_config: dict, rc: RuntimeConfig) -> dict:
 
 # --- eval fingerprint (the trust-staleness signal) --------------------------
 
-def eval_fingerprint(rc: RuntimeConfig, base_config: dict) -> str:
-    """Stable hash of everything that makes an eval valid.
+def fingerprint_from(prompt_version: str, prompt_override: str | None, provider: str,
+                     base_config: dict) -> str:
+    """Stable 16-hex hash of everything that makes an eval valid.
 
-    If this differs from the fingerprint stored in evals/eval_summary.json, the last
-    eval no longer describes the configured system → the dashboard marks trust STALE.
+    Shared by `eval_fingerprint` (from a RuntimeConfig) and the eval harness (from its
+    raw prompt_version/provider args), so both sides agree bit-for-bit. If this differs
+    from the fingerprint stored in evals/eval_summary.json, the last eval no longer
+    describes the configured system → the dashboard marks trust STALE.
     """
-    provider = rc.eval.provider
     pconf = (base_config.get("providers", {}) or {}).get(provider, {})
-    override = rc.run.classification_prompt_override or ""
+    override = prompt_override or ""
     material = {
-        "prompt_version": rc.run.prompt_version,
+        "prompt_version": prompt_version,
         "prompt_override_sha": hashlib.sha256(override.encode("utf-8")).hexdigest() if override else "",
         "provider": provider,
         "model": pconf.get("model"),
@@ -238,3 +240,9 @@ def eval_fingerprint(rc: RuntimeConfig, base_config: dict) -> str:
     }
     blob = json.dumps(material, sort_keys=True, ensure_ascii=False)
     return hashlib.sha256(blob.encode("utf-8")).hexdigest()[:16]
+
+
+def eval_fingerprint(rc: RuntimeConfig, base_config: dict) -> str:
+    """The eval fingerprint for a RuntimeConfig (uses the eval provider + run prompt)."""
+    return fingerprint_from(rc.run.prompt_version, rc.run.classification_prompt_override,
+                            rc.eval.provider, base_config)

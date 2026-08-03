@@ -307,7 +307,16 @@ def run_eval(
 
     detail = {"label": label, **metrics}
     ledger = report.update_ledger(ledger_path, label, metrics["headline"], metrics["stability"],
-                                  {"n": metrics["n_items"], "runs": runs})
+                                  {"n": metrics["n_items"], "runs": runs,
+                                   "model": cfg["models"]["primary"], "provider": provider})
+
+    # The committed trust snapshot the dashboard reads (CONTRACTS §2). Written into the
+    # run dir here (so a check calling run_eval() never clobbers the canonical file);
+    # main() promotes it to evals/eval_summary.json on the real CLI path.
+    from src.config_schema import fingerprint_from
+    fp = fingerprint_from(prompt_version, cfg.get("_runtime", {}).get("classification_prompt_override"),
+                          provider, base)
+    report.write_eval_summary(ledger, detail, fp, out_dir / "eval_summary.json")
 
     report.write_per_item_csv(items, out_dir / "per_item.csv")
     report.write_failures_csv(items, out_dir / "failures.csv")
@@ -392,6 +401,14 @@ def main() -> None:
     out_dir = run_eval(args.prompt_version, args.runs, limit=args.limit, baselines=baselines, config=config,
                        provider=args.provider, concurrency=concurrency, batch=args.batch)
     print(f"\nWrote {out_dir.relative_to(ROOT)}")
+
+    # Promote this run's trust snapshot to the canonical committed path (CONTRACTS §2) so
+    # the dashboard's Trust panel + stale banner refresh. run-eval.yml commits this file.
+    import shutil
+
+    canonical = ROOT / "evals" / "eval_summary.json"
+    shutil.copyfile(out_dir / "eval_summary.json", canonical)
+    print(f"Updated {canonical.relative_to(ROOT)}")
     print((out_dir / "scorecard.md").read_text())
 
 
