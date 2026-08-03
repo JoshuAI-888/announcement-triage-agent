@@ -75,9 +75,16 @@ class AnthropicBatch:
 
 
 class OpenAICompatBatch:
-    def __init__(self, client, extra_body: dict | None = None):
+    def __init__(self, client, extra_body: dict | None = None, token_param: str = "max_tokens",
+                 omit_temperature: bool = False, endpoint: str = "/v1/chat/completions"):
         self.client = client  # a raw openai.OpenAI (not our _OpenAICompatClient wrapper)
         self.extra_body = extra_body
+        # Provider/model quirks discovered live: gpt-5.x needs max_completion_tokens
+        # and rejects a non-default temperature; Zhipu batch matches a model to a
+        # specific endpoint URL.
+        self.token_param = token_param
+        self.omit_temperature = omit_temperature
+        self.endpoint = endpoint
 
     def run(self, requests: list[dict], poll_interval: float = 10, timeout: float = 86400,
             log: Callable[[str], None] = _log) -> dict[str, BatchResult]:
@@ -86,17 +93,19 @@ class OpenAICompatBatch:
             body = {
                 "model": r["model"],
                 "messages": [{"role": "system", "content": r["system"]}, {"role": "user", "content": r["user"]}],
-                "max_tokens": r["max_tokens"], "temperature": r["temperature"],
+                self.token_param: r["max_tokens"],
                 "response_format": {"type": "json_object"},
             }
+            if not self.omit_temperature:
+                body["temperature"] = r["temperature"]
             if r.get("extra_body"):
                 body.update(r["extra_body"])
             lines.append(json.dumps({"custom_id": r["custom_id"], "method": "POST",
-                                     "url": "/v1/chat/completions", "body": body}))
+                                     "url": self.endpoint, "body": body}))
         buf = io.BytesIO(("\n".join(lines)).encode("utf-8"))
         buf.name = "batch.jsonl"
         f = self.client.files.create(file=buf, purpose="batch")
-        batch = self.client.batches.create(input_file_id=f.id, endpoint="/v1/chat/completions",
+        batch = self.client.batches.create(input_file_id=f.id, endpoint=self.endpoint,
                                             completion_window="24h")
         log(f"batch {batch.id} submitted ({len(lines)} requests)")
         start = time.monotonic()
@@ -154,5 +163,8 @@ def build_backend(provider: str, config: dict):
         if not key:
             raise RuntimeError(f"{pconf.get('api_key_env')} not set in .env")
         client = OpenAI(api_key=key, base_url=pconf.get("base_url") or None, max_retries=8, timeout=120.0)
-        return OpenAICompatBatch(client, pconf.get("extra_body"))
+        return OpenAICompatBatch(client, pconf.get("extra_body"),
+                                 token_param=pconf.get("batch_token_param", "max_tokens"),
+                                 omit_temperature=pconf.get("batch_omit_temperature", False),
+                                 endpoint=pconf.get("batch_endpoint", "/v1/chat/completions"))
     raise ValueError(f"no batch backend for provider kind {kind!r}")
