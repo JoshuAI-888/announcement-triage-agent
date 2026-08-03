@@ -91,14 +91,14 @@ providers:
     kind: openai
     api_key_env: "OPENAI_API_KEY"
     base_url: null                 # default OpenAI endpoint
-    model: null                    # e.g. "gpt-5.x" — you provide the exact id
-    pricing: {input: null, output: null}
+    model: "gpt-5.6-terra"
+    pricing: {input: 2.00, output: 12.00}   # USD/Mtok, provided 2026-08-03
   glm:
     kind: openai
     api_key_env: "GLM_API_KEY"
     base_url: "https://open.bigmodel.cn/api/paas/v4/"   # Zhipu OpenAI-compatible endpoint
-    model: null                    # e.g. "glm-5.2" — you provide the exact id
-    pricing: {input: null, output: null}
+    model: "glm-5.2"
+    pricing: {input: 0.0, output: 0.0}   # PLACEHOLDER — provide real USD/Mtok for a meaningful cost column
 
 eval:
   # Concurrency for the eval harness (independent of the EDGAR rate limit above).
