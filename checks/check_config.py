@@ -71,6 +71,21 @@ def body(check):
     check.equal(merged["_runtime"]["draft_email"], rc.draft.email, "runtime block carries draft email")
     check.equal(merged["_runtime"]["schedule"]["intraday_alerts"], False, "schedule carried into runtime block")
 
+    # --- run.provider actually swaps the primary model id + pricing (P flag #3) ---
+    prov = (base.get("providers", {}) or {})
+    if prov.get("openai", {}).get("model"):
+        rc_oa = rc.model_copy(deep=True)
+        rc_oa.run.provider = "openai"
+        m_oa = C.apply_overrides(base, rc_oa)
+        check.equal(m_oa["models"]["primary"], prov["openai"]["model"],
+                    "non-claude run.provider swaps the primary model id")
+        check.equal(m_oa["models"]["escalation"], prov["openai"]["model"],
+                    "non-claude run.provider pins escalation to the same model")
+        check.equal(m_oa["pricing_usd_per_mtok"]["primary_input"], prov["openai"]["pricing"]["input"],
+                    "non-claude run.provider swaps primary input pricing")
+    check.equal(merged["models"]["primary"], base["models"]["primary"],
+                "claude run.provider leaves the primary model unchanged")
+
     # --- eval fingerprint: stable, and moves only on eval-affecting change ---
     fp1 = C.eval_fingerprint(rc, base)
     fp1_again = C.eval_fingerprint(C.load_runtime_config(), base)

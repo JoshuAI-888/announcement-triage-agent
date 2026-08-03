@@ -185,7 +185,25 @@ def apply_overrides(base_config: dict, rc: RuntimeConfig) -> dict:
     })
     cfg.setdefault("eval", {})["concurrency"] = rc.eval.concurrency
     cfg["prompt_version"] = rc.run.prompt_version
-    # Provider selection is consumed by the eval harness / providers.py via cfg["providers"].
+
+    # Daily-run provider selection must actually take effect: swap the primary model id
+    # AND its pricing to the chosen provider, so classify.py targets the right model and
+    # costs it correctly (build_client alone only picks the client class). For a non-Claude
+    # provider we also pin escalation to the same model — cross-provider escalation to a
+    # Claude model through a non-Claude client is not supported.
+    provider = rc.run.provider
+    pconf = (cfg.get("providers", {}) or {}).get(provider, {})
+    if pconf.get("model"):
+        cfg.setdefault("models", {})["primary"] = pconf["model"]
+        if provider != "claude":
+            cfg["models"]["escalation"] = pconf["model"]
+        pricing = pconf.get("pricing") or {}
+        pm = cfg.setdefault("pricing_usd_per_mtok", {})
+        if "input" in pricing:
+            pm["primary_input"] = pricing["input"]
+        if "output" in pricing:
+            pm["primary_output"] = pricing["output"]
+
     cfg["_runtime"] = {
         "run_provider": rc.run.provider,
         "eval_provider": rc.eval.provider,
