@@ -1,0 +1,78 @@
+{
+  "generated_at": "2026-08-03T00:00:00Z",
+  "eval_config_fingerprint": "ab5eaa522184bca5",
+  "n_items": 220,
+  "runs": 3,
+  "seed_note": "Seeded from PROGRESS.md measured evals (v1/v2/v3, 2026-08-03). Overwritten by the next run-eval.",
+  "scorecard": {
+    "v3": {
+      "recall_material": 0.939,
+      "precision_material": 0.408,
+      "grounded_pct": 0.374,
+      "confidently_wrong": 0.218,
+      "abstention_ambiguous": 0.3,
+      "cost_per_item_nzd": 0.0186
+    },
+    "v2": {
+      "recall_material": 0.929,
+      "precision_material": 0.402,
+      "grounded_pct": 0.164,
+      "confidently_wrong": 0.232,
+      "abstention_ambiguous": 0.3,
+      "cost_per_item_nzd": 0.0176
+    },
+    "v1": {
+      "recall_material": 1.0,
+      "precision_material": 0.22,
+      "grounded_pct": 0.258,
+      "confidently_wrong": 0.532,
+      "abstention_ambiguous": 0.3,
+      "cost_per_item_nzd": 0.016
+    },
+    "baseline: flag_all": {
+      "recall_material": 1.0,
+      "precision_material": 0.15,
+      "grounded_pct": 0.0,
+      "confidently_wrong": 0.0,
+      "abstention_ambiguous": 0.0,
+      "cost_per_item_nzd": 0.0
+    }
+  },
+  "ranking": {
+    "precision_at_5": 0.8,
+    "precision_at_10": 0.8
+  },
+  "providers": [
+    {
+      "model": "claude-haiku-4.5",
+      "recall": 0.939,
+      "precision": 0.408,
+      "grounded": 0.374,
+      "confidently_wrong": 0.218,
+      "abstention": 0.3,
+      "cost_per_item_nzd": 0.0186
+    },
+    {
+      "model": "gpt-5.6-terra",
+      "recall": 0.939,
+      "precision": 0.484,
+      "grounded": 0.941,
+      "confidently_wrong": 0.168,
+      "abstention": 0.7,
+      "cost_per_item_nzd": 0.0338
+    },
+    {
+      "model": "glm-5.2",
+      "recall": 1.0,
+      "precision": 0.434,
+      "grounded": 0.832,
+      "confidently_wrong": 0.223,
+      "abstention": 0.3,
+      "cost_per_item_nzd": null
+    }
+  ],
+  "caveats": [
+    "Grounding (verbatim-quote fidelity) is a MODEL limit, not a prompt limit: Haiku 0.37 vs GPT 0.94 / GLM 0.83 on the identical forced-verbatim v3 prompt.",
+    "Provider rows: gpt-5.6-terra ran at default temperature (temp-0 unsupported); glm cost pending pricing at capture time."
+  ]
+}
