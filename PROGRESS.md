@@ -321,3 +321,12 @@ result: **v3 grounded 0.374** (from v2's 0.164 — the forced-verbatim rule, +12
 
 ## Follow-on (beyond Batch C): eval perf + multi-provider comparison
 Owner-requested after Batch C. Committed foundation (fedf15a): eval concurrency (~50min→~4min, ThreadPoolExecutor, order-preserving), `--runs 1` default (temp 0 deterministic), and a provider abstraction (`--provider claude|openai|glm`; OpenAI+GLM via the openai SDK, GLM through Zhipu's OpenAI-compatible base_url). Offline suite now 643 assertions / 11 checks. Outstanding: the Batch API path (#3, all three providers) and the actual openai/glm comparison runs — the latter blocked on owner adding OPENAI_API_KEY/GLM_API_KEY to .env plus model ids + pricing.
+
+## Follow-on: 3-way provider comparison (v3, 2026-08-03)
+Same v3 prompt + 220-item gold set across claude-haiku-4.5 / gpt-5.6-terra / glm-5.2 (concurrent, --runs 1, escalation off).
+| model | recall | precision | grounded | conf-wrong | abstain(amb) | cost/item |
+|---|---|---|---|---|---|---|
+| claude-haiku | 0.939 | 0.408 | 0.374 | 0.218 | 0.300 | NZ$0.0186 |
+| gpt-5.6-terra | 0.939 | 0.484 | 0.941 | 0.168 | 0.700 | NZ$0.0338 |
+| glm-5.2 | 1.000 | 0.434 | 0.832 | 0.223 | 0.300 | NZ$0 (pricing pending) |
+Headline: grounding (verbatim-quote fidelity) is a MODEL limit, not a prompt limit — Haiku 0.37 vs GPT 0.94 / GLM 0.83 on the identical forced-verbatim v3 prompt. Provider-specific handling built: OpenAI 500k-TPM → concurrency 2 + SDK retries; GLM reasoning-off via extra_body. GLM ran reasoning-disabled. Still outstanding: GLM pricing (cost column), Batch API (#3, all providers), and a per-provider concurrency config knob.
