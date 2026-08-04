@@ -52,11 +52,15 @@ REQUIRED_DIRS = ["data/raw", "prompts", "out/briefs", "out/eval_runs", "src/adap
 REQUIRED_DEPENDENCIES = ["anthropic", "pydantic", "requests", "python-dotenv", "pandas", "pyyaml"]
 
 # SPEC.md §5.1 — canonical Announcement fields, in order.
+# "industry" was added in the deploy build (Phase 1, "descriptive morning brief")
+# — SIC description from the source, where supplied; None where it isn't. It
+# plays no part in compute_id's hash inputs, so idempotency is unaffected.
 ANNOUNCEMENT_FIELDS = [
     "announcement_id",
     "exchange",
     "ticker",
     "company_name",
+    "industry",
     "published_at",
     "headline",
     "doc_type",
@@ -227,8 +231,8 @@ def body(c: Check) -> None:
 
     # Required fields are required — no silent defaults (SPEC.md §0.7).
     for field in ANNOUNCEMENT_FIELDS:
-        if field == "issuer_price_sensitive_flag":
-            continue  # the only nullable field (SPEC §5.1: None where unsupplied)
+        if field in ("issuer_price_sensitive_flag", "industry"):
+            continue  # the two nullable fields (SPEC §5.1 / deploy-build: None where unsupplied)
         kwargs = valid_announcement_kwargs()
         del kwargs[field]
         c.raises(Exception, lambda k=kwargs: Announcement(**k), f"Announcement rejects missing {field}")

@@ -5,6 +5,67 @@ deliberately *not* done. Newest section first. Dates are absolute (NZT).
 
 ---
 
+## 2026-08-05 — Descriptive self-explaining brief + market data + delivery routine
+
+### Context / trigger
+The brief/portal were terse and used internal jargon. Owner wanted each item to
+explain itself (company, industry, competitive edge, price + 7-day trend, plain-
+English flags + why), a per-run table of **every** filing with the *why*, and
+**clickable source URLs everywhere** — no raw codes.
+
+### Decisions
+1. **Portal iframes the brief HTML** (key finding from the Explore agents): the
+   dashboard renders no items in React — `today`/`versions` embed the committed
+   `out/briefs/*.email.html`. So company profile / price / sparkline / plain-flags
+   were built **once in the Python renderer** and appear in both email and portal
+   for free. Only one new React page (`/filings`) + the flag-badge relabel were
+   native work.
+2. **No `C1/C2/C3` exist** — those are internal build-task IDs (AUTONOMY.md). The
+   only real codes are **G1–G6**; all are mapped to plain English in a single
+   source of truth (`src/flags.py`) mirrored in `dashboard/lib/flags.ts`. A check
+   asserts no raw `G#_`/`insufficient_info` literal survives into rendered output.
+3. **Market data = Twelve Data** (owner's "keyed free API" choice), config-driven
+   (`config.yaml market:` block, `TWELVEDATA_API_KEY`). Best-effort/never-raises:
+   no key or API error → price block simply omitted. **Material items only** (0–5/
+   day) to bound cost. "Price" = latest close vs prior close (US market shut at
+   06:00 NZT) + a **mail-safe HTML bar sparkline** (not inline SVG — Gmail strips it).
+4. **Company profile = Claude-generated** (owner's choice): EDGAR **SIC** for
+   authoritative industry + one Claude-haiku call for a factual business + edge
+   line, labelled "AI-generated context — verify before relying", no advice
+   language (G6 still guards). **Pinned to Claude** regardless of `run.provider`.
+   Cached per ticker in committed `data/company_profiles.json` (committed back by
+   `daily-brief.yml`, so a name is generated/paid for once). Fixed a split bug —
+   the profile now asks Claude for labelled `Business:`/`Edge:` lines (the naive
+   sentence split broke on "Inc."); fallback splitter is abbreviation-safe.
+5. **Per-run all-filings artifact** `out/filings/<date>.json` (un-ignored, committed
+   by the workflow) powers a native portal **"This run"** page (sortable, clickable
+   sources, plain-English classification + flag chips). The email carries a compact
+   version of the same table. `run_pipeline` now returns `all_items`; `publish`
+   writes the artifact.
+6. **Concurrency:** two Sonnet subagents (Python vs `dashboard/`) on frozen
+   contracts (flag vocab + `out/filings` shape) — verified byte-identical between
+   `src/flags.py` and `dashboard/lib/flags.ts`, and the JSON writer vs the TS types.
+7. **Verified live** with the owner's real key: AAPL $308.65 +1.72% with a 7-day
+   series, real Claude profile, plain-English flags, all-filings table, no code
+   leaks. A rendered sample was sent to the owner.
+
+### Delivery routine — corrected
+8. The morning **brief generation** already runs fully server-side on **GitHub
+   Actions** (no device needed) — that requirement was already met. The **Gmail
+   draft + message** step I'd set up was a **Claude Code local scheduled task**
+   (`~/.claude/scheduled-tasks/…`), which only runs while that app is open and does
+   NOT appear in claude.ai routines — an honest limitation surfaced to the owner.
+   Chosen fix (owner picked): recreate delivery as a **claude.ai routine** (server-
+   side, keeps the Gmail *draft* review, reads the brief from the repo via the
+   GitHub connector). Disabled the local Claude Code task to avoid duplicate drafts;
+   handed the owner the paste-ready routine prompt + connector steps.
+
+### Not done (deliberate)
+- No price/profile on immaterial filings (cost bound) — the all-filings table shows
+  industry (free SIC) + classification + why, not price.
+- No runtime_config UI toggles for price/profiles (kept in `config.yaml` to avoid
+  schema-mirror churn); they degrade gracefully if the key is absent.
+
 ## 2026-08-04 / 08-05 — PDF ingestion, OCR, portal, Claude routine, deploy
 
 ### Context / trigger

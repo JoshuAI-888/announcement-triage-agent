@@ -47,6 +47,7 @@ class Announcement(BaseModel):
     exchange: Exchange
     ticker: str  # uppercase
     company_name: str
+    industry: Optional[str] = None  # SIC description from the source, where supplied
     published_at: datetime  # timezone-aware; store UTC, render NZT
     headline: str
     doc_type: Category  # canonical enum (§6.2)

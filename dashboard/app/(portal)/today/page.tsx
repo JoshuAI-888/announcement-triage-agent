@@ -1,5 +1,6 @@
 import { Icon } from "@/components/Icon";
 import { getRunLog, listBriefVersions } from "@/lib/dataSource";
+import { explainFlag } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -77,11 +78,14 @@ export default async function TodayPage() {
                     <span className="muted">none</span>
                   ) : (
                     <span className="pill-row">
-                      {Object.entries(latest.guardrail_flag_counts).map(([k, v]) => (
-                        <span key={k} className="badge red">
-                          {k}: {v}
-                        </span>
-                      ))}
+                      {Object.entries(latest.guardrail_flag_counts).map(([k, v]) => {
+                        const info = explainFlag(k);
+                        return (
+                          <span key={k} className="badge red" title={info.why || info.meaning}>
+                            {info.label} ({v})
+                          </span>
+                        );
+                      })}
                     </span>
                   )}
                 </dd>

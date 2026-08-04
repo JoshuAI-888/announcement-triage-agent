@@ -2,33 +2,71 @@
 
 Offline. Synthetic RankedItems + stats drive `src.render_email.render_email` and
 assert the rendered HTML carries the material items, the VERBATIM evidence quote,
-a clickable filing link, a news link, the named needs-a-look flags, and the run
-footer figures — the same content brief.py's markdown brief carries, just themed.
-Also exercises `src.run`'s run_log row builder (CONTRACTS §3 shape) and
+a clickable filing link, a news link, company/industry context, a price block
+with a 7-day bar sparkline, the needs-a-look flags in PLAIN ENGLISH (never a raw
+`G#_` code), the "All filings this run" table, and the run footer figures — the
+same content brief.py's markdown brief carries, just themed. Also exercises
+`src.run`'s run_log row builder (CONTRACTS §3 shape) and
 `evals.report.write_eval_summary` on a synthetic ledger/detail (CONTRACTS §2 shape).
+
+`src.company.company_profile` and `src.market.price_snapshot` are monkeypatched
+(via `src.enrich`'s module-level references) so `enrich()` never touches the
+real network — this environment's .env carries real ANTHROPIC_API_KEY /
+TWELVEDATA_API_KEY values.
 """
 
 from __future__ import annotations
 
 import json
+import re
 import tempfile
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 from checks._harness import run
 from evals.report import SCORECARD_COLUMNS, write_eval_summary
-from src.enrich import enrich
+from src.fetch import load_config
+from src.flags import FLAG_VOCAB
 from src.models import Announcement, Classification, Entities
 from src.rank import RankedItem
 from src.run import _run_log_row, append_run_log
 
+import src.enrich as ENRICH_MOD
+from src.enrich import enrich
+
 NOW = datetime(2026, 7, 14, 12, 0, tzinfo=timezone.utc)
+CONFIG = load_config()
+
+_RAW_CODE_RE = re.compile(r"\bG[1-6]_[a-z_]+\b")
+
+_FAKE_PRICE = {
+    "last": 245.67, "prev_close": 240.10, "change": 5.57, "change_pct": 2.32,
+    "currency": "USD", "series7": [230.0, 232.5, 238.0, 236.0, 241.0, 240.10, 245.67],
+    "asof": "2026-07-14",
+}
 
 
-def make_ann(ticker, hours_ago=1, headline=None, body="body"):
+def _fake_company_profile(ticker, company_name, industry, config):
+    return {
+        "industry": industry,
+        "business": f"{company_name} makes and sells products in its sector.",
+        "edge": "Its edge is a well-known brand and a large distribution network.",
+        "caveat": "AI-generated context from general knowledge — verify before relying.",
+    }
+
+
+def _fake_price_snapshot(ticker, config):
+    return dict(_FAKE_PRICE)
+
+
+ENRICH_MOD.company_profile = _fake_company_profile
+ENRICH_MOD.price_snapshot = _fake_price_snapshot
+
+
+def make_ann(ticker, hours_ago=1, headline=None, body="body", industry="Technology"):
     return Announcement(
         announcement_id=(ticker.lower() + "0" * 64)[:64], exchange="EDGAR", ticker=ticker,
-        company_name=f"{ticker} Inc.", published_at=NOW - timedelta(hours=hours_ago),
+        company_name=f"{ticker} Inc.", industry=industry, published_at=NOW - timedelta(hours=hours_ago),
         headline=headline or f"{ticker} raises full-year guidance", doc_type="guidance_change",
         native_doc_type="8-K", native_id=f"acc-{ticker}", issuer_price_sensitive_flag=None,
         body_text=body, char_count=len(body), truncated=False,
@@ -51,6 +89,7 @@ def body(check):
     msft = make_ann("MSFT", hours_ago=2, headline="MSFT announces acquisition")
     googl = make_ann("GOOGL", hours_ago=1, headline="GOOGL lawsuit filed")
     nvda = make_ann("NVDA", hours_ago=1, headline="NVDA supply agreement")
+    intc = make_ann("INTC", hours_ago=1, headline="INTC routine 10-Q filed")
 
     aapl_c = make_cls(aapl, "material", 0.92, quote="raised full-year guidance to $4.2 billion",
                       rationale="Guidance raise, quantified.")
@@ -58,6 +97,7 @@ def body(check):
                       rationale="Acquisition announced.")
     googl_c = make_cls(googl, "insufficient_info", 0.5, quote="a lawsuit was filed")
     nvda_c = make_cls(nvda, "material", 0.9, flags=["G2_ungrounded_quote"], quote="unverifiable claim")
+    intc_c = make_cls(intc, "immaterial", 0.85, quote="body", rationale="Routine quarterly filing, nothing new.")
 
     ranked = [
         RankedItem(classification=aapl_c, announcement=aapl, score=0.83, reason="aapl reason"),
@@ -67,20 +107,24 @@ def body(check):
         RankedItem(classification=googl_c, announcement=googl, score=0.20, reason="googl reason"),
         RankedItem(classification=nvda_c, announcement=nvda, score=0.55, reason="nvda reason"),
     ]
+    immaterial_item = RankedItem(classification=intc_c, announcement=intc, score=0.05, reason="intc reason")
+    all_items = ranked + needs_look + [immaterial_item]
+
     stats = {
-        "processed": 4, "new": 4, "deduped": 0, "model_primary": "claude-haiku-4-5-20251001",
+        "processed": 5, "new": 5, "deduped": 0, "model_primary": "claude-haiku-4-5-20251001",
         "model_escalation": "claude-opus-4-6", "prompt_version": "v3", "escalation_count": 1,
         "guardrail_flag_counts": {"G2_ungrounded_quote": 1}, "material": 2, "needs_look": 2,
         "total_cost_nzd": 0.4567, "runtime_seconds": 12.3,
     }
-    enrichment = enrich(ranked, news_mode="search")
-    check.equal(len(enrichment), 2, "enrich() returns one Enrichment per ranked item")
+    enrichment = enrich(ranked, needs_look, CONFIG, news_mode="search")
+    check.equal(len(enrichment), 4, "enrich() returns one Enrichment per item across both ranked+needs_look")
 
     # --- render the digest email ---
     from src.render_email import render_email
 
     tmp = Path(tempfile.mkdtemp(prefix="email_"))
-    path = render_email(ranked, needs_look, stats, enrichment, brief_date=NOW.date(), out_dir=tmp)
+    path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                        brief_date=NOW.date(), out_dir=tmp)
     check.equal(path.name, "2026-07-14.email.html", "digest email uses the plain <DATE>.email.html name")
     html = path.read_text(encoding="utf-8")
 
@@ -91,10 +135,37 @@ def body(check):
     check.require(f'href="{aapl.source_url}"' in html, "a clickable filing link (announcement.source_url) is present")
     aapl_news = next(e.news_url for e in enrichment if e.announcement_id == aapl.announcement_id)
     check.require(aapl_news is not None and f'href="{aapl_news}"' in html, "a clickable news link is present")
-    check.require("GOOGL" in html and "abstained (insufficient_info)" in html,
-                  "needs-a-look names the abstention")
-    check.require("NVDA" in html and "G2_ungrounded_quote" in html, "needs-a-look names the guardrail flag")
-    check.require("processed: 4" in html or "Announcements processed: 4" in html, "footer reports processed count")
+
+    # --- company/industry context on material items ---
+    check.require("Technology" in html, "the announcement's industry is rendered on a material item")
+    check.require("makes and sells products in its sector" in html, "the AI-generated business line is rendered")
+    check.require("verify before relying" in html, "the company-profile caveat is rendered")
+
+    # --- price block: last price, change arrow, and a mail-safe (non-svg) sparkline ---
+    check.require("245.67" in html, "the price snapshot's last price is rendered")
+    check.require("<svg" not in html.lower(), "no inline <svg> anywhere — Gmail strips it")
+    check.require("<table" in html, "the sparkline (and the all-filings table) use <table>, not <svg>")
+
+    # --- needs-a-look: plain-English flag labels, never a raw code ---
+    check.require("GOOGL" in html and FLAG_VOCAB["insufficient_info"]["label"] in html,
+                  "needs-a-look shows the plain-English insufficient_info label for an abstention")
+    check.require("NVDA" in html and FLAG_VOCAB["G2_ungrounded_quote"]["label"] in html,
+                  "needs-a-look shows the plain-English label for a guardrail flag")
+    check.require("Why flagged" in html, "needs-a-look has a 'Why flagged' lead-in")
+    check.require(not _RAW_CODE_RE.search(html), "no raw G#_ literal anywhere in the rendered email")
+    check.require("insufficient_info" not in html, "no raw 'insufficient_info' literal anywhere in the rendered email")
+
+    # --- footer: guardrail flag counts are expanded to plain English too ---
+    check.require(f'{FLAG_VOCAB["G2_ungrounded_quote"]["label"]} (1)' in html,
+                  "the footer's guardrail-flag-count line uses the plain-English label")
+
+    # --- "All filings this run" table: every classified filing, including immaterial ---
+    check.require("All filings this run" in html, "the all-filings section header is present")
+    check.require("INTC" in html, "the immaterial (excluded-from-brief) filing still appears in the all-filings table")
+    check.require("Routine quarterly filing, nothing new." in html, "the all-filings table carries the rationale")
+    check.require("Material event report (8-K)" in html, "the all-filings table uses the friendly doc_type_label")
+
+    check.require("processed: 4" in html or "Announcements processed: 5" in html, "footer reports processed count")
     check.require("NZ$0.4567" in html, "footer reports total cost")
     check.require("Escalations: 1" in html, "footer reports escalation count")
     check.require("12.3s" in html, "footer reports runtime")
@@ -106,12 +177,27 @@ def body(check):
     empty_html = empty_path.read_text(encoding="utf-8")
     check.require("No material announcements this run" in empty_html, "empty ranked list has a placeholder")
     check.require("Nothing needs a look this run" in empty_html, "empty needs-look list has a placeholder")
+    check.require("No filings classified this run" in empty_html, "empty all-filings list has a placeholder")
 
     # --- intraday filename: a datetime with a non-midnight time gets <DATE>T<HH-MM> ---
     intraday_dt = datetime(2026, 7, 14, 18, 2, tzinfo=timezone.utc)
-    intraday_path = render_email(ranked, needs_look, stats, enrichment, brief_date=intraday_dt, out_dir=tmp)
+    intraday_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                                 brief_date=intraday_dt, out_dir=tmp)
     check.equal(intraday_path.name, "2026-07-14T18-02.email.html",
                 "a datetime with a non-midnight time gets the intraday <DATE>T<HH-MM> filename")
+
+    # --- brief.py (markdown) mirrors the same content, in markdown form ---
+    from src.brief import render_brief
+
+    md_path = render_brief(ranked, needs_look, stats, enrichment=enrichment, all_items=all_items,
+                           brief_date=NOW.date(), out_dir=tmp)
+    md = md_path.read_text(encoding="utf-8")
+    check.require("## All filings this run" in md, "brief.py has the all-filings section")
+    check.require("INTC" in md, "brief.py's all-filings table carries the immaterial filing")
+    check.require(FLAG_VOCAB["G2_ungrounded_quote"]["label"] in md, "brief.py needs-a-look uses the plain-English label")
+    check.require(not _RAW_CODE_RE.search(md) and "insufficient_info" not in md,
+                  "brief.py leaks no raw G#_ code or 'insufficient_info' literal")
+    check.require("makes and sells products in its sector" in md, "brief.py carries the AI business line too")
 
     # --- run_log.jsonl row shape (CONTRACTS §3) ---
     row = _run_log_row("digest", stats, NOW)
@@ -166,8 +252,8 @@ def body(check):
     check.equal(summary["providers"][0]["recall"], 0.94, "providers entry carries its own headline numbers")
     check.require(any("Haiku" in c for c in summary["caveats"]), "caveats include the Haiku-grounding note")
 
-    check.note("offline check — no API calls, no spend")
+    check.note("offline check — src.company/src.market are monkeypatched, no API calls, no spend")
 
 
 if __name__ == "__main__":
-    run("email brief + eval_summary.json (CONTRACTS §2, §4)", body)
+    run("email brief + markdown brief + eval_summary.json (CONTRACTS §2, §4)", body)

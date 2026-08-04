@@ -164,3 +164,49 @@ export interface SystemPromptResult {
   source: "file" | "custom";
   text: string;
 }
+
+// out/filings/<date>.json and out/filings/<date>T<HH-MM>.json — the
+// per-run classification artifact (CONTRACTS.md). Digest files are named
+// <date>.json; intraday files are named <date>T<HH-MM>.json. Read the
+// latest by filename via lib/dataSource.ts's getLatestFilings().
+
+export interface FilingFlag {
+  code: string;
+  label: string;
+  why: string;
+}
+
+export interface FilingRow {
+  announcement_id: string;
+  ticker: string;
+  company_name: string;
+  industry: string | null;
+  native_form: string;
+  doc_type: string;
+  doc_type_label: string;
+  materiality: string;
+  materiality_label: string;
+  confidence: number;
+  rationale: string;
+  flags: FilingFlag[];
+  source_url: string;
+  published_at: string;
+  score: number | null;
+}
+
+export interface FilingsCounts {
+  total_received: number;
+  material: number;
+  immaterial: number;
+  needs_more_info: number;
+  dropped_offwatchlist: number;
+  dead_lettered: number;
+}
+
+export interface FilingsRun {
+  date: string;
+  generated_at: string;
+  kind: "digest" | "intraday";
+  counts: FilingsCounts;
+  filings: FilingRow[];
+}

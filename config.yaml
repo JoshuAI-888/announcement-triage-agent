@@ -144,6 +144,11 @@ thresholds:
   escalate_above_chars: 20000
   truncate_input_chars: 60000   # hard ceiling; log every truncation
 
+market:
+  provider: twelvedata
+  base_url: "https://api.twelvedata.com"
+  api_key_env: TWELVEDATA_API_KEY
+
 ranking:
   materiality_weight:
     material: 1.0

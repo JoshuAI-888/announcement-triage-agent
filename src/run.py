@@ -42,14 +42,16 @@ from src.classify import ClassifyError, classify
 from src.config_schema import load_runtime_config, apply_overrides
 from src.enrich import enrich
 from src.fetch import DB_PATH, RAW_DIR, fetch, load_config
+from src.flags import MATERIALITY_LABEL, doc_type_label, explain_flag
 from src.models import Announcement
-from src.rank import rank
+from src.rank import RankedItem, is_needs_a_look, rank, score_one
 from src.render_email import render_email
 from src.store import Store
 from src.verify import verify
 
 ROOT = Path(__file__).resolve().parent.parent
 RUN_LOG_PATH = ROOT / "out" / "run_log.jsonl"
+FILINGS_DIR = ROOT / "out" / "filings"
 
 RETRYABLE: tuple[type[BaseException], ...] = (ClassifyError, ConnectionError, TimeoutError, OSError)
 try:  # transport failures from the SDK
@@ -95,7 +97,7 @@ def run_pipeline(
     concurrency = max(1, int(config.get("eval", {}).get("concurrency", 8)))
 
     pairs = []
-    processed = new = deduped = dead = escalations = 0
+    processed = new = deduped = dead = escalations = off_watchlist = 0
     flag_counts: Counter = Counter()
     max_published: Optional[datetime] = None
     started = time.monotonic()
@@ -128,6 +130,7 @@ def run_pipeline(
 
         v = verify(c, ann, config)
         if v is None:  # G4 dropped an off-watchlist record
+            off_watchlist += 1
             continue
         c = v
 
@@ -148,8 +151,19 @@ def run_pipeline(
             max_published = ann.published_at
 
     ranked, needs_look = rank(pairs, config, now)
+
+    # Every classified (verified, non-dead-lettered) record this pass, regardless
+    # of materiality — including the immaterial-and-clean records rank() itself
+    # excludes from the brief. This is what out/filings/<date>.json and the "All
+    # filings this run" table are built from (CONTRACTS.md — frozen shape).
+    all_items: list[RankedItem] = []
+    for c, ann in pairs:
+        score, reason = score_one(c, ann, config, now)
+        all_items.append(RankedItem(classification=c, announcement=ann, score=score, reason=reason))
+
     stats = {
         "processed": processed, "new": new, "deduped": deduped, "dead_letters": dead,
+        "dropped_offwatchlist": off_watchlist,
         "model_primary": config["models"]["primary"], "model_escalation": config["models"]["escalation"],
         "prompt_version": prompt_version, "escalation_count": escalations,
         "guardrail_flag_counts": dict(flag_counts),
@@ -160,12 +174,15 @@ def run_pipeline(
 
     brief_path: Optional[Path] = None
     if not dry_run:
-        brief_path = render_brief(ranked, needs_look, stats, now.date())
+        brief_path = render_brief(ranked, needs_look, stats, all_items=all_items, brief_date=now.date())
         # Watermark advances only after a successful full run, never per item / never in dry-run.
         if max_published is not None:
             store.set_watermark(exchange, max_published)
 
-    return {"ranked": ranked, "needs_look": needs_look, "stats": stats, "brief_path": brief_path}
+    return {
+        "ranked": ranked, "needs_look": needs_look, "all_items": all_items,
+        "stats": stats, "brief_path": brief_path,
+    }
 
 
 def _load_window(config: dict, since: datetime | None, until: datetime | None) -> list[Announcement]:
@@ -235,33 +252,124 @@ def append_run_log(row: dict, path: Path = RUN_LOG_PATH) -> None:
         fh.write(json.dumps(row, ensure_ascii=False) + "\n")
 
 
+# --- out/filings/<date>.json (the portal's own read path — frozen shape) ----
+
+def _filing_row(item: RankedItem) -> dict:
+    """One `filings[]` entry (frozen shape). Flags are ALWAYS pre-expanded to
+    plain English via src.flags — a raw `G#_...` code must never reach this file."""
+    c, ann = item.classification, item.announcement
+    native_form = ann.native_doc_type.split(" [")[0]
+    flags = [
+        {"code": code, "label": explain_flag(code)["label"], "why": explain_flag(code)["why"]}
+        for code in c.guardrail_flags
+    ]
+    return {
+        "announcement_id": ann.announcement_id,
+        "ticker": ann.ticker,
+        "company_name": ann.company_name,
+        "industry": ann.industry,
+        "native_form": native_form,
+        "doc_type": ann.doc_type,
+        "doc_type_label": doc_type_label(ann.doc_type, native_form),
+        "materiality": c.materiality,
+        "materiality_label": MATERIALITY_LABEL.get(c.materiality, c.materiality),
+        "confidence": c.confidence,
+        "rationale": c.rationale,
+        "flags": flags,
+        "source_url": ann.source_url,
+        "published_at": ann.published_at.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "score": item.score,
+    }
+
+
+def _filings_counts(stats: dict, all_items: list[RankedItem]) -> dict:
+    """CONTRACTS.md `counts` block. `total_received` == every attempt this pass made
+    (material + immaterial + needs_more_info + dropped_offwatchlist + dead_lettered
+    sum back to it exactly — see run_pipeline's `processed` counter)."""
+    material = sum(1 for it in all_items
+                   if it.classification.materiality == "material" and not it.classification.guardrail_flags)
+    needs_more_info = sum(1 for it in all_items if is_needs_a_look(it.classification))
+    immaterial = sum(1 for it in all_items
+                     if it.classification.materiality == "immaterial" and not it.classification.guardrail_flags)
+    return {
+        "total_received": stats.get("processed", 0),
+        "material": material,
+        "immaterial": immaterial,
+        "needs_more_info": needs_more_info,
+        "dropped_offwatchlist": stats.get("dropped_offwatchlist", 0),
+        "dead_lettered": stats.get("dead_letters", 0),
+    }
+
+
+def _filings_filename(now: datetime, kind: str) -> str:
+    if kind == "intraday":
+        return f"{now.date().isoformat()}T{now.hour:02d}-{now.minute:02d}.json"
+    return f"{now.date().isoformat()}.json"
+
+
+def write_filings_json(result: dict, kind: str, now: datetime, out_dir: Path | None = None) -> Path:
+    """Write `out/filings/<date>.json` (or `<date>T<HH-MM>.json` for intraday) —
+    the portal's own read path (CONTRACTS.md — frozen shape). One file per run."""
+    out_dir = out_dir or FILINGS_DIR
+    out_dir.mkdir(parents=True, exist_ok=True)
+    stats = result["stats"]
+    all_items: list[RankedItem] = result.get("all_items", [])
+    payload = {
+        "date": now.date().isoformat(),
+        "generated_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "kind": kind,
+        "counts": _filings_counts(stats, all_items),
+        "filings": [_filing_row(it) for it in all_items],
+    }
+    path = out_dir / _filings_filename(now, kind)
+    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
+    return path
+
+
 def publish(
     result: dict,
     kind: str,
     now: datetime,
+    config: dict,
     briefs_dir: Path | None = None,
     run_log_path: Path = RUN_LOG_PATH,
+    filings_dir: Path | None = None,
     news_mode: str = "search",
 ) -> dict:
-    """Render the HTML email brief and append the run_log row for one run's result.
+    """Render the HTML email brief, the out/filings/<date>.json portal feed, and
+    append the run_log row for one run's result.
 
     Shared by the digest and `--intraday` CLI paths (CONTRACTS §6). `result` is a
     `run_pipeline()` return value; `kind` is `"digest"` or `"intraday"` (CONTRACTS
-    §3). Adds `email_path` to the returned dict.
+    §3). Adds `email_path` and `filings_path` to the returned dict.
 
     The digest email always gets the plain `<DATE>.email.html` name (a bare date
     is passed to `render_email`, regardless of what time of day the digest ran);
     the intraday alert gets the `<DATE>T<HH-MM>.email.html` name (the full `now`
     datetime is passed through) so repeated intraday alerts on the same day never
-    collide (CONTRACTS §4).
+    collide (CONTRACTS §4). `out/filings/<date>.json` follows the identical naming
+    rule.
+
+    `config` carries the `market:`/provider blocks src.company / src.market need
+    (both best-effort, never raise — a missing TWELVEDATA_API_KEY or provider
+    outage never breaks a run).
     """
     stats = result["stats"]
-    enrichment = enrich(result["ranked"], news_mode=news_mode)
+    all_items = result.get("all_items", [])
+    enrichment = enrich(result["ranked"], result["needs_look"], config, news_mode=news_mode)
     brief_date = now if kind == "intraday" else now.date()
     email_path = render_email(result["ranked"], result["needs_look"], stats, enrichment,
-                              brief_date=brief_date, out_dir=briefs_dir)
+                              all_items=all_items, brief_date=brief_date, out_dir=briefs_dir)
+    if kind == "digest":
+        # Re-render the markdown brief now that enrichment (company/price) is
+        # available — run_pipeline already wrote a plain-classification version
+        # of this same file before publish() ever ran (SPEC §12: the brief must
+        # not depend on network calls that can fail mid-run).
+        render_brief(result["ranked"], result["needs_look"], stats, enrichment=enrichment,
+                    all_items=all_items, brief_date=now.date(), out_dir=briefs_dir)
+    filings_path = write_filings_json(result, kind, now, out_dir=filings_dir)
     append_run_log(_run_log_row(kind, stats, now), run_log_path)
-    return {**result, "email_path": email_path}
+    return {**result, "email_path": email_path, "filings_path": filings_path}
 
 
 def main() -> None:
@@ -314,7 +422,7 @@ def main() -> None:
             result = run_pipeline(records, config, client, store, prompt_version=rc.run.prompt_version,
                                   dry_run=True, now=now, record_audit=False)
             if result["ranked"]:
-                result = publish(result, "intraday", now, news_mode=news_mode)
+                result = publish(result, "intraday", now, config, news_mode=news_mode)
                 print(f"Intraday alert: {len(result['ranked'])} new material item(s). "
                       f"Email: {result['email_path']}")
             else:
@@ -323,7 +431,7 @@ def main() -> None:
             result = run_pipeline(records, config, client, store, prompt_version=rc.run.prompt_version,
                                   dry_run=args.dry_run, now=now)
             if not args.dry_run:
-                result = publish(result, "digest", now, news_mode=news_mode)
+                result = publish(result, "digest", now, config, news_mode=news_mode)
     finally:
         store.close()
 

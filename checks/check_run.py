@@ -14,13 +14,18 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
+import re
+
 from checks._harness import run
 from src import run as RUN
 from src.brief import render_brief
 from src.fetch import load_config
+from src.flags import FLAG_VOCAB
 from src.models import Announcement, Classification, Entities
 from src.rank import rank
 from src.store import Store
+
+_RAW_CODE_RE = re.compile(r"\bG[1-6]_[a-z_]+\b")
 
 CONFIG = load_config()
 NOW = datetime(2026, 7, 14, 12, 0, tzinfo=timezone.utc)
@@ -79,7 +84,10 @@ def body(check):
     check.require("## Material — ranked" in text and "## Needs a look" in text and "## Run footer" in text,
                   "brief has all three sections")
     check.require("> body" in text, "material entry shows the verbatim evidence_quote")
-    check.require("G2_ungrounded_quote" in text, "Needs-a-look names the guardrail flag")
+    check.require(FLAG_VOCAB["G2_ungrounded_quote"]["label"] in text,
+                  "Needs-a-look names the guardrail flag in plain English, not the raw code")
+    check.require(not _RAW_CODE_RE.search(text), "the brief leaks no raw G#_ literal anywhere")
+    check.require("## All filings this run" in text, "the brief has the all-filings section")
     check.require("NZ$0.1234" in text and "processed: 5" in text, "footer reports cost and counts (system reports on itself)")
 
     # --- run orchestrator: idempotency, dead-letter, retries, dry-run, watermark ---
@@ -117,6 +125,8 @@ def body(check):
         res = RUN.run_pipeline(recs, CONFIG, client, store, prompt_version="v1", now=NOW, sleeper=slept.append)
         check.equal(res["stats"]["new"], 2, "two good records classified (AAPL, MSFT)")
         check.equal(res["stats"]["dead_letters"], 1, "the bad-JSON record (JPM) was dead-lettered, run continued")
+        check.equal(res["stats"]["dropped_offwatchlist"], 0, "AAPL/MSFT/JPM are all on the watchlist — no G4 drops")
+        check.equal(len(res["all_items"]), 2, "all_items carries every classified record (material AND immaterial)")
         check.require(res["brief_path"] is not None and res["brief_path"].exists(), "a dated brief was written")
         check.require(2 in slept and 8 in slept, "retries used 2s then 8s backoff (SPEC §12)")
         check.require(store.is_audited(recs[0].announcement_id), "classified records are audited")

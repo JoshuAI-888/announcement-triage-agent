@@ -173,6 +173,11 @@ class EdgarAdapter:
         self, ticker: str, cik10: str, data: dict, since: datetime
     ) -> list[dict]:
         company_name = data.get("name", ticker)
+        # SIC description (industry) lives at the top level of the submissions
+        # JSON, one per issuer — not per filing. Carried through on every raw
+        # filing dict so normalise() can put it on the Announcement; it plays
+        # no part in compute_id (SPEC.md §5.1 hash inputs are unchanged).
+        industry = data.get("sicDescription") or None
         recent = data.get("filings", {}).get("recent", {})
         accession = recent.get("accessionNumber", [])
         forms = recent.get("form", [])
@@ -211,6 +216,7 @@ class EdgarAdapter:
                     "ticker": ticker,
                     "cik": cik10,
                     "company_name": company_name,
+                    "industry": industry,
                     "form": form,
                     "native_doc_type": form,
                     "accession_number": accession[i],
@@ -615,6 +621,7 @@ class EdgarAdapter:
             exchange=self.exchange_code,
             ticker=ticker,
             company_name=raw["company_name"],
+            industry=raw.get("industry"),
             published_at=published_at,
             headline=headline,
             doc_type=self.map_doc_type(raw["form"]),

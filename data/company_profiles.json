@@ -1,0 +1,22 @@
+{
+  "AAPL": {
+    "business": "Designs and manufactures consumer electronics, software, and services including iPhones, computers, tablets, wearables, and digital platforms.",
+    "edge": "Strong brand loyalty, vertically integrated hardware-software ecosystem, and premium pricing power supported by high customer retention.",
+    "generated_at": "2026-08-04T19:02:57.695818+00:00"
+  },
+  "GOOGL": {
+    "business": "Alphabet operates Google's search engine and advertising platform, along with cloud services, hardware devices, and other technology ventures through subsidiaries.",
+    "edge": "Dominance in search and digital advertising, supported by vast data collection, network effects, and significant barriers to entry for competitors.",
+    "generated_at": "2026-08-04T19:05:52.135840+00:00"
+  },
+  "MSFT": {
+    "business": "Develops and sells software, cloud computing services, and hardware products including operating systems, productivity applications, and gaming platforms.",
+    "edge": "Dominant market position in enterprise software and cloud infrastructure, with deep integration across its product ecosystem and substantial switching costs for corporate customers.",
+    "generated_at": "2026-08-04T19:05:46.597780+00:00"
+  },
+  "NVDA": {
+    "business": "Designs and manufactures graphics processing units (GPUs) and system-on-chip processors used in gaming, data centers, artificial intelligence, and professional visualization.",
+    "edge": "Dominant market position in GPU architecture and software ecosystem (CUDA) that creates high switching costs for customers in AI and data center applications.",
+    "generated_at": "2026-08-04T19:05:50.762536+00:00"
+  }
+}

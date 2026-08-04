@@ -8,6 +8,7 @@ import { TopbarActions } from "./TopbarActions";
 
 const NAV_ITEMS = [
   { href: "/today", label: "Today", icon: "f015" },
+  { href: "/filings", label: "This run", icon: "f0ce" },
   { href: "/config", label: "Config", icon: "f013" },
   { href: "/history", label: "Run history", icon: "f1da" },
   { href: "/pdf-log", label: "PDF / OCR log", icon: "f1c1" },

@@ -90,12 +90,17 @@ jobs:
         if: steps.gate.outputs.action == 'digest'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          # Optional market-data key (Twelve Data) for per-item price + 7-day trend.
+          # If unset, market lookups return None and the price block is omitted — the
+          # run still succeeds (best-effort, see src/market.py).
+          TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
         run: python -m src.run
 
       - name: Run intraday
         if: steps.gate.outputs.action == 'intraday'
         env:
           ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+          TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
         run: python -m src.run --intraday
 
       - name: Skip
@@ -111,7 +116,9 @@ jobs:
           git config user.email "github-actions[bot]@users.noreply.github.com"
           # pdf_log.jsonl is the PDF/OCR decision log the dashboard reads (same
           # append-only, rebase-friendly treatment as run_log.jsonl).
-          git add out/run_log.jsonl out/pdf_log.jsonl out/briefs/*.email.html 2>/dev/null || true
+          # company_profiles.json is the committed per-ticker profile cache — commit it
+          # back so a name generated once is never regenerated (and re-paid for) again.
+          git add out/run_log.jsonl out/pdf_log.jsonl out/briefs/*.email.html out/filings/*.json data/company_profiles.json 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no brief/run_log changes to commit"
           else

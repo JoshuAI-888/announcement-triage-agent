@@ -19,6 +19,7 @@ import { validateRuntimeConfig } from "./schema";
 import type {
   BriefVersion,
   EvalSummary,
+  FilingsRun,
   PdfLogRow,
   PortalAuth,
   ProvidersBlock,
@@ -35,6 +36,7 @@ const EVAL_SUMMARY_PATH = "evals/eval_summary.json";
 const RUN_LOG_PATH = "out/run_log.jsonl";
 const PDF_LOG_PATH = "out/pdf_log.jsonl";
 const BRIEFS_DIR = "out/briefs";
+const FILINGS_DIR = "out/filings";
 const CONFIG_YAML_PATH = "config.yaml";
 const PORTAL_AUTH_PATH = "dashboard/portal_auth.json";
 const PROMPTS_DIR = "prompts";
@@ -258,6 +260,30 @@ export async function getPdfLog(limit = 200): Promise<PdfLogRow[]> {
   }
   rows.sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)); // newest first
   return rows.slice(0, limit);
+}
+
+// --- out/filings/<date>.json / <date>T<HH-MM>.json ---
+
+const FILINGS_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2})?\.json$/;
+
+/** Latest classification run (digest or intraday), picked by filename. null if none exist yet. */
+export async function getLatestFilings(): Promise<FilingsRun | null> {
+  let names: string[];
+  if (LOCAL_DEV_MODE) {
+    names = (await local.listRepoDir(FILINGS_DIR)).filter((n) => FILINGS_NAME_RE.test(n));
+  } else {
+    names = (await gh.listDir(FILINGS_DIR)).filter((e) => e.type === "file" && FILINGS_NAME_RE.test(e.name)).map((e) => e.name);
+  }
+  if (names.length === 0) return null;
+  names.sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // newest first (ISO-ish names sort lexicographically)
+  const latest = names[0];
+  const raw = LOCAL_DEV_MODE ? await local.readRepoFile(`${FILINGS_DIR}/${latest}`) : (await gh.getFile(`${FILINGS_DIR}/${latest}`))?.content ?? null;
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw) as FilingsRun;
+  } catch {
+    return null;
+  }
 }
 
 // --- out/briefs/*.email.html ---

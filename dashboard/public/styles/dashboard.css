@@ -65,6 +65,14 @@ textarea.input { min-height: 96px; padding: 10px 13px; resize: vertical; font-fa
 
 .pill-row { display: flex; flex-wrap: wrap; gap: 8px; }
 
+/* Filings table (This run) */
+th.sortable { cursor: pointer; user-select: none; white-space: nowrap; }
+th.sortable:hover { color: var(--milford-slate); }
+th.sortable .sort-arrow { margin-left: 4px; opacity: .6; }
+.truncate { max-width: 340px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.flag-chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
+.flag-chip-row .badge { cursor: help; }
+
 @media (max-width: 760px) {
   .config-form-grid { grid-template-columns: 1fr; }
   .config-form-grid .span-2 { grid-column: auto; }

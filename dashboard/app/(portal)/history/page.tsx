@@ -1,4 +1,5 @@
 import { getRunLog } from "@/lib/dataSource";
+import { explainFlag } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -56,11 +57,20 @@ export default async function HistoryPage() {
                     <span className={r.escalations > 0 ? "badge orange" : "badge"}>{r.escalations}</span>
                   </td>
                   <td className="small">
-                    {Object.keys(r.guardrail_flag_counts || {}).length === 0
-                      ? "—"
-                      : Object.entries(r.guardrail_flag_counts)
-                          .map(([k, v]) => `${k}: ${v}`)
-                          .join(", ")}
+                    {Object.keys(r.guardrail_flag_counts || {}).length === 0 ? (
+                      "—"
+                    ) : (
+                      <span className="flag-chip-row">
+                        {Object.entries(r.guardrail_flag_counts).map(([k, v]) => {
+                          const info = explainFlag(k);
+                          return (
+                            <span key={k} title={info.why || info.meaning}>
+                              {info.label} ({v})
+                            </span>
+                          );
+                        })}
+                      </span>
+                    )}
                   </td>
                   <td className="align-right tabular">{fmtNzd(r.total_cost_nzd)}</td>
                   <td className="align-right tabular">{r.runtime_seconds.toFixed(1)}</td>
