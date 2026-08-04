@@ -97,7 +97,10 @@ jobs:
           RUNS="${{ github.event.inputs.runs }}"
           RUNS="${RUNS:-1}"
 
-          ARGS=(--prompt-version "$PV" --provider "$PROV" --runs "$RUNS")
+          # --no-escalation matches the daily run (runtime_config escalation off) and the
+          # seeded trust numbers; without it the eval would escalate to Opus (expensive +
+          # would misdescribe the running system).
+          ARGS=(--prompt-version "$PV" --provider "$PROV" --runs "$RUNS" --no-escalation)
           if [ -n "${{ github.event.inputs.limit }}" ]; then
             ARGS+=(--limit "${{ github.event.inputs.limit }}")
           fi

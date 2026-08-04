@@ -53,8 +53,26 @@ def load_gold(path: Path = GOLD_PATH) -> list[dict]:
         return list(csv.DictReader(fh))
 
 
+GOLD_CORPUS_PATH = ROOT / "evals" / "gold_corpus.jsonl"
+
+
 def load_announcements(config: dict | None = None) -> dict[str, Announcement]:
-    """announcement_id → canonical Announcement, from the normalised corpus."""
+    """announcement_id → canonical Announcement.
+
+    Prefers the committed, self-contained gold corpus (evals/gold_corpus.jsonl): the 220
+    gold announcements already normalised + truncated. This lets the eval run on a CI
+    runner that has NO data/raw (the daily brief fetches fresh filings; the eval needs the
+    exact 220 gold records by id). Falls back to normalising the local data/raw corpus."""
+    if GOLD_CORPUS_PATH.exists():
+        out: dict[str, Announcement] = {}
+        for line in GOLD_CORPUS_PATH.read_text(encoding="utf-8").splitlines():
+            line = line.strip()
+            if not line:
+                continue
+            ann = Announcement.model_validate_json(line)
+            out[ann.announcement_id] = ann
+        return out
+
     from src.normalise import normalise_all
 
     config = config or load_config()
