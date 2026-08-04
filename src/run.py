@@ -40,7 +40,7 @@ from src.brief import render_brief
 from src.classify import ClassifyError, classify
 from src.config_schema import load_runtime_config, apply_overrides
 from src.enrich import enrich
-from src.fetch import DB_PATH, load_config
+from src.fetch import DB_PATH, RAW_DIR, fetch, load_config
 from src.models import Announcement
 from src.rank import rank
 from src.render_email import render_email
@@ -83,6 +83,7 @@ def run_pipeline(
     dry_run: bool = False,
     now: datetime | None = None,
     sleeper: Callable[[float], None] = time.sleep,
+    record_audit: bool = True,
 ) -> dict:
     """Classify→verify→rank→brief over `records`. Returns ranked/needs-look/stats/brief_path."""
     prompt_version = prompt_version or config.get("prompt_version", "v1")
@@ -116,12 +117,13 @@ def run_pipeline(
             continue
         c = v
 
-        store.append_audit(
-            announcement_id=ann.announcement_id, decided_at=now, materiality=c.materiality,
-            confidence=c.confidence, prompt_version=prompt_version, model_id=c.model_id,
-            escalated=c.escalated, guardrail_flags=c.guardrail_flags,
-            input_tokens=c.input_tokens, output_tokens=c.output_tokens, cost_nzd=c.cost_nzd,
-        )
+        if record_audit:  # intraday passes False so an alert never consumes a record from the morning digest
+            store.append_audit(
+                announcement_id=ann.announcement_id, decided_at=now, materiality=c.materiality,
+                confidence=c.confidence, prompt_version=prompt_version, model_id=c.model_id,
+                escalated=c.escalated, guardrail_flags=c.guardrail_flags,
+                input_tokens=c.input_tokens, output_tokens=c.output_tokens, cost_nzd=c.cost_nzd,
+            )
         if c.escalated:
             escalations += 1
         for f in c.guardrail_flags:
@@ -153,6 +155,7 @@ def run_pipeline(
 
 
 def _load_window(config: dict, since: datetime | None, until: datetime | None) -> list[Announcement]:
+    """Replay/backfill: normalise the EXISTING corpus in a date window (--from/--to)."""
     from src.normalise import normalise_all
 
     records = normalise_all(config=config)
@@ -160,6 +163,31 @@ def _load_window(config: dict, since: datetime | None, until: datetime | None) -
         records = [r for r in records if r.published_at >= since]
     if until:
         records = [r for r in records if r.published_at <= until]
+    return records
+
+
+def _load_new_records(config: dict, new_ids: tuple[str, ...]) -> list[Announcement]:
+    """Incremental daily path: normalise ONLY the filings this fetch pass just wrote.
+
+    No gold-candidate sampler, no pin file — just the genuinely-new announcements, read
+    from their raw payloads in data/raw/ and normalised one by one (body text is fetched
+    + cached by the adapter). New ids are unprocessed by construction, so the pipeline's
+    is_audited skip is a no-op for them.
+    """
+    import json
+
+    from src.normalise import build_normalising_adapter, normalise_one
+
+    adapter = build_normalising_adapter(config)
+    records: list[Announcement] = []
+    for aid in new_ids:
+        path = RAW_DIR / f"{aid}.json"
+        if not path.exists():
+            continue
+        try:
+            records.append(normalise_one(json.loads(path.read_text(encoding="utf-8")), config, adapter))
+        except Exception as exc:  # one bad filing never kills the brief
+            print(f"WARNING: could not normalise {aid[:12]}: {exc}")
     return records
 
 
@@ -250,16 +278,27 @@ def main() -> None:
     client = build_client(rc.run.provider, base_config)
     news_mode = config.get("_runtime", {}).get("news_mode", "search")
 
-    records = _load_window(config, since, until)
+    if since or until or args.dry_run:
+        # Replay/backfill or a local dry-run: normalise the existing corpus, don't fetch
+        # (keeps --dry-run's "no watermark advance" contract intact).
+        records = _load_window(config, since, until)
+    else:
+        # Live incremental path (digest + intraday): pull new filings past the watermark,
+        # then normalise only those. This is what runs on the CI runner each morning.
+        fr = fetch(config)
+        print(f"Fetch: {fr.new} new, {fr.duplicate} duplicate, {fr.seen} seen.")
+        records = _load_new_records(config, fr.new_ids)
+
     store = Store(DB_PATH)
     now = datetime.now(timezone.utc)
     try:
         if args.intraday:
-            # Internally always a dry-run: idempotency (store.is_audited) means only
-            # genuinely NEW records are classified/ranked this pass, and dry_run=True
-            # guarantees the digest watermark never advances from an intraday pass.
+            # Material-only alert pass. dry_run=True so run_pipeline writes no digest brief
+            # and doesn't touch the watermark; record_audit=False so alerting a record never
+            # removes it from the morning digest. (fetch already advanced the watermark past
+            # this window, which is correct — the 06:00 digest ran earlier in the day.)
             result = run_pipeline(records, config, client, store, prompt_version=rc.run.prompt_version,
-                                  dry_run=True, now=now)
+                                  dry_run=True, now=now, record_audit=False)
             if result["ranked"]:
                 result = publish(result, "intraday", now, news_mode=news_mode)
                 print(f"Intraday alert: {len(result['ranked'])} new material item(s). "

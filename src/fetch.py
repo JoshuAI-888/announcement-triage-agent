@@ -43,6 +43,7 @@ class FetchResult(NamedTuple):
     duplicate: int
     seen: int
     watermark_advanced: bool
+    new_ids: tuple[str, ...] = ()  # announcement_ids written this pass (for incremental normalise)
 
 
 def load_config() -> dict:
@@ -99,6 +100,7 @@ def fetch(
         seen = 0
         had_failure = False
         max_published = since
+        new_ids: list[str] = []
 
         for ticker in config["watchlist"]:
             try:
@@ -134,6 +136,7 @@ def fetch(
                     json.dumps(raw_out, indent=2, ensure_ascii=False), encoding="utf-8"
                 )
                 store.mark_processed(announcement_id, raw["exchange"], raw["ticker"], published_at)
+                new_ids.append(announcement_id)
                 new_count += 1
 
         print(
@@ -156,6 +159,7 @@ def fetch(
             duplicate=dup_count,
             seen=seen,
             watermark_advanced=not had_failure,
+            new_ids=tuple(new_ids),
         )
     finally:
         store.close()
