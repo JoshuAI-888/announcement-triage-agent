@@ -103,13 +103,15 @@ jobs:
         run: |
           echo "skip: ${{ steps.gate.outputs.reason }}"
 
-      - name: Commit run_log.jsonl + briefs to main
+      - name: Commit run_log.jsonl + pdf_log.jsonl + briefs to main
         if: steps.gate.outputs.action != 'skip'
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add out/run_log.jsonl out/briefs/*.email.html 2>/dev/null || true
+          # pdf_log.jsonl is the PDF/OCR decision log the dashboard reads (same
+          # append-only, rebase-friendly treatment as run_log.jsonl).
+          git add out/run_log.jsonl out/pdf_log.jsonl out/briefs/*.email.html 2>/dev/null || true
           if git diff --cached --quiet; then
             echo "no brief/run_log changes to commit"
           else

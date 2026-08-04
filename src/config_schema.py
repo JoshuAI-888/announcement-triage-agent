@@ -115,6 +115,11 @@ class ThresholdsCfg(BaseModel):
     escalate_above_chars: int = Field(default=20000, ge=0)
 
 
+class PdfCfg(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+    ocr_enabled: bool = True
+
+
 class RankingCfg(BaseModel):
     model_config = ConfigDict(extra="forbid")
     recency_half_life_hours: float = Field(default=12.0, gt=0.0)
@@ -133,6 +138,7 @@ class RuntimeConfig(BaseModel):
     draft: DraftCfg
     thresholds: ThresholdsCfg = Field(default_factory=ThresholdsCfg)
     ranking: RankingCfg = Field(default_factory=RankingCfg)
+    pdf: PdfCfg = Field(default_factory=PdfCfg)
     watchlist: list[str] = Field(min_length=1)
     news_mode: NewsMode = "search"
     items_shown: int = Field(default=20, ge=1, le=100)
@@ -214,6 +220,11 @@ def apply_overrides(base_config: dict, rc: RuntimeConfig) -> dict:
         "draft_email": rc.draft.email,
         "draft_prompt": rc.draft.prompt,
         "schedule": rc.schedule.model_dump(),
+        # NOT part of the eval fingerprint (see fingerprint_from below): the eval
+        # runs against the frozen gold corpus, where OCR only ever affects the
+        # rare live scanned/image PDF. Toggling it must not spuriously mark the
+        # dashboard's trust numbers STALE.
+        "pdf_ocr_enabled": rc.pdf.ocr_enabled,
     }
     return cfg
 

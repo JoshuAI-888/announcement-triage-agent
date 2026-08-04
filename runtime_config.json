@@ -32,6 +32,9 @@
     },
     "watchlist_weight_default": 1.0
   },
+  "pdf": {
+    "ocr_enabled": true
+  },
   "watchlist": [
     "A",
     "AAPL",

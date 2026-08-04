@@ -44,6 +44,18 @@
       "title": "EvalCfg",
       "type": "object"
     },
+    "PdfCfg": {
+      "additionalProperties": false,
+      "properties": {
+        "ocr_enabled": {
+          "default": true,
+          "title": "Ocr Enabled",
+          "type": "boolean"
+        }
+      },
+      "title": "PdfCfg",
+      "type": "object"
+    },
     "RankingCfg": {
       "additionalProperties": false,
       "properties": {
@@ -190,6 +202,9 @@
     "ranking": {
       "$ref": "#/$defs/RankingCfg"
     },
+    "pdf": {
+      "$ref": "#/$defs/PdfCfg"
+    },
     "watchlist": {
       "items": {
         "type": "string"
@@ -227,7 +242,7 @@
     "draft",
     "watchlist"
   ],
-  "title": "runtime_config.json",
+  "title": "RuntimeConfig",
   "type": "object",
   "$schema": "http://json-schema.org/draft-07/schema#",
   "description": "Canonical contract for runtime_config.json. Generated from src/config_schema.py:RuntimeConfig. The Node config UI MUST mirror this; regenerate with this command when the pydantic model changes. NOTE: the no-gold-field rule and email/HH:MM format checks live in config_schema.py and must be re-implemented in JS."

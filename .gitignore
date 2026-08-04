@@ -11,6 +11,7 @@ out/*
 out/briefs/*
 # ...except the small text artifacts the dashboard reads (committed to main via [skip ci]):
 !out/run_log.jsonl
+!out/pdf_log.jsonl
 !out/briefs/
 !out/briefs/*.email.html
 # Bulky/local-only generated things stay ignored:

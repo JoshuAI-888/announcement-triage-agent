@@ -175,3 +175,51 @@ trust snapshot, CONTRACTS §2 — "changes only on an eval, low noise"). Run it:
   already be an NZT calendar date, this is harmless (they'd agree on all but
   a rare few-hour DST/midnight edge); if `date` is meant as UTC, trusting it
   directly would misfire the gate near local midnight in NZ.
+
+## 8. PDF filings: tiered handling, OCR, and the decision log
+
+Some EDGAR primary documents are **PDFs, not HTML/text** (the annual report to
+shareholders — form `ARS` — is the common case; the odd 8-K/10-K exhibit is
+filed as PDF too). Feeding a PDF's raw bytes through the HTML text extractor
+dumps a multi-MB `%PDF…` operator stream into `body_text`, which both truncates
+the real signal and bloats the text cache. `src/adapters/edgar.py` handles PDFs
+in tiers (`_fetch_pdf_document`):
+
+1. **Skip-by-form** — routine/redundant forms (`_SKIP_EXTRACTION_FORMS = {"ARS"}`;
+   an ARS duplicates the separately-filed 10-K and is never itself the event)
+   get a short **metadata placeholder** — form + `primaryDocument` name + 8-K
+   item codes + description — *without downloading the bytes*.
+2. **pypdf extraction** — for an event-form PDF under `_MAX_PDF_BYTES` (15 MB),
+   extract the text layer with **pypdf** (BSD, pure-Python; the only new
+   dependency this feature adds). ≥200 non-whitespace chars → used as-is.
+3. **Claude OCR (toggleable)** — a scanned/image PDF with no text layer falls to
+   **Claude native-PDF OCR**. This is **pinned to Claude** (`_OCR_MODEL`,
+   `ANTHROPIC_API_KEY`) *regardless of `run.provider`* — so it still works when
+   the daily classifier is set to openai/glm — and priced in Claude's own rates.
+   It is **best-effort and never raises**: no key / SDK / API error falls through
+   to a placeholder.
+4. **Placeholder** — the safety net. A skipped/failed PDF is **never dropped**;
+   it flows through classify/rank on its metadata (with only that to ground on,
+   the classifier stays low-confidence and the item routes to *Needs a look*),
+   so nothing material is lost silently.
+
+**The OCR toggle.** `runtime_config.json`'s `pdf.ocr_enabled` (default `true`)
+turns tier 3 on/off from the portal Config page ("Claude OCR for scanned PDFs").
+It is deliberately **excluded from `eval_fingerprint()`** — the eval runs on the
+frozen gold corpus, OCR only affects rare live image-PDFs, so toggling it must
+not flip the trust banner to stale.
+
+**The decision log.** Every PDF decision appends one row to `out/pdf_log.jsonl`
+(committed to `main` alongside `run_log.jsonl`, same append-only/rebase-friendly
+treatment in `daily-brief.yml`; un-ignored in `.gitignore`). The portal reads it
+at **PDF / OCR log** (`GET /api/pdf-log`). Row: `ts, announcement_id, ticker,
+form, primary_document, bytes, decision, chars_out, model_id, cost_nzd, detail`,
+where `decision ∈ {skipped_form, pypdf_text, claude_ocr, placeholder_too_big,
+placeholder_ocr_disabled, placeholder_no_text, error}`. The normal HTML path
+logs nothing. The log starts empty and populates on the first live run that
+touches a PDF.
+
+**Cost.** Tiers 1–2 are free (skip) or local (pypdf). Only tier 3 (OCR) spends,
+per page of a genuine scanned PDF — rare on modern EDGAR — so leaving the toggle
+on is cheap; turn it off if you want a hard zero-spend guarantee on the fetch
+path.

@@ -42,6 +42,10 @@ export interface RankingCfg {
   watchlist_weight_default: number;
 }
 
+export interface PdfCfg {
+  ocr_enabled: boolean;
+}
+
 export interface RuntimeConfig {
   version: number;
   run: RunCfg;
@@ -50,6 +54,7 @@ export interface RuntimeConfig {
   draft: DraftCfg;
   thresholds: ThresholdsCfg;
   ranking: RankingCfg;
+  pdf: PdfCfg;
   watchlist: string[];
   news_mode: NewsMode;
   items_shown: number;
@@ -125,4 +130,37 @@ export interface PortalAuth {
   salt: string;
   hash: string;
   updated_at: string;
+}
+
+// out/pdf_log.jsonl — one line per PDF-handling decision made while fetching
+// a filing's primary document (CONTRACTS.md-style append-only log, same
+// shape as run_log.jsonl but for the PDF/OCR pipeline).
+export type PdfLogDecision =
+  | "skipped_form"
+  | "pypdf_text"
+  | "claude_ocr"
+  | "placeholder_too_big"
+  | "placeholder_ocr_disabled"
+  | "placeholder_no_text"
+  | "error";
+
+export interface PdfLogRow {
+  ts: string;
+  announcement_id: string | null;
+  ticker: string;
+  form: string;
+  primary_document: string;
+  bytes: number | null;
+  decision: PdfLogDecision;
+  chars_out: number;
+  model_id: string | null;
+  cost_nzd: number | null;
+  detail: string;
+}
+
+// GET /api/system-prompt response shape.
+export interface SystemPromptResult {
+  version: string;
+  source: "file" | "custom";
+  text: string;
 }

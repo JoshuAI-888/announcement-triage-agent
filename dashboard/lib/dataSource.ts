@@ -16,7 +16,16 @@ import { evalFingerprint } from "./fingerprint";
 import * as gh from "./github";
 import * as local from "./localData";
 import { validateRuntimeConfig } from "./schema";
-import type { BriefVersion, EvalSummary, PortalAuth, ProvidersBlock, RunLogRow, RuntimeConfig } from "./types";
+import type {
+  BriefVersion,
+  EvalSummary,
+  PdfLogRow,
+  PortalAuth,
+  ProvidersBlock,
+  RunLogRow,
+  RuntimeConfig,
+  SystemPromptResult,
+} from "./types";
 import { defaultPortalAuth } from "./portalAuth";
 
 export const mode: "local-dev" | "github" = LOCAL_DEV_MODE ? "local-dev" : "github";
@@ -24,9 +33,11 @@ export const mode: "local-dev" | "github" = LOCAL_DEV_MODE ? "local-dev" : "gith
 const RUNTIME_CONFIG_PATH = "runtime_config.json";
 const EVAL_SUMMARY_PATH = "evals/eval_summary.json";
 const RUN_LOG_PATH = "out/run_log.jsonl";
+const PDF_LOG_PATH = "out/pdf_log.jsonl";
 const BRIEFS_DIR = "out/briefs";
 const CONFIG_YAML_PATH = "config.yaml";
 const PORTAL_AUTH_PATH = "dashboard/portal_auth.json";
+const PROMPTS_DIR = "prompts";
 
 const BRIEF_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2})?\.email\.html$/;
 
@@ -171,6 +182,35 @@ export async function getConfigYamlProviders(): Promise<ProvidersBlock> {
   return parsed.providers ?? {};
 }
 
+// --- prompts/classify_<version>.md (active classification system prompt) ---
+
+/**
+ * Resolve the classification system prompt that is ACTUALLY active for the
+ * live runtime_config: if run.prompt_version is "custom", that's
+ * run.classification_prompt_override verbatim; otherwise it's the committed
+ * file prompts/classify_<version>.md, read the same way as every other
+ * committed artifact. Read-only — there is no write path here, editing a
+ * built-in prompt file is out of scope for the dashboard.
+ */
+export async function getActiveSystemPrompt(): Promise<SystemPromptResult> {
+  const { config } = await getRuntimeConfig();
+  const version = config.run.prompt_version;
+  if (version === "custom") {
+    return {
+      version,
+      source: "custom",
+      text: config.run.classification_prompt_override ?? "",
+    };
+  }
+  const filePath = `${PROMPTS_DIR}/classify_${version}.md`;
+  const raw = LOCAL_DEV_MODE ? await local.readRepoFile(filePath) : (await gh.getFile(filePath))?.content ?? null;
+  return {
+    version,
+    source: "file",
+    text: raw ?? `(${filePath} not found in this checkout)`,
+  };
+}
+
 // --- evals/eval_summary.json ---
 
 export async function getEvalSummary(): Promise<EvalSummary | null> {
@@ -197,6 +237,27 @@ export async function getRunLog(): Promise<RunLogRow[]> {
   }
   rows.sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)); // newest first
   return rows;
+}
+
+// --- out/pdf_log.jsonl ---
+
+export async function getPdfLog(limit = 200): Promise<PdfLogRow[]> {
+  const raw = LOCAL_DEV_MODE ? await local.readRepoFile(PDF_LOG_PATH) : (await gh.getFile(PDF_LOG_PATH))?.content ?? null;
+  if (!raw) return [];
+  const rows: PdfLogRow[] = [];
+  for (const line of raw.split("\n")) {
+    const trimmed = line.trim();
+    if (!trimmed) continue;
+    try {
+      const parsed = JSON.parse(trimmed);
+      if (parsed && typeof parsed === "object") rows.push(parsed as PdfLogRow);
+    } catch {
+      // Skip a malformed line rather than fail the whole view.
+      continue;
+    }
+  }
+  rows.sort((a, b) => (a.ts < b.ts ? 1 : a.ts > b.ts ? -1 : 0)); // newest first
+  return rows.slice(0, limit);
 }
 
 // --- out/briefs/*.email.html ---

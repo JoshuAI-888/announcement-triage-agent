@@ -8,9 +8,10 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { Icon } from "@/components/Icon";
-import type { RuntimeConfig } from "@/lib/types";
+import type { RuntimeConfig, SystemPromptResult } from "@/lib/types";
 
 type SaveState = { kind: "idle" } | { kind: "saving" } | { kind: "ok"; message: string } | { kind: "error"; errors: string[] };
+type PromptState = { kind: "loading" } | { kind: "ok"; result: SystemPromptResult } | { kind: "error"; message: string };
 
 export default function ConfigPage() {
   const [config, setConfig] = useState<RuntimeConfig | null>(null);
@@ -18,6 +19,7 @@ export default function ConfigPage() {
   const [saveState, setSaveState] = useState<SaveState>({ kind: "idle" });
   const [watchlistInput, setWatchlistInput] = useState("");
   const [mode, setMode] = useState<string>("");
+  const [promptState, setPromptState] = useState<PromptState>({ kind: "loading" });
 
   const load = useCallback(async () => {
     setLoadError(null);
@@ -32,9 +34,22 @@ export default function ConfigPage() {
     }
   }, []);
 
+  const loadPrompt = useCallback(async () => {
+    setPromptState({ kind: "loading" });
+    try {
+      const res = await fetch("/api/system-prompt");
+      const body = await res.json();
+      if (!res.ok) throw new Error(body.message || "failed to load system prompt");
+      setPromptState({ kind: "ok", result: body as SystemPromptResult });
+    } catch (e) {
+      setPromptState({ kind: "error", message: (e as Error).message });
+    }
+  }, []);
+
   useEffect(() => {
     load();
-  }, [load]);
+    loadPrompt();
+  }, [load, loadPrompt]);
 
   if (loadError) {
     return (
@@ -73,6 +88,7 @@ export default function ConfigPage() {
         kind: "ok",
         message: body.mocked ? `Saved locally as version ${body.config.version} (mocked — see server console).` : `Committed version ${body.config.version} to main.`,
       });
+      loadPrompt();
     } catch (e) {
       setSaveState({ kind: "error", errors: [(e as Error).message] });
     }
@@ -89,6 +105,7 @@ export default function ConfigPage() {
       }
       setConfig(body.config);
       setSaveState({ kind: "ok", message: `Reverted to version ${body.config.version}.` });
+      loadPrompt();
     } catch (e) {
       setSaveState({ kind: "error", errors: [(e as Error).message] });
     }
@@ -111,6 +128,9 @@ export default function ConfigPage() {
   }
   function patchRanking(partial: Partial<RuntimeConfig["ranking"]>) {
     setConfig((c) => (c ? { ...c, ranking: { ...c.ranking, ...partial } } : c));
+  }
+  function patchPdf(partial: Partial<RuntimeConfig["pdf"]>) {
+    setConfig((c) => (c ? { ...c, pdf: { ...c.pdf, ...partial } } : c));
   }
   function patchMaterialityWeight(key: string, value: number) {
     setConfig((c) => (c ? { ...c, ranking: { ...c.ranking, materiality_weight: { ...c.ranking.materiality_weight, [key]: value } } } : c));
@@ -217,6 +237,61 @@ export default function ConfigPage() {
             <div className="char-count">
               {(config.run.classification_prompt_override ?? "").length} / 20000 {overrideActive ? "— override active" : ""}
             </div>
+          </div>
+        </div>
+      </article>
+
+      <article className="card card-pad config-section">
+        <h2>Active classification system prompt (read-only)</h2>
+        <p className="section-intro">
+          The exact prompt the daily/intraday run is classifying against right now, resolved from the Run
+          settings above{promptState.kind === "ok" ? ` — ${promptState.result.version}, ${promptState.result.source === "custom" ? "override" : "file"}` : ""}.
+        </p>
+        {promptState.kind === "loading" && <p className="muted">Loading…</p>}
+        {promptState.kind === "error" && (
+          <div className="banner banner-danger">
+            <Icon code="f071" />
+            <span>Could not load system prompt: {promptState.message}</span>
+          </div>
+        )}
+        {promptState.kind === "ok" && (
+          <div className="field span-2">
+            <textarea
+              className="input mono"
+              rows={10}
+              value={promptState.result.text}
+              disabled
+              readOnly
+              style={{ resize: "vertical", overflowY: "auto" }}
+            />
+            <span className="hint">
+              This is the classifier prompt. Editing it is gated behind re-running the eval and is not exposed here
+              — use the classifier prompt override field above if you need to run against a different prompt.
+            </span>
+          </div>
+        )}
+      </article>
+
+      <article className="card card-pad config-section">
+        <h2>PDF handling</h2>
+        <p className="section-intro">How a filing&rsquo;s primary document is read when it&rsquo;s a scanned/image PDF with no text layer.</p>
+        <div className="config-form-grid">
+          <div className="field checkbox-field span-2">
+            <input
+              id="pdf_ocr_enabled"
+              type="checkbox"
+              checked={config.pdf.ocr_enabled}
+              onChange={(e) => patchPdf({ ocr_enabled: e.target.checked })}
+            />
+            <label htmlFor="pdf_ocr_enabled" style={{ marginBottom: 0 }}>
+              Claude OCR for scanned PDFs
+            </label>
+          </div>
+          <div className="field span-2">
+            <span className="hint">
+              When a filing&rsquo;s primary document is a scanned/image PDF with no text layer, hand that one
+              document to Claude to read it. Off = fall back to a metadata-only summary.
+            </span>
           </div>
         </div>
       </article>

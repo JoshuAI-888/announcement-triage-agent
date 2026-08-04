@@ -205,11 +205,30 @@ def check_normalised_records(c: Check) -> None:
             c.require(False, f"{r.ticker} {r.native_doc_type} body_text: {'; '.join(problems)}")
     c.note("body_text is plain text with whitespace normalised on every record")
 
-    shortest = min(records, key=lambda r: r.char_count)
+    # Filings whose primary document is a non-text container (PDF/xlsx/image) get
+    # a short, synthesised metadata body instead of the ingested bytes — see
+    # EdgarAdapter._placeholder_body. That body is intentionally short, so it is
+    # excluded from the real-content floor and validated on its own terms below.
+    from src.adapters.edgar import NON_TEXT_BODY_SENTINEL
+
+    placeholders = [r for r in records if NON_TEXT_BODY_SENTINEL in r.body_text]
+    ingested = [r for r in records if NON_TEXT_BODY_SENTINEL not in r.body_text]
+
+    shortest = min(ingested, key=lambda r: r.char_count)
     c.require(
         shortest.char_count > 200,
-        f"even the shortest body_text carries real content ({shortest.char_count} chars, "
-        f"{shortest.ticker} {shortest.native_doc_type})",
+        f"even the shortest ingested body_text carries real content ({shortest.char_count} "
+        f"chars, {shortest.ticker} {shortest.native_doc_type})",
+    )
+    for r in placeholders:
+        c.require(
+            r.body_text.startswith("[") and "Form " in r.body_text,
+            f"{r.ticker} {r.native_doc_type} non-text placeholder names its form "
+            f"and marks the skipped document",
+        )
+    c.note(
+        f"{len(ingested)} ingested bodies (floor 200 chars); "
+        f"{len(placeholders)} non-text-document placeholders"
     )
 
     # Normalisation is a pure function of the raw payload.

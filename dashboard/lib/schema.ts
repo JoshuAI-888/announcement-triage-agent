@@ -15,6 +15,7 @@ import type {
   DraftCfg,
   EvalCfg,
   NewsMode,
+  PdfCfg,
   PollFrequency,
   Provider,
   PromptVersion,
@@ -112,7 +113,7 @@ export function validateRuntimeConfig(raw: unknown): ValidationResult {
 
   checkExtraKeys(
     raw,
-    ["version", "run", "eval", "schedule", "draft", "thresholds", "ranking", "watchlist", "news_mode", "items_shown", "theme"],
+    ["version", "run", "eval", "schedule", "draft", "thresholds", "ranking", "pdf", "watchlist", "news_mode", "items_shown", "theme"],
     "$",
     errors
   );
@@ -262,6 +263,18 @@ export function validateRuntimeConfig(raw: unknown): ValidationResult {
     };
   }
 
+  // --- pdf (optional, has defaults) ---
+  const pdfRaw = raw.pdf ?? {};
+  let pdf: PdfCfg = { ocr_enabled: true };
+  if (!isPlainObject(pdfRaw)) {
+    errors.push("pdf: must be an object");
+  } else {
+    checkExtraKeys(pdfRaw, ["ocr_enabled"], "pdf", errors);
+    const ocrEnabled = pdfRaw.ocr_enabled ?? true;
+    if (typeof ocrEnabled !== "boolean") errors.push("pdf.ocr_enabled: must be a boolean");
+    pdf = { ocr_enabled: ocrEnabled as boolean };
+  }
+
   // --- watchlist (required, min 1, uppercase, unique) ---
   const watchlistRaw = raw.watchlist;
   let watchlist: string[] = [];
@@ -307,6 +320,7 @@ export function validateRuntimeConfig(raw: unknown): ValidationResult {
     draft,
     thresholds,
     ranking,
+    pdf,
     watchlist,
     news_mode: newsMode as NewsMode,
     items_shown: itemsShown as number,

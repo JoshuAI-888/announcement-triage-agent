@@ -10,6 +10,7 @@ const NAV_ITEMS = [
   { href: "/today", label: "Today", icon: "f015" },
   { href: "/config", label: "Config", icon: "f013" },
   { href: "/history", label: "Run history", icon: "f1da" },
+  { href: "/pdf-log", label: "PDF / OCR log", icon: "f1c1" },
   { href: "/trust", label: "Trust", icon: "f3ed" },
   { href: "/optimisations", label: "Optimisations", icon: "f0e7" },
   { href: "/cadence", label: "Eval cadence", icon: "f017" },

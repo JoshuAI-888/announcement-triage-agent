@@ -52,11 +52,17 @@ def load_config() -> dict:
 
 
 def build_adapter(config: dict):
-    """A fully configured reference adapter: credentials-free HTTP, doc_type map, truncation."""
+    """A fully configured reference adapter: credentials-free HTTP, doc_type map, truncation.
+
+    OCR is pinned to Claude regardless of run.provider (see EdgarAdapter._claude_ocr),
+    so it always gets the "claude" provider's own pricing + fx for cost accounting —
+    never the pricing of whichever provider is configured to run the daily classifier.
+    """
     ref = config["exchange"]["reference"]
     if ref not in ADAPTERS:
         raise ValueError(f"no adapter implemented for exchange {ref!r} (this build ships EDGAR only)")
     ex = config["exchange"]
+    claude_pricing = ((config.get("providers", {}) or {}).get("claude", {}) or {}).get("pricing")
     return ADAPTERS[ref](
         watchlist=config["watchlist"],
         user_agent=ex["user_agent"],
@@ -64,6 +70,10 @@ def build_adapter(config: dict):
         rate_limit_rps=ex["rate_limit_requests_per_second"],
         doc_type_map=load_doc_type_map(ref),
         truncate_chars=config["thresholds"]["truncate_input_chars"],
+        ocr_enabled=config.get("_runtime", {}).get("pdf_ocr_enabled", True),
+        pdf_log_path=ROOT / "out" / "pdf_log.jsonl",
+        ocr_pricing_usd_per_mtok=claude_pricing,
+        fx_usd_nzd=config.get("fx_usd_nzd"),
     )
 
 

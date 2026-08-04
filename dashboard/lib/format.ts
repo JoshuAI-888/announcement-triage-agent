@@ -35,6 +35,19 @@ export function fmtDate(iso: string | null | undefined): string {
   }
 }
 
+export function fmtBytes(v: number | null | undefined): string {
+  if (v === null || v === undefined || Number.isNaN(v) || v < 0) return "—";
+  if (v < 1024) return `${v} B`;
+  const units = ["KB", "MB", "GB"];
+  let val = v;
+  let i = -1;
+  do {
+    val /= 1024;
+    i++;
+  } while (val >= 1024 && i < units.length - 1);
+  return `${val.toFixed(val < 10 ? 1 : 0)} ${units[i]}`;
+}
+
 export function daysSince(iso: string | null | undefined): number | null {
   if (!iso) return null;
   const d = new Date(iso).getTime();
