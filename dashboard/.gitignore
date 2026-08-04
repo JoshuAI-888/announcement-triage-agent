@@ -19,3 +19,7 @@ next-env.d.ts
 # OS / editor
 .DS_Store
 *.log
+
+# TS incremental build cache
+tsconfig.tsbuildinfo
+*.tsbuildinfo
