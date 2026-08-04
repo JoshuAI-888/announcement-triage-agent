@@ -2,7 +2,7 @@ exchange:
   reference: "EDGAR"           # NZX | ASX | EDGAR — set at build time
   poll_interval_minutes: 10
   request_timeout_seconds: 30
-  rate_limit_requests_per_second: 1    # respect the source's published limit
+  rate_limit_requests_per_second: 8    # SEC EDGAR fair-access allows up to 10/sec; 8 leaves headroom
   user_agent: "ATA research prototype - joshuafang@gmail.com"
   bootstrap_lookback_days: 30  # first run only (no watermark yet): how far back to seed
 

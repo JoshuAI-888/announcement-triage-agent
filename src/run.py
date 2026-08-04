@@ -32,6 +32,7 @@ import argparse
 import json
 import time
 from collections import Counter
+from concurrent.futures import ThreadPoolExecutor
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Callable, Optional
@@ -88,8 +89,10 @@ def run_pipeline(
     """Classify→verify→rank→brief over `records`. Returns ranked/needs-look/stats/brief_path."""
     prompt_version = prompt_version or config.get("prompt_version", "v1")
     now = now or datetime.now(timezone.utc)
-    rps = config["exchange"]["rate_limit_requests_per_second"]
     exchange = config["exchange"]["reference"]
+    # Classify calls are I/O-bound; run them in a pool. This is the Anthropic-side
+    # concurrency and is deliberately NOT the EDGAR fetch rate limit (that lives in fetch()).
+    concurrency = max(1, int(config.get("eval", {}).get("concurrency", 8)))
 
     pairs = []
     processed = new = deduped = dead = escalations = 0
@@ -97,16 +100,27 @@ def run_pipeline(
     max_published: Optional[datetime] = None
     started = time.monotonic()
 
-    for ann in records:
-        if store.is_audited(ann.announcement_id):  # idempotency (SPEC §12)
-            deduped += 1
-            continue
-        processed += 1
-        if rps:
-            sleeper(1.0 / rps)  # rate limit
+    # Idempotency first (SPEC §12): only classify genuinely-new records.
+    to_process = [ann for ann in records if not store.is_audited(ann.announcement_id)]
+    deduped = len(records) - len(to_process)
+
+    def _try_classify(ann: Announcement):
         try:
-            c = _classify_with_retries(ann, config, client, prompt_version, sleeper)
-        except Exception as exc:  # third failure → dead-letter, run continues
+            return ann, _classify_with_retries(ann, config, client, prompt_version, sleeper), None
+        except Exception as exc:  # third failure → dead-letter (recorded in the main thread)
+            return ann, None, exc
+
+    # Concurrent classify (order preserved by .map); verify/audit/collect stay single-
+    # threaded below because sqlite is single-writer.
+    if concurrency > 1 and len(to_process) > 1:
+        with ThreadPoolExecutor(max_workers=concurrency) as ex:
+            classified = list(ex.map(_try_classify, to_process))
+    else:
+        classified = [_try_classify(ann) for ann in to_process]
+
+    for ann, c, exc in classified:
+        processed += 1
+        if exc is not None:
             store.add_dead_letter(error=f"classify failed: {exc}", announcement_id=ann.announcement_id,
                                   raw_payload={"ticker": ann.ticker, "headline": ann.headline})
             dead += 1
