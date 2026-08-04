@@ -44,9 +44,15 @@ jobs:
           set -e
           git fetch origin data-state 2>/dev/null || true
           if git show-ref --verify --quiet refs/remotes/origin/data-state; then
-            git checkout origin/data-state -- state.db data/raw
-            git reset -- state.db data/raw
-            echo "restored state.db + data/raw from origin/data-state"
+            # Restore each path independently — data-state may carry only state.db
+            # (data/raw is bulky and re-fetched on demand), so a missing path must
+            # not fail the whole run.
+            if git checkout origin/data-state -- state.db 2>/dev/null; then
+              git reset -q -- state.db 2>/dev/null || true; echo "restored state.db"
+            else echo "no state.db on data-state yet"; fi
+            if git checkout origin/data-state -- data/raw 2>/dev/null; then
+              git reset -q -- data/raw 2>/dev/null || true; echo "restored data/raw"
+            else echo "no data/raw on data-state (re-fetched on demand)"; fi
           else
             echo "no data-state branch yet (first run) — starting fresh; see DEPLOY.md bootstrap"
           fi
