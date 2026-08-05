@@ -1,5 +1,5 @@
 {
-  "version": 2,
+  "version": 3,
   "run": {
     "provider": "claude",
     "prompt_version": "v3",
@@ -12,7 +12,7 @@
   "schedule": {
     "poll_time_nzt": "06:00",
     "poll_frequency": "daily",
-    "intraday_alerts": false
+    "intraday_alerts": true
   },
   "draft": {
     "email": "joshuafang@gmail.com",
@@ -20,17 +20,17 @@
   },
   "thresholds": {
     "confidence_floor": 0.65,
-    "escalate_below_confidence": 0.0,
+    "escalate_below_confidence": 0,
     "escalate_above_chars": 100000000
   },
   "ranking": {
     "recency_half_life_hours": 12,
     "materiality_weight": {
-      "material": 1.0,
+      "material": 1,
       "insufficient_info": 0.4,
-      "immaterial": 0.0
+      "immaterial": 0
     },
-    "watchlist_weight_default": 1.0
+    "watchlist_weight_default": 1
   },
   "pdf": {
     "ocr_enabled": true
