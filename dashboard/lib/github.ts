@@ -93,6 +93,55 @@ export async function dispatchWorkflow(workflowFile: string, inputs: Record<stri
   }
 }
 
+// --- Actions runs (for the "Run now" progress + live run history, CONTRACTS §7) ---
+// Reading runs needs actions:read; the token already does workflow_dispatch
+// (actions:write) so it can read runs too.
+
+export interface GhWorkflowRun {
+  id: number;
+  run_number: number;
+  status: string; // queued | in_progress | completed | waiting | requested | pending
+  conclusion: string | null; // success | failure | cancelled | skipped | null
+  event: string;
+  created_at: string;
+  run_started_at: string | null;
+  updated_at: string;
+  html_url: string;
+  display_title: string;
+  head_branch: string;
+}
+
+/** Recent runs for a workflow file, newest first. */
+export async function listWorkflowRuns(workflowFile: string, perPage = 10): Promise<GhWorkflowRun[]> {
+  const res = await ghFetch(`/actions/workflows/${encodeURIComponent(workflowFile)}/runs?per_page=${perPage}`);
+  if (!res.ok) throw new Error(`GitHub listWorkflowRuns(${workflowFile}) failed: ${res.status} ${await res.text()}`);
+  const json = (await res.json()) as { workflow_runs?: GhWorkflowRun[] };
+  return json.workflow_runs ?? [];
+}
+
+export interface GhStep {
+  name: string;
+  status: string; // queued | in_progress | completed
+  conclusion: string | null;
+  number: number;
+}
+export interface GhJob {
+  id: number;
+  name: string;
+  status: string;
+  conclusion: string | null;
+  started_at: string | null;
+  steps?: GhStep[];
+}
+
+/** Jobs (with per-step status) for a run — used to name the current activity. */
+export async function listRunJobs(runId: number): Promise<GhJob[]> {
+  const res = await ghFetch(`/actions/runs/${runId}/jobs`);
+  if (!res.ok) throw new Error(`GitHub listRunJobs(${runId}) failed: ${res.status} ${await res.text()}`);
+  const json = (await res.json()) as { jobs?: GhJob[] };
+  return json.jobs ?? [];
+}
+
 function encodeURIComponentPath(p: string): string {
   // Encode each path segment but keep the slashes.
   return p.split("/").map(encodeURIComponent).join("/");

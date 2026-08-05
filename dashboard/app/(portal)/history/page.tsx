@@ -1,6 +1,7 @@
 import { getRunLog } from "@/lib/dataSource";
 import { explainFlag } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
+import { WorkflowRuns } from "@/components/WorkflowRuns";
 
 export const dynamic = "force-dynamic";
 
@@ -13,9 +14,13 @@ export default async function HistoryPage() {
         <div>
           <p className="eyebrow">Operations</p>
           <h1>Run history</h1>
-          <p>Every digest and intraday pass recorded in out/run_log.jsonl, newest first.</p>
+          <p>Live workflow runs (ongoing and finished) plus every completed digest/intraday pass recorded in out/run_log.jsonl.</p>
         </div>
       </div>
+
+      <WorkflowRuns />
+
+      <h2 style={{ fontSize: 16, margin: "4px 0 12px" }}>Completed runs (run_log.jsonl)</h2>
 
       {rows.length === 0 ? (
         <div className="card card-pad empty">

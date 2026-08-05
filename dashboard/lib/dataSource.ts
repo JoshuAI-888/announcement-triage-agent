@@ -24,8 +24,10 @@ import type {
   PortalAuth,
   ProvidersBlock,
   RunLogRow,
+  RunStatusResult,
   RuntimeConfig,
   SystemPromptResult,
+  WorkflowRunView,
 } from "./types";
 import { defaultPortalAuth } from "./portalAuth";
 
@@ -344,6 +346,65 @@ export async function dispatchRunNow(): Promise<{ mocked: boolean }> {
   }
   await gh.dispatchWorkflow("daily-brief.yml", {});
   return { mocked: false };
+}
+
+// --- live workflow run status (Run-now progress + ongoing/finished history) ---
+
+const DAILY_BRIEF_WORKFLOW = "daily-brief.yml";
+
+/**
+ * Recent daily-brief workflow runs (newest first) with live status. For the one
+ * run that is still going (queued/in_progress), we additionally fetch its job
+ * steps to name the current activity and compute a step-based progress fraction.
+ * We only do that for the single active run to bound API calls. Best-effort:
+ * a jobs-fetch failure degrades to no step detail, never throws the whole view.
+ */
+export async function getRunStatus(limit = 8): Promise<RunStatusResult> {
+  if (LOCAL_DEV_MODE) {
+    return { mode: "local-dev", runs: [], active: null };
+  }
+  const raw = await gh.listWorkflowRuns(DAILY_BRIEF_WORKFLOW, limit);
+  const activeRaw = raw.find((r) => r.status !== "completed");
+
+  let currentStep: string | null = null;
+  let stepsCompleted = 0;
+  let stepsTotal = 0;
+  if (activeRaw) {
+    try {
+      const jobs = await gh.listRunJobs(activeRaw.id);
+      const job = jobs[0];
+      const steps = job?.steps ?? [];
+      stepsTotal = steps.length;
+      stepsCompleted = steps.filter((s) => s.status === "completed").length;
+      const inProgress = steps.find((s) => s.status === "in_progress");
+      currentStep = inProgress ? inProgress.name : activeRaw.status === "queued" ? "Queued — waiting for a runner" : null;
+    } catch {
+      // best-effort: no step breakdown, still report the run as active
+    }
+  }
+
+  const runs: WorkflowRunView[] = raw.map((r) => {
+    const isActive = activeRaw !== undefined && r.id === activeRaw.id;
+    return {
+      id: r.id,
+      runNumber: r.run_number,
+      status: r.status,
+      conclusion: r.conclusion,
+      event: r.event,
+      title: r.display_title,
+      branch: r.head_branch,
+      htmlUrl: r.html_url,
+      createdAt: r.created_at,
+      startedAt: r.run_started_at,
+      updatedAt: r.updated_at,
+      currentStep: isActive ? currentStep : null,
+      stepsCompleted: isActive ? stepsCompleted : 0,
+      stepsTotal: isActive ? stepsTotal : 0,
+    };
+  });
+
+  const active = runs.find((r) => r.status !== "completed") ?? null;
+  return { mode, runs, active };
 }
 
 export interface RunEvalInputs {

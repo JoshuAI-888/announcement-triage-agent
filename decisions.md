@@ -5,6 +5,50 @@ deliberately *not* done. Newest section first. Dates are absolute (NZT).
 
 ---
 
+## 2026-08-05 — Run-now progress UX + live run history + action bumps
+
+### Context / trigger
+Owner: "when I click Run on the Vercel app there should be a progress bar with
+elapsed time and current activity — currently nothing happens — and the run
+history should contain runs ongoing and finished." Plus the minor Node 20
+deprecation warning on GitHub Actions.
+
+### Decisions
+1. **New read path `GET /api/run-status`** (`dataSource.getRunStatus` →
+   `github.listWorkflowRuns` + `listRunJobs`). Returns the recent daily-brief runs
+   with live status, and for the single **active** run only, fetches its job steps
+   to name the **current activity** and a **step-based progress fraction**
+   (completed/total). Fetching steps for just the active run bounds the API calls.
+   Best-effort: a jobs-fetch failure degrades to no step detail, never throws.
+   Mocked to an empty list in local-dev mode (no token). Uses the existing
+   `actions:write` token, which also covers `actions:read`.
+2. **`TopbarActions` now tracks the run it dispatches.** `workflow_dispatch`
+   returns no run id, so after dispatch the button polls `/api/run-status` every 4s,
+   locks onto the newest non-completed run, and shows a progress bar with a
+   once-a-second **elapsed timer**, the **current step name** (+ "step n/total"),
+   a **logs ↗** link, and a completion line (success / skipped / failure). Progress
+   is capped <100% while running so it never reads "done" early; queued/no-step
+   state shows an indeterminate animated bar. Reduced-motion respected. Only tracks
+   in GitHub mode (local-dev just shows the mocked message).
+3. **Live run history** — new client component `WorkflowRuns` on the History page,
+   above the committed run_log table (now headed "Completed runs (run_log.jsonl)").
+   Polls `/api/run-status` every 10s and lists **ongoing AND finished** runs with a
+   plain-English status badge (Queued / In progress · <step> / Success / Skipped /
+   Failed), trigger (Manual (Run now) / Scheduled), live-or-final duration, and a
+   logs link. This surfaces queued/in-progress/skipped runs that never reach
+   run_log.jsonl (only completed digests/intraday passes are logged there).
+4. **Action version bump** — `actions/checkout@v4→v5`, `actions/setup-python@v5→v6`
+   in both workflows, clearing the "Node 20 is deprecated" CI warning (v5/v6 run on
+   Node 24).
+
+### Verification (live, not assumed)
+Pointed the local dev server at the real repo via a `gh` token and clicked **Run
+now**: the bar went `Queued — waiting for a runner (0:01)` → `Install dependencies ·
+step 4/13 (0:38)` with the fill tracking the step fraction, and the History page's
+"Workflow runs" table showed the same run as `In progress · Run digest` (live) above
+the finished Success runs. `tsc --noEmit` clean; `next build` clean (the new
+`/api/run-status` route is registered); no console errors.
+
 ## 2026-08-05 — Two production bugs: silent brief drop + data-state Vercel errors
 
 ### Context / trigger

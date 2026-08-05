@@ -210,3 +210,29 @@ export interface FilingsRun {
   counts: FilingsCounts;
   filings: FilingRow[];
 }
+
+// --- Live workflow runs (the "Run now" progress + ongoing/finished history) ---
+
+export interface WorkflowRunView {
+  id: number;
+  runNumber: number;
+  status: string; // queued | in_progress | completed | waiting | pending | requested
+  conclusion: string | null; // success | failure | cancelled | skipped | null (while running)
+  event: string; // schedule | workflow_dispatch
+  title: string;
+  branch: string;
+  htmlUrl: string;
+  createdAt: string;
+  startedAt: string | null;
+  updatedAt: string;
+  // Progress, populated only for the active (non-completed) run to bound API calls:
+  currentStep: string | null; // name of the in-progress step ("current activity")
+  stepsCompleted: number;
+  stepsTotal: number;
+}
+
+export interface RunStatusResult {
+  mode: "local-dev" | "github";
+  runs: WorkflowRunView[];
+  active: WorkflowRunView | null; // newest run that is not yet completed, if any
+}
