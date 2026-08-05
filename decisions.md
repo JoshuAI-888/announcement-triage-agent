@@ -5,6 +5,41 @@ deliberately *not* done. Newest section first. Dates are absolute (NZT).
 
 ---
 
+## 2026-08-05 — Delivery routine + "SEC announcement brief" rename
+
+### Context / trigger
+Owner: "do the delivery routine for me" and "rename the email and job to SEC
+announcement brief". Chose Both (local task now + claude.ai steps) and "draft
+today now".
+
+### Decisions
+1. **Honest capability boundary.** The truly device-independent recurring delivery
+   is a **claude.ai routine**, which can only be created in the claude.ai web UI —
+   NOT from Claude Code. The portal's `/api/gmail/draft` is an explicit Phase-2
+   **stub** (no Google OAuth built), so delivery can't be wired into GitHub Actions
+   without building full OAuth first. So: local scheduled task (device-dependent,
+   runs while the desktop app is open) + hand the owner the claude.ai steps.
+2. **Renamed to "SEC announcement brief"** — email heading in `render_email.py`
+   (HTML) and `brief.py` (markdown twin); the scheduled task recreated as
+   `sec-announcement-brief` with subject "SEC announcement brief — <date>". The
+   "Announcement Triage" product name left unchanged.
+3. **Recurring local task `sec-announcement-brief`** (cron `50 6 * * *` → ~06:54
+   NZT daily, after the ~06:00 digest). Self-contained prompt: pull main, read the
+   latest `out/briefs/<date>.email.html`, create a Gmail **draft** (review-only,
+   never send) to joshuafang@gmail.com, post a summary with portal + pdf-log links.
+   First run may pause for Gmail-connector approval → owner clicks "Run now" once to
+   pre-approve.
+4. **Today's draft created directly** (connector reachable this session): a clean
+   descriptive email (full EA material item + 59/1/24/34 counts + clickable full-
+   brief / all-filings links), verified in Drafts. Did NOT inline the 92 KB brief
+   (40k+ tokens, transcription risk) — the recurring task reads the file itself for
+   full-HTML fidelity daily.
+5. **Restored the clobbered brief** (see below): manual Run-now re-runs had
+   overwritten today's 59-filing brief + filings artifact with an empty version;
+   restored from `53fb25f` so portal + delivery show real content. **Follow-up
+   flagged:** guard `publish()` so a same-day empty re-run never overwrites a
+   non-empty brief.
+
 ## 2026-08-05 — Run-now progress UX + live run history + action bumps
 
 ### Context / trigger
