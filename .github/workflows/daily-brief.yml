@@ -168,6 +168,13 @@ jobs:
           cp -r "$GITHUB_WORKSPACE/data/raw" /tmp/data-state-wt/data/raw 2>/dev/null || true
           cd /tmp/data-state-wt
           git checkout -B data-state
+          # Vercel's Git integration auto-builds EVERY branch it sees pushed, and it
+          # reads git.deploymentEnabled from the PUSHED branch's own vercel.json — not
+          # from main's. data-state is an orphan state branch with no dashboard/, so a
+          # build here always fails ("Root Directory 'dashboard' does not exist"). Ship
+          # a vercel.json ON this branch that disables deploys for it, so Vercel skips
+          # the build instead of erroring every run. (main/dashboard is unaffected.)
+          echo '{ "$schema": "https://openapi.vercel.sh/vercel.json", "git": { "deploymentEnabled": false } }' > vercel.json
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add -A
