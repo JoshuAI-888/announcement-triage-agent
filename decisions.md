@@ -5,6 +5,42 @@ deliberately *not* done. Newest section first. Dates are absolute (NZT).
 
 ---
 
+## 2026-08-05 — Two production bugs: silent brief drop + data-state Vercel errors
+
+### Context / trigger
+Owner reported "Vercel has been having deployment errors." Investigation surfaced
+a second, bigger bug hiding behind it.
+
+### Bug 1 — descriptive brief never reached the portal (the real problem)
+Since the PDF/OCR commit (`5a8f984`), the daily-brief commit step listed
+`out/pdf_log.jsonl` in a single `git add out/run_log.jsonl out/pdf_log.jsonl
+out/briefs/*.email.html out/filings/*.json data/company_profiles.json`. **`git add`
+is atomic w.r.t. pathspec errors**: if ANY argument matches no file, git exits
+non-zero and stages **nothing**. `out/pdf_log.jsonl` doesn't exist on any day
+without a PDF filing (the common case), so every no-PDF digest staged nothing and
+silently dropped the brief + the `out/filings/<date>.json` artifact + the run_log
+append — `git diff --cached --quiet` was true, "no changes to commit". That's why
+the portal still showed the pre-feature 2026-08-04 brief and `out/filings/` was
+never committed. **Fix (`024070e`):** add each path independently in a loop so the
+paths that exist commit regardless of the ones that don't. Verified end-to-end — a
+forced run committed `out/filings/2026-08-05.json` (59 filings, 1 material) + the
+92 KB descriptive brief (company/industry/plain-English flags, no raw `G#_` codes);
+deployed READY to production.
+
+### Bug 2 — Vercel ERROR on every data-state push (the reported symptom)
+Each run pushes state.db + data/raw to the orphan `data-state` branch, which has no
+`dashboard/` dir. Vercel's Git integration auto-builds every branch and failed with
+"Root Directory 'dashboard' does not exist" — an ERROR deployment every run.
+**Production (main) was never affected** (all main deployments READY). First tried
+`git.deploymentEnabled:{data-state:false}` in `dashboard/vercel.json` on main
+(`f9f67d3`) — **proven ineffective**: a data-state ERROR landed 12 min later, so
+Vercel reads that config from the PUSHED branch, not main. **Fix (`df4491f`):** the
+workflow now writes a `vercel.json` with `git.deploymentEnabled:false` ONTO the
+data-state branch itself (in the worktree commit). **Verified:** the next data-state
+push (`6e8b3e7`) was skipped by Vercel — no deployment created. (Left the main-branch
+entry in place as harmless defence-in-depth.) The historical ERROR deployments are
+cosmetic history and age out; production was continuously READY throughout.
+
 ## 2026-08-05 — Descriptive self-explaining brief + market data + delivery routine
 
 ### Context / trigger
