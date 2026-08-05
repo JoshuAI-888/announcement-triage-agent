@@ -294,7 +294,7 @@ border-radius:{THEME['radius_surface']}px; padding:24px; border:1px solid #dce2e
     <p style="margin:0 0 4px 0; color:{THEME['orange']}; font-size:11px; font-weight:bold; \
 letter-spacing:.08em; text-transform:uppercase;">Milford &middot; Announcement Triage</p>
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
-Announcement brief &mdash; {escape(_display_date(brief_date))}</h1>
+SEC announcement brief &mdash; {escape(_display_date(brief_date))}</h1>
     {_section_header("Material — ranked")}
     {_material_block(ranked, enrichment_by_id)}
     {_section_header("Needs a look")}

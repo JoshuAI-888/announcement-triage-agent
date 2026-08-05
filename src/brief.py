@@ -141,7 +141,7 @@ def render_brief(
     flags_str = _flags_summary(stats.get("guardrail_flag_counts", {}))
 
     lines = [
-        f"# Announcement brief — {brief_date.isoformat()}",
+        f"# SEC announcement brief — {brief_date.isoformat()}",
         "",
         "## Material — ranked",
         "",
