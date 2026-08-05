@@ -4,19 +4,104 @@
     "edge": "Strong brand loyalty, vertically integrated hardware-software ecosystem, and premium pricing power supported by high customer retention.",
     "generated_at": "2026-08-04T19:02:57.695818+00:00"
   },
+  "CIEN": {
+    "business": "Designs and sells optical networking equipment and software for telecommunications service providers and data center operators.",
+    "edge": "Proprietary optical transport technology and integrated software platforms that enable efficient management of high-capacity network traffic.",
+    "generated_at": "2026-08-05T05:45:01.572487+00:00"
+  },
+  "CRWD": {
+    "business": "Provides cloud-native cybersecurity software, primarily endpoint protection and threat intelligence services.",
+    "edge": "Large-scale threat intelligence database built from billions of events across its global customer base, creating a network effect that improves detection capabilities.",
+    "generated_at": "2026-08-05T05:45:03.308568+00:00"
+  },
+  "EA": {
+    "business": "Develops and publishes video games across multiple platforms and genres, including franchises like FIFA/FC, Madden NFL, The Sims, and Apex Legends.",
+    "edge": "Owns valuable sports licenses (NFL, FIFA/FC) and established intellectual property with large engaged player bases that generate recurring revenue through live services and in-game purchases.",
+    "generated_at": "2026-08-05T05:44:59.110291+00:00"
+  },
+  "GD": {
+    "business": "Manufactures defense systems, aircraft, combat vehicles, and related technologies for military and government customers worldwide.",
+    "edge": "Established relationships with U.S. Department of Defense and long-term defense contracts that create high barriers to entry for competitors.",
+    "generated_at": "2026-08-05T05:45:04.543097+00:00"
+  },
   "GOOGL": {
     "business": "Alphabet operates Google's search engine and advertising platform, along with cloud services, hardware devices, and other technology ventures through subsidiaries.",
     "edge": "Dominance in search and digital advertising, supported by vast data collection, network effects, and significant barriers to entry for competitors.",
     "generated_at": "2026-08-04T19:05:52.135840+00:00"
+  },
+  "HONA": {
+    "business": "Manufactures aerospace and defense systems including engines, avionics, wheels, brakes, and auxiliary power units for commercial and military aircraft.",
+    "edge": "Integrated portfolio of critical aircraft components with high switching costs and long-term OEM contracts that create substantial barriers to entry.",
+    "generated_at": "2026-08-05T05:45:05.828237+00:00"
+  },
+  "HUBS": {
+    "business": "Provides cloud-based customer relationship management (CRM) software and a platform of integrated sales, marketing, and service tools for businesses.",
+    "edge": "Large network effects from its integrated ecosystem of applications that increase switching costs and cross-selling opportunities, combined with a freemium model that drives user adoption.",
+    "generated_at": "2026-08-05T05:45:08.415245+00:00"
+  },
+  "MDT": {
+    "business": "Medtronic designs, manufactures, and sells medical devices and therapies across cardiac, neurological, surgical, and chronic disease management categories.",
+    "edge": "Extensive installed base of devices with recurring revenue from consumables and services, combined with broad regulatory approvals and established relationships with healthcare systems globally.",
+    "generated_at": "2026-08-05T05:45:09.695973+00:00"
+  },
+  "META": {
+    "business": "Operates social media platforms (Facebook, Instagram, WhatsApp) and develops virtual reality hardware and software.",
+    "edge": "Massive global user base exceeding 3 billion people across its platforms, creating network effects and advertising scale advantages.",
+    "generated_at": "2026-08-05T05:45:11.056351+00:00"
   },
   "MSFT": {
     "business": "Develops and sells software, cloud computing services, and hardware products including operating systems, productivity applications, and gaming platforms.",
     "edge": "Dominant market position in enterprise software and cloud infrastructure, with deep integration across its product ecosystem and substantial switching costs for corporate customers.",
     "generated_at": "2026-08-04T19:05:46.597780+00:00"
   },
+  "NFLX": {
+    "business": "Provides subscription-based streaming video entertainment services with original and licensed content across films, series, and documentaries.",
+    "edge": "Extensive proprietary content library combined with global scale, data analytics capabilities, and direct consumer relationships that enable personalized recommendations and content investment decisions.",
+    "generated_at": "2026-08-05T05:45:12.421678+00:00"
+  },
   "NVDA": {
     "business": "Designs and manufactures graphics processing units (GPUs) and system-on-chip processors used in gaming, data centers, artificial intelligence, and professional visualization.",
     "edge": "Dominant market position in GPU architecture and software ecosystem (CUDA) that creates high switching costs for customers in AI and data center applications.",
     "generated_at": "2026-08-04T19:05:50.762536+00:00"
+  },
+  "PANW": {
+    "business": "Develops and sells cybersecurity software and cloud-based platforms for network protection, threat detection, and security operations.",
+    "edge": "Broad integrated platform spanning multiple security domains that creates switching costs and cross-selling opportunities for enterprise customers.",
+    "generated_at": "2026-08-05T05:45:13.608934+00:00"
+  },
+  "SCHW": {
+    "business": "Provides retail and institutional brokerage services, investment advisory, banking, and financial planning solutions.",
+    "edge": "Large scale and brand recognition that enable competitive pricing, broad product offerings, and significant customer acquisition advantages.",
+    "generated_at": "2026-08-05T05:45:15.167745+00:00"
+  },
+  "SNDK": {
+    "business": "Manufactures and sells flash memory storage products and solutions for consumers, enterprises, and data centers.",
+    "edge": "Vertically integrated manufacturing capabilities and strong intellectual property portfolio in NAND flash technology.",
+    "generated_at": "2026-08-05T05:45:16.648338+00:00"
+  },
+  "STX": {
+    "business": "Manufactures and sells hard disk drives, solid-state drives, and data storage solutions for computing, enterprise, and consumer applications.",
+    "edge": "Vertically integrated manufacturing capabilities and established relationships with major original equipment manufacturers and cloud service providers.",
+    "generated_at": "2026-08-05T05:45:17.668976+00:00"
+  },
+  "SYK": {
+    "business": "Manufactures and sells medical devices and equipment for orthopedic surgery, neurotechnology, spine, trauma, and surgical instruments.",
+    "edge": "Strong brand reputation and integrated product portfolios that create switching costs and cross-selling opportunities in hospital and surgical settings.",
+    "generated_at": "2026-08-05T05:45:19.135054+00:00"
+  },
+  "VRSN": {
+    "business": "Operates the .com and .net domain registries and provides internet infrastructure services including DNS and security solutions.",
+    "edge": "Monopoly control over the .com top-level domain, the internet's most valuable and widely-used domain extension, generating recurring revenue from domain registrations and renewals.",
+    "generated_at": "2026-08-05T05:45:20.708937+00:00"
+  },
+  "WAB": {
+    "business": "Manufactures and supplies braking systems, control systems, and other safety-critical equipment for freight and passenger rail vehicles worldwide.",
+    "edge": "Extensive installed base and switching costs from decades of rail industry integration, combined with proprietary technology in pneumatic and electronic braking systems.",
+    "generated_at": "2026-08-05T05:45:22.073818+00:00"
+  },
+  "WSM": {
+    "business": "Operates a portfolio of home furnishings and kitchenware retail brands including Williams Sonoma, Pottery Barn, and Pottery Barn Kids through physical stores and e-commerce channels.",
+    "edge": "Strong brand portfolio with established customer loyalty and integrated omnichannel distribution capabilities that create switching costs and operational efficiency.",
+    "generated_at": "2026-08-05T05:45:23.624380+00:00"
   }
 }
