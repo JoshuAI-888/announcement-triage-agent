@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/optimisations", label: "Optimisations", icon: "f0e7" },
   { href: "/cadence", label: "Eval cadence", icon: "f017" },
   { href: "/versions", label: "Draft versions", icon: "f0f6" },
+  { href: "/faq", label: "How it works", icon: "f059" },
 ];
 
 export function PortalShell({ stale, mode, children }: { stale: boolean; mode: "local-dev" | "github"; children: ReactNode }) {
@@ -35,7 +36,7 @@ export function PortalShell({ stale, mode, children }: { stale: boolean; mode: "
         <a className="brand" href="/today">
           <img src="/brand/milfordasset.svg" alt="Milford" />
         </a>
-        <div className="workspace-label">Announcement triage</div>
+        <div className="workspace-label">SEC announcement triage</div>
         <nav className="nav" aria-label="Primary">
           {NAV_ITEMS.map((item) => (
             <Link
@@ -72,7 +73,7 @@ export function PortalShell({ stale, mode, children }: { stale: boolean; mode: "
           </button>
           <div className="search" aria-hidden="true">
             <strong style={{ color: "var(--milford-slate)", fontFamily: "var(--font-display)", fontSize: "1.05rem" }}>
-              Announcement Triage Agent
+              SEC Announcement Triage Agent
             </strong>
           </div>
           <TopbarActions mode={mode} />

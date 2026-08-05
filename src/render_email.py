@@ -292,7 +292,7 @@ def render_email(
   <div style="max-width:640px; margin:0 auto; background:{THEME['paper']}; \
 border-radius:{THEME['radius_surface']}px; padding:24px; border:1px solid #dce2e4;">
     <p style="margin:0 0 4px 0; color:{THEME['orange']}; font-size:11px; font-weight:bold; \
-letter-spacing:.08em; text-transform:uppercase;">Milford &middot; Announcement Triage</p>
+letter-spacing:.08em; text-transform:uppercase;">Milford &middot; SEC Announcement Triage</p>
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
 SEC announcement brief &mdash; {escape(_display_date(brief_date))}</h1>
     {_section_header("Material — ranked")}

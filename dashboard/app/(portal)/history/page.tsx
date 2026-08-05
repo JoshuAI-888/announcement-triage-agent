@@ -1,6 +1,7 @@
 import { getRunLog } from "@/lib/dataSource";
 import { explainFlag } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
+import { modelRole } from "@/lib/models";
 import { WorkflowRuns } from "@/components/WorkflowRuns";
 
 export const dynamic = "force-dynamic";
@@ -80,7 +81,9 @@ export default async function HistoryPage() {
                   <td className="align-right tabular">{fmtNzd(r.total_cost_nzd)}</td>
                   <td className="align-right tabular">{r.runtime_seconds.toFixed(1)}</td>
                   <td>{r.prompt_version}</td>
-                  <td className="mono small">{r.model_primary}</td>
+                  <td className="mono small" title={modelRole(r.model_primary).role} style={{ cursor: "help" }}>
+                    {r.model_primary} <span className="muted">({modelRole(r.model_primary).label})</span>
+                  </td>
                 </tr>
               ))}
             </tbody>
