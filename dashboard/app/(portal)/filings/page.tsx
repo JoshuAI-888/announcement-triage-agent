@@ -1,5 +1,6 @@
 import { FilingsTable } from "@/components/FilingsTable";
 import { getLatestFilings } from "@/lib/dataSource";
+import { KIND_LABEL } from "@/lib/flags";
 import { fmtDateTime } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -23,7 +24,7 @@ export default async function FilingsPage() {
       {!run && (
         <div className="card card-pad empty">
           <p>
-            <strong>No filings recorded yet.</strong> out/filings/ has no runs in this checkout. Once a digest or
+            <strong>No filings recorded yet.</strong> out/filings/ has no runs in this checkout. Once a Daily digest or
             intraday pass completes, its classified filings will appear here.
           </p>
         </div>
@@ -34,7 +35,7 @@ export default async function FilingsPage() {
           <div className="grid metrics">
             <article className="card card-pad metric">
               <span>Kind / date</span>
-              <strong style={{ fontSize: "1.3rem" }}>{run.kind}</strong>
+              <strong style={{ fontSize: "1.3rem" }}>{KIND_LABEL[run.kind] ?? run.kind}</strong>
               <small className="muted">{fmtDateTime(run.generated_at)}</small>
             </article>
             <article className="card card-pad metric">

@@ -123,7 +123,7 @@ def body(check):
     from src.render_email import render_email
     tmp = Path(tempfile.mkdtemp(prefix="flags_check_"))
     html_path = render_email([], [flagged_item], fixture_stats, [], all_items=[flagged_item],
-                             brief_date=NOW.date(), out_dir=tmp)
+                             brief_date=NOW.date(), run_id="2026-07-14T00-00-00", kind="digest", out_dir=tmp)
     html = html_path.read_text(encoding="utf-8")
     check.require(not _RAW_CODE_RE.search(html), "render_email never leaks a raw G#_ code")
     check.require("insufficient_info" not in html, "render_email never leaks the literal 'insufficient_info'")
@@ -132,7 +132,7 @@ def body(check):
 
     from src.brief import render_brief
     md_path = render_brief([], [flagged_item], fixture_stats, all_items=[flagged_item],
-                           brief_date=NOW.date(), out_dir=tmp)
+                           brief_date=NOW.date(), run_id="2026-07-14T00-00-00", kind="digest", out_dir=tmp)
     md = md_path.read_text(encoding="utf-8")
     check.require(not _RAW_CODE_RE.search(md), "brief.py (markdown) never leaks a raw G#_ code")
     check.require("insufficient_info" not in md, "brief.py never leaks the literal 'insufficient_info'")
@@ -144,14 +144,16 @@ def body(check):
     abstained = make_cls(ann, "insufficient_info")
     abst_item = RankedItem(classification=abstained, announcement=ann, score=0.2, reason="reason")
     html2 = render_email([], [abst_item], {}, [], all_items=[abst_item],
-                         brief_date=NOW.date(), out_dir=tmp).read_text(encoding="utf-8")
+                         brief_date=NOW.date(), run_id="2026-07-14T00-00-01", kind="digest",
+                         out_dir=tmp).read_text(encoding="utf-8")
     check.require(FLAG_VOCAB["insufficient_info"]["label"] in html2,
                   "an abstention (no flags) shows the insufficient_info label")
     check.require(not _RAW_CODE_RE.search(html2) and "insufficient_info" not in html2,
                   "abstention rendering still leaks nothing raw")
 
     md2 = render_brief([], [abst_item], {}, all_items=[abst_item],
-                       brief_date=NOW.date(), out_dir=tmp).read_text(encoding="utf-8")
+                       brief_date=NOW.date(), run_id="2026-07-14T00-00-01", kind="digest",
+                       out_dir=tmp).read_text(encoding="utf-8")
     check.require(FLAG_VOCAB["insufficient_info"]["label"] in md2,
                   "brief.py shows the insufficient_info label for an abstention too")
     check.require(not _RAW_CODE_RE.search(md2) and "insufficient_info" not in md2,

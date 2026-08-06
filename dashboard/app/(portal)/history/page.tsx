@@ -1,5 +1,5 @@
 import { getRunLog } from "@/lib/dataSource";
-import { explainFlag } from "@/lib/flags";
+import { explainFlag, KIND_LABEL } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
 import { modelRole } from "@/lib/models";
 import { WorkflowRuns } from "@/components/WorkflowRuns";
@@ -15,7 +15,7 @@ export default async function HistoryPage() {
         <div>
           <p className="eyebrow">Operations</p>
           <h1>Run history</h1>
-          <p>Live workflow runs (ongoing and finished) plus every completed digest/intraday pass recorded in out/run_log.jsonl.</p>
+          <p>Live workflow runs (ongoing and finished) plus every completed Daily digest/intraday/backfill pass recorded in out/run_log.jsonl.</p>
         </div>
       </div>
 
@@ -52,7 +52,9 @@ export default async function HistoryPage() {
                 <tr key={`${r.ts}-${i}`}>
                   <td className="mono small">{fmtDateTime(r.ts)}</td>
                   <td>
-                    <span className={`badge ${r.kind === "intraday" ? "orange" : ""}`}>{r.kind}</span>
+                    <span className={`badge ${r.kind === "intraday" ? "orange" : r.kind === "backfill" ? "purple" : ""}`}>
+                      {KIND_LABEL[r.kind] ?? r.kind}
+                    </span>
                   </td>
                   <td>{r.processed}</td>
                   <td>{r.new}</td>

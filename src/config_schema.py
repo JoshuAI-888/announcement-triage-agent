@@ -86,6 +86,9 @@ class ScheduleCfg(BaseModel):
     poll_time_nzt: str = "06:00"
     poll_frequency: PollFrequency = "daily"
     intraday_alerts: bool = False
+    # Every run (digest/intraday/backfill) now fetches a sliding "last N days"
+    # window instead of floor-ing solely on the stored watermark; this is that N.
+    lookback_days: int = Field(default=1, ge=1)
 
     @field_validator("poll_time_nzt")
     @classmethod

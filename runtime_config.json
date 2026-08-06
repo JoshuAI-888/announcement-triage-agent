@@ -12,7 +12,8 @@
   "schedule": {
     "poll_time_nzt": "06:00",
     "poll_frequency": "daily",
-    "intraday_alerts": true
+    "intraday_alerts": true,
+    "lookback_days": 1
   },
   "draft": {
     "email": "joshuafang@gmail.com",

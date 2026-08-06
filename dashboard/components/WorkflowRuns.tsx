@@ -18,19 +18,6 @@ function duration(run: WorkflowRunView): string {
   return `${m}:${String(s).padStart(2, "0")}`;
 }
 
-// The digest brief a completed run produced is out/briefs/<UTC-date>.email.html
-// (run.py names it by now.date() in UTC). Link to the actual rendered HTML so the
-// operator can open exactly what that run generated, not just the CI logs. Only
-// offered for completed successful runs on the main branch (a skipped/failed run,
-// or an intraday alert, may not have a plain <date> brief — the link 404s
-// gracefully if so).
-function briefUrl(run: WorkflowRunView): string | null {
-  if (run.status !== "completed" || run.conclusion !== "success") return null;
-  const iso = run.startedAt ?? run.createdAt;
-  const date = new Date(iso).toISOString().slice(0, 10); // YYYY-MM-DD (UTC)
-  return `/api/versions/${date}.email.html`;
-}
-
 function statusBadge(run: WorkflowRunView): { cls: string; label: string } {
   if (run.status !== "completed") {
     if (run.status === "queued" || run.status === "pending" || run.status === "waiting" || run.status === "requested") {
@@ -120,7 +107,6 @@ export function WorkflowRuns() {
             <tbody>
               {runs.map((r) => {
                 const b = statusBadge(r);
-                const brief = briefUrl(r);
                 return (
                   <tr key={r.id}>
                     <td className="mono small">#{r.runNumber}</td>
@@ -129,8 +115,8 @@ export function WorkflowRuns() {
                     <td className="mono small">{fmtDateTime(r.startedAt ?? r.createdAt)}</td>
                     <td className="align-right tabular">{duration(r)}</td>
                     <td className="small">
-                      {brief ? (
-                        <a href={brief} target="_blank" rel="noreferrer" title="Open the brief HTML this run produced">view brief ↗</a>
+                      {r.briefUrl ? (
+                        <a href={r.briefUrl} target="_blank" rel="noreferrer" title="Open the brief HTML this run produced">view brief ↗</a>
                       ) : (
                         <span className="muted">—</span>
                       )}

@@ -81,11 +81,21 @@ def fetch(
     config: dict | None = None,
     db_path: str | Path | None = None,
     raw_dir: str | Path | None = None,
+    since: datetime | None = None,
+    until: datetime | None = None,
+    advance_watermark: bool = True,
 ) -> FetchResult:
-    """Run one incremental fetch pass. Returns the new / duplicate / seen counts.
+    """Run one fetch pass over a window. Returns the new / duplicate / seen counts.
 
     `db_path` and `raw_dir` default to the build's own state.db and data/raw;
     they are overridable so a check can exercise a fetch from a clean slate.
+
+    The window is `lookback_days`-driven for ALL runs, not watermark-floored:
+    when `since` is omitted, it's computed as `now - lookback_days` (read from
+    `config["_runtime"]["schedule"]["lookback_days"]`, default 1). Pass `since`
+    explicitly (and optionally `until`) to override — used by backfill. The
+    watermark table is still read/written for bookkeeping (`advance_watermark`
+    gates whether a successful pass advances it) but no longer floors the window.
     """
     config = config or load_config()
     raw_dir = Path(raw_dir) if raw_dir is not None else RAW_DIR
@@ -94,16 +104,15 @@ def fetch(
     adapter = build_adapter(config)
     store = Store(db_path if db_path is not None else DB_PATH)
     try:
-        since = store.get_watermark(exchange)
         if since is None:
-            lookback = config["exchange"]["bootstrap_lookback_days"]
-            since = datetime.now(timezone.utc) - timedelta(days=lookback)
-            print(
-                f"No watermark for {exchange}; bootstrapping from "
-                f"{since.isoformat()} ({lookback}d lookback)."
-            )
+            lookback_days = config.get("_runtime", {}).get("schedule", {}).get("lookback_days", 1)
+            since = datetime.now(timezone.utc) - timedelta(days=lookback_days)
+            print(f"Window for {exchange}: last {lookback_days}d (since {since.isoformat()}).")
         else:
-            print(f"Watermark for {exchange}: {since.isoformat()}")
+            print(
+                f"Window for {exchange}: explicit since={since.isoformat()}"
+                + (f" until={until.isoformat()}" if until else "")
+            )
 
         new_count = 0
         dup_count = 0
@@ -114,7 +123,7 @@ def fetch(
 
         for ticker in config["watchlist"]:
             try:
-                raw_records = adapter.fetch_ticker(ticker, since)
+                raw_records = adapter.fetch_ticker(ticker, since, until=until)
             except Exception as exc:  # dead-letter boundary (SPEC.md §12) — run continues
                 store.add_dead_letter(
                     error=f"fetch failed for {ticker}: {exc}",
@@ -154,12 +163,16 @@ def fetch(
             f"{new_count} new, {dup_count} already processed."
         )
 
-        # Advance the watermark ONLY after a full successful run (SPEC.md §12).
+        # Advance the watermark ONLY after a full successful run (SPEC.md §12),
+        # and only when the caller wants it to (backfill passes advance_watermark=False
+        # so a historical replay never disturbs the live daily watermark).
         if had_failure:
             print(
                 "Watermark NOT advanced: one or more tickers failed "
                 "(advance only after a full successful run)."
             )
+        elif not advance_watermark:
+            print("Watermark NOT advanced: isolated run (advance_watermark=False).")
         else:
             store.set_watermark(exchange, max_published)
             print(f"Watermark advanced to {max_published.isoformat()}.")
@@ -168,7 +181,7 @@ def fetch(
             new=new_count,
             duplicate=dup_count,
             seen=seen,
-            watermark_advanced=not had_failure,
+            watermark_advanced=not had_failure and advance_watermark,
             new_ids=tuple(new_ids),
         )
     finally:

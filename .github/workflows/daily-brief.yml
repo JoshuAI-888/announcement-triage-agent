@@ -30,6 +30,14 @@ on:
         description: "Force a digest now, bypassing the schedule gate (the dashboard 'Run now' button)"
         type: boolean
         default: true
+      as_of_date:
+        description: "Backfill: ISO date (UTC) the window ends at, e.g. 2026-08-02. Leave blank for a normal digest."
+        type: string
+        default: ""
+      lookback_days:
+        description: "Backfill: number of days to look back from as_of_date. Leave blank to use the configured default."
+        type: string
+        default: ""
 
 permissions:
   contents: write
@@ -105,7 +113,16 @@ jobs:
           # If unset, market lookups return None and the price block is omitted — the
           # run still succeeds (best-effort, see src/market.py).
           TWELVEDATA_API_KEY: ${{ secrets.TWELVEDATA_API_KEY }}
-        run: python -m src.run
+          # Only populated on a workflow_dispatch that filled them in (the dashboard's
+          # "Backfill…" control); empty/unset on a schedule trigger or a plain "Run now".
+          AS_OF: ${{ github.event.inputs.as_of_date }}
+          LOOKBACK: ${{ github.event.inputs.lookback_days }}
+        run: |
+          set -e
+          ARGS=""
+          if [ -n "$AS_OF" ]; then ARGS="$ARGS --as-of $AS_OF"; fi
+          if [ -n "$LOOKBACK" ]; then ARGS="$ARGS --lookback-days $LOOKBACK"; fi
+          python -m src.run $ARGS
 
       - name: Run intraday
         if: steps.gate.outputs.action == 'intraday'

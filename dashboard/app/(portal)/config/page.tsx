@@ -324,7 +324,7 @@ export default function ConfigPage() {
 
       <article className="card card-pad config-section">
         <h2>Schedule</h2>
-        <p className="section-intro">Read by scripts/ci_gate.py on every 15-minute cron tick to decide digest / intraday / skip.</p>
+        <p className="section-intro">Read by scripts/ci_gate.py on every 15-minute cron tick to decide Daily digest / intraday / skip.</p>
         <div className="config-form-grid">
           <div className="field">
             <label>Poll time (NZT, 24h)</label>
@@ -337,6 +337,25 @@ export default function ConfigPage() {
               <option value="hourly">hourly</option>
             </select>
           </div>
+          <div className="field">
+            <label>Lookback window (days)</label>
+            <select
+              className="select"
+              value={config.schedule.lookback_days}
+              onChange={(e) => patchSchedule({ lookback_days: parseInt(e.target.value, 10) })}
+            >
+              <option value={1}>1</option>
+              <option value={2}>2</option>
+              <option value={5}>5</option>
+              <option value={7}>7</option>
+            </select>
+          </div>
+          <div className="field span-2">
+            <span className="hint">
+              Every run (Daily digest, intraday, and manual backfill) pulls the last N days of SEC filings, not just
+              what&rsquo;s new since the last run.
+            </span>
+          </div>
           <div className="field checkbox-field span-2">
             <input
               id="intraday_alerts"
@@ -345,7 +364,7 @@ export default function ConfigPage() {
               onChange={(e) => patchSchedule({ intraday_alerts: e.target.checked })}
             />
             <label htmlFor="intraday_alerts" style={{ marginBottom: 0 }}>
-              Intraday alerts (material-only alert pass between digests)
+              Intraday alerts (material-only alert pass between daily digests)
             </label>
           </div>
         </div>

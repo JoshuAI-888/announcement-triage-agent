@@ -40,7 +40,7 @@ const ITEMS: { title: string; detail: string; icon: string }[] = [
   {
     title: "Raw-document caching",
     detail:
-      "Fetched raw filings are cached under data/raw/ (idempotent fetch, watermarked in state.db) and restored from the data-state branch at the start of every workflow run, so a digest, an intraday pass and an eval over overlapping announcements never re-fetch or re-pay for the same document.",
+      "Fetched raw filings are cached under data/raw/ (idempotent fetch, watermarked in state.db) and restored from the data-state branch at the start of every workflow run, so a Daily digest, an intraday pass and an eval over overlapping announcements never re-fetch or re-pay for the same document.",
     icon: "f1c0",
   },
 ];

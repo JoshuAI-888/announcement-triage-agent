@@ -13,6 +13,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Optional
 
+from src.models import Classification
+
 
 def _to_iso(dt: datetime) -> str:
     """Serialise an aware datetime to a UTC ISO-8601 string. Naive datetimes are refused."""
@@ -81,6 +83,14 @@ class Store:
                 failed_at       TEXT NOT NULL
             );
 
+            CREATE TABLE IF NOT EXISTS classification_cache (
+                announcement_id TEXT NOT NULL,
+                prompt_version  TEXT NOT NULL,
+                result_json     TEXT NOT NULL,
+                cached_at       TEXT NOT NULL,
+                PRIMARY KEY (announcement_id, prompt_version)
+            );
+
             -- Enforce append-only audit at the database level (SPEC.md §12):
             -- these triggers abort any UPDATE or DELETE against the audit table.
             CREATE TRIGGER IF NOT EXISTS audit_no_update
@@ -128,6 +138,14 @@ class Store:
         return parse_iso(row["last_processed_at"]) if row else None
 
     def set_watermark(self, exchange: str, last_processed_at: datetime) -> None:
+        """Advance the watermark. Refuses to move it backwards (monotonic guard,
+        defence-in-depth): a caller that races or replays an older window is a
+        silent no-op here rather than a watermark regression."""
+        if last_processed_at.tzinfo is None:
+            raise ValueError("refusing to store a naive datetime; a timezone is required")
+        current = self.get_watermark(exchange)
+        if current is not None and last_processed_at < current:
+            return
         self.conn.execute(
             "INSERT INTO watermark (exchange, last_processed_at) VALUES (?, ?) "
             "ON CONFLICT(exchange) DO UPDATE SET last_processed_at = excluded.last_processed_at",
@@ -183,6 +201,44 @@ class Store:
             "SELECT 1 FROM audit WHERE announcement_id = ? LIMIT 1", (announcement_id,)
         ).fetchone()
         return row is not None
+
+    # --- classification cache (reuse across overlapping windows / reruns) ----
+
+    def get_cached_classification(
+        self, announcement_id: str, prompt_version: str
+    ) -> Optional[Classification]:
+        """A fully-verified `Classification` cached from a prior run, or None on a miss.
+
+        Keyed on (announcement_id, prompt_version): a prompt-version bump is a
+        cache miss by construction, so no separate invalidation is needed.
+        """
+        row = self.conn.execute(
+            "SELECT result_json FROM classification_cache WHERE announcement_id = ? AND prompt_version = ?",
+            (announcement_id, prompt_version),
+        ).fetchone()
+        if row is None:
+            return None
+        return Classification.model_validate_json(row["result_json"])
+
+    def put_cached_classification(
+        self, announcement_id: str, prompt_version: str, classification: Classification
+    ) -> None:
+        """Cache a fully-verified `Classification` (post-verify(), never pre-verify —
+        verify() is not idempotent, so only the exact object that was audited/ranked
+        this pass may be rehydrated on a future cache hit)."""
+        self.conn.execute(
+            "INSERT INTO classification_cache (announcement_id, prompt_version, result_json, cached_at) "
+            "VALUES (?, ?, ?, ?) "
+            "ON CONFLICT(announcement_id, prompt_version) DO UPDATE SET "
+            "result_json = excluded.result_json, cached_at = excluded.cached_at",
+            (
+                announcement_id,
+                prompt_version,
+                classification.model_dump_json(),
+                _to_iso(datetime.now(timezone.utc)),
+            ),
+        )
+        self.conn.commit()
 
     # --- dead-letter ---------------------------------------------------------
 

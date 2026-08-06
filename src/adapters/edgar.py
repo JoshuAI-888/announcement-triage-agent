@@ -151,14 +151,14 @@ class EdgarAdapter:
 
     # --- ExchangeAdapter protocol (SPEC.md §6.1) -----------------------------
 
-    def poll(self, since: datetime) -> list[dict]:
-        """Return raw source payloads across the whole watchlist published after `since`."""
+    def poll(self, since: datetime, until: Optional[datetime] = None) -> list[dict]:
+        """Return raw source payloads across the whole watchlist published in (since, until]."""
         out: list[dict] = []
         for ticker in self.watchlist:
-            out.extend(self.fetch_ticker(ticker, since))
+            out.extend(self.fetch_ticker(ticker, since, until=until))
         return out
 
-    def fetch_ticker(self, ticker: str, since: datetime) -> list[dict]:
+    def fetch_ticker(self, ticker: str, since: datetime, until: Optional[datetime] = None) -> list[dict]:
         """Poll a single ticker. Raised exceptions are the caller's dead-letter boundary."""
         self._load_cik_map()
         cik10 = self._ticker_to_cik.get(ticker.upper())
@@ -167,10 +167,10 @@ class EdgarAdapter:
                 f"watchlist ticker {ticker!r} not found in EDGAR company_tickers map"
             )
         data = self._get_json(SUBMISSIONS_URL.format(cik10=cik10))
-        return self._extract_filings(ticker.upper(), cik10, data, since)
+        return self._extract_filings(ticker.upper(), cik10, data, since, until=until)
 
     def _extract_filings(
-        self, ticker: str, cik10: str, data: dict, since: datetime
+        self, ticker: str, cik10: str, data: dict, since: datetime, until: Optional[datetime] = None
     ) -> list[dict]:
         company_name = data.get("name", ticker)
         # SIC description (industry) lives at the top level of the submissions
@@ -199,6 +199,8 @@ class EdgarAdapter:
                 continue
             published_at = parse_iso(accepted_raw)
             if since is not None and published_at <= since:
+                continue
+            if until is not None and published_at > until:
                 continue
 
             form = at(forms, i) or ""

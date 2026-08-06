@@ -4,9 +4,9 @@ Mirrors brief.py's four sections (ranked material, needs a look, all filings thi
 run, run footer) but renders a self-contained, inline-CSS HTML document suitable
 for a Gmail draft: no external stylesheet, no @font-face (mail clients drop
 both), only inline `style="..."` attributes built from `src.theme.THEME`.
-Written to `out/briefs/<DATE>.email.html` for the morning digest, or
-`out/briefs/<DATE>T<HH-MM>.email.html` when `brief_date` is a `datetime` carrying
-a non-midnight time — the intraday alert path (`src.run --intraday`).
+Written to `out/briefs/<run_id>.email.html` for every run kind (digest,
+intraday, backfill) — `run_id` is the UTC execution time to the second, so
+reruns on the same day never clobber a previous brief.
 
 Every guardrail flag and abstention is expanded to plain English via
 `src.flags` before it reaches this module's output — a raw `G#_...` code or the
@@ -24,7 +24,7 @@ from html import escape
 from pathlib import Path
 
 from src.enrich import Enrichment
-from src.flags import MATERIALITY_LABEL, doc_type_label, explain_flag, explain_flags
+from src.flags import KIND_LABEL, MATERIALITY_LABEL, doc_type_label, explain_flag, explain_flags
 from src.rank import RankedItem
 from src.theme import FONT_BODY, FONT_DISPLAY, THEME
 
@@ -32,11 +32,8 @@ ROOT = Path(__file__).resolve().parent.parent
 BRIEFS_DIR = ROOT / "out" / "briefs"
 
 
-def _filename(brief_date: date_cls | datetime) -> str:
-    if isinstance(brief_date, datetime) and (brief_date.hour, brief_date.minute) != (0, 0):
-        return f"{brief_date.date().isoformat()}T{brief_date.hour:02d}-{brief_date.minute:02d}.email.html"
-    d = brief_date.date() if isinstance(brief_date, datetime) else brief_date
-    return f"{d.isoformat()}.email.html"
+def _filename(run_id: str) -> str:
+    return f"{run_id}.email.html"
 
 
 def _display_date(brief_date: date_cls | datetime) -> str:
@@ -258,6 +255,16 @@ def _section_header(title: str) -> str:
             f'font-size:18px; margin:24px 0 10px 0;">{escape(title)}</h2>')
 
 
+def _heading_suffix(kind: str, window: dict | None) -> str:
+    kind_label = KIND_LABEL.get(kind, kind)
+    suffix = f" &mdash; {escape(kind_label)}"
+    if kind == "backfill" and window and window.get("since"):
+        since_d = str(window["since"])[:10]
+        until_d = (str(window.get("until") or "") or "")[:10] or "now"
+        suffix += f" (window: {escape(since_d)} to {escape(until_d)})"
+    return suffix
+
+
 def render_email(
     ranked: list[RankedItem],
     needs_look: list[RankedItem],
@@ -265,16 +272,21 @@ def render_email(
     enrichment: list[Enrichment],
     all_items: list[RankedItem] | None = None,
     brief_date: date_cls | datetime | None = None,
+    *,
+    run_id: str,
+    kind: str = "digest",
+    window: dict | None = None,
     out_dir: Path | None = None,
 ) -> Path:
     """Render the self-contained, Milford-themed HTML email brief and write it to disk.
 
     Mirrors brief.py's four sections (material — ranked, needs a look, all
     filings this run, run footer). Every color is inlined via `src.theme.THEME`;
-    fonts fall back to web-safe stacks. Pass a `datetime` (not a bare `date`)
-    with a non-midnight time in `brief_date` to get the intraday filename
-    (`out/briefs/<DATE>T<HH-MM>.email.html`); otherwise the digest filename
-    (`out/briefs/<DATE>.email.html`) is used.
+    fonts fall back to web-safe stacks. Written to `out/briefs/<run_id>.email.html`
+    for EVERY run kind (digest/intraday/backfill) — `run_id` is the UTC execution
+    time to the second (see `src.run.compute_run_id`), so reruns never clobber
+    each other. `kind` drives the heading label (KIND_LABEL — "Daily digest" /
+    "Intraday" / "Backfill"); a backfill's heading also shows the covered window.
 
     `all_items` is every classified filing this run (material + immaterial +
     needs-a-look) — it drives the "All filings this run" table. Defaults to
@@ -294,7 +306,7 @@ border-radius:{THEME['radius_surface']}px; padding:24px; border:1px solid #dce2e
     <p style="margin:0 0 4px 0; color:{THEME['orange']}; font-size:11px; font-weight:bold; \
 letter-spacing:.08em; text-transform:uppercase;">Milford &middot; SEC Announcement Triage</p>
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
-SEC announcement brief &mdash; {escape(_display_date(brief_date))}</h1>
+SEC announcement brief{_heading_suffix(kind, window)} &mdash; {escape(_display_date(brief_date))}</h1>
     {_section_header("Material — ranked")}
     {_material_block(ranked, enrichment_by_id)}
     {_section_header("Needs a look")}
@@ -306,6 +318,6 @@ SEC announcement brief &mdash; {escape(_display_date(brief_date))}</h1>
   </div>
 </div>"""
 
-    path = out_dir / _filename(brief_date)
+    path = out_dir / _filename(run_id)
     path.write_text(html, encoding="utf-8")
     return path

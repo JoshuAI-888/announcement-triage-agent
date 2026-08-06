@@ -52,6 +52,29 @@ def body(check):
     check.raises(Exception, _bad(lambda p: p.__setitem__("unknown_key", 1)),
                  "unknown top-level key rejected (extra=forbid)")
 
+    # --- schedule.lookback_days: int, default 1, min 1 (round-trips through all
+    #     four schema surfaces on the Python side; regenerated JSON schema
+    #     + dashboard mirrors are the other three, out of scope for this stream) ---
+    payload_no_lookback = _valid_payload()
+    del payload_no_lookback["schedule"]["lookback_days"]
+    rc_default = C.validate(payload_no_lookback)
+    check.equal(rc_default.schedule.lookback_days, 1, "lookback_days defaults to 1 when omitted")
+
+    check.raises(Exception, _bad(lambda p: p["schedule"].__setitem__("lookback_days", 0)),
+                 "lookback_days == 0 rejected (min 1)")
+    check.raises(Exception, _bad(lambda p: p["schedule"].__setitem__("lookback_days", -3)),
+                 "negative lookback_days rejected")
+
+    payload_lookback_5 = _valid_payload()
+    payload_lookback_5["schedule"]["lookback_days"] = 5
+    rc_5 = C.validate(payload_lookback_5)
+    check.equal(rc_5.schedule.lookback_days, 5, "a valid positive lookback_days round-trips")
+    check.equal(rc_5.model_dump()["schedule"]["lookback_days"], 5,
+                "lookback_days survives model_dump() round-trip")
+    merged_5 = C.apply_overrides(base, rc_5)
+    check.equal(merged_5["_runtime"]["schedule"]["lookback_days"], 5,
+                "lookback_days threads into cfg['_runtime']['schedule'] via apply_overrides")
+
     # --- the NO-GOLD-FIELD boundary (prohibition #1 / S4) ---
     check.raises(GoldFieldError, _bad(lambda p: p.__setitem__("gold_labels", {"x": "material"})),
                  "a gold_labels key is refused")
@@ -69,7 +92,8 @@ def body(check):
     check.equal(merged["thresholds"]["confidence_floor"], rc.thresholds.confidence_floor,
                 "threshold overlaid")
     check.equal(merged["_runtime"]["draft_email"], rc.draft.email, "runtime block carries draft email")
-    check.equal(merged["_runtime"]["schedule"]["intraday_alerts"], False, "schedule carried into runtime block")
+    check.equal(merged["_runtime"]["schedule"]["intraday_alerts"], rc.schedule.intraday_alerts,
+                "schedule carried into runtime block")
 
     # --- run.provider actually swaps the primary model id + pricing (P flag #3) ---
     prov = (base.get("providers", {}) or {})

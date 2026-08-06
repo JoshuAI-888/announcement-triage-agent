@@ -56,3 +56,13 @@ export const FLAG_VOCAB: Record<string, FlagInfo> = {
 export function explainFlag(code: string): FlagInfo {
   return FLAG_VOCAB[code] ?? { label: code, meaning: code, why: "" };
 }
+
+// KIND_LABEL — display mapping for run kinds. Keep in lockstep with the
+// Python-side KIND_LABEL in src/flags.py. The internal slug ("digest",
+// "intraday", "backfill") stays lowercase everywhere in logic/comparisons;
+// only the rendered text changes.
+export const KIND_LABEL: Record<string, string> = {
+  digest: "Daily digest",
+  intraday: "Intraday",
+  backfill: "Backfill",
+};

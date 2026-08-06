@@ -166,11 +166,11 @@ export function validateRuntimeConfig(raw: unknown): ValidationResult {
 
   // --- schedule (required) ---
   const scheduleRaw = raw.schedule;
-  let schedule: ScheduleCfg = { poll_time_nzt: "06:00", poll_frequency: "daily", intraday_alerts: false };
+  let schedule: ScheduleCfg = { poll_time_nzt: "06:00", poll_frequency: "daily", intraday_alerts: false, lookback_days: 1 };
   if (!isPlainObject(scheduleRaw)) {
     errors.push("schedule: required object");
   } else {
-    checkExtraKeys(scheduleRaw, ["poll_time_nzt", "poll_frequency", "intraday_alerts"], "schedule", errors);
+    checkExtraKeys(scheduleRaw, ["poll_time_nzt", "poll_frequency", "intraday_alerts", "lookback_days"], "schedule", errors);
     const pollTime = scheduleRaw.poll_time_nzt ?? "06:00";
     if (typeof pollTime !== "string" || !HHMM.test(pollTime)) {
       errors.push("schedule.poll_time_nzt: must be HH:MM (24h)");
@@ -181,10 +181,18 @@ export function validateRuntimeConfig(raw: unknown): ValidationResult {
     }
     const intradayAlerts = scheduleRaw.intraday_alerts ?? false;
     if (typeof intradayAlerts !== "boolean") errors.push("schedule.intraday_alerts: must be a boolean");
+    // Tolerate absence: runtime_config.json on disk may not carry this field
+    // until the Python side ships lockback_days, so default to 1 rather than
+    // erroring — but still reject a present-but-invalid value.
+    const lookbackDays = scheduleRaw.lookback_days ?? 1;
+    if (!(num(lookbackDays) && Number.isInteger(lookbackDays) && lookbackDays >= 1)) {
+      errors.push("schedule.lookback_days: must be an integer >= 1");
+    }
     schedule = {
       poll_time_nzt: pollTime as string,
       poll_frequency: pollFrequency as PollFrequency,
       intraday_alerts: intradayAlerts as boolean,
+      lookback_days: lookbackDays as number,
     };
   }
 

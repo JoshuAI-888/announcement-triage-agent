@@ -65,6 +65,11 @@ def check_store(c: Check, tmp: Path) -> None:
         rows = store.conn.execute("SELECT COUNT(*) FROM watermark WHERE exchange='EDGAR'").fetchone()[0]
         c.equal(rows, 1, "exactly one watermark row per exchange")
 
+        # monotonic guard: an attempt to move the watermark BACKWARDS is a silent no-op
+        # (defence-in-depth against a replay/backfill call site ever regressing it).
+        store.set_watermark("EDGAR", now)  # earlier than `later`, already set above
+        c.equal(store.get_watermark("EDGAR"), later, "set_watermark refuses to regress (monotonic guard)")
+
         # A naive datetime is a silent-timezone-bug generator; refuse it (SPEC §0.7).
         c.raises(
             ValueError,
@@ -99,6 +104,103 @@ def check_store(c: Check, tmp: Path) -> None:
         store.close()
 
 
+def check_classification_cache(c: Check, tmp: Path) -> None:
+    """`classification_cache`: put/get round-trip, a miss, and prompt_version isolation."""
+    from src.models import Announcement, Classification, Entities
+    from src.store import Store
+
+    store = Store(tmp / "cache.db")
+    try:
+        ann = Announcement(
+            announcement_id="a" * 64, exchange="EDGAR", ticker="AAPL", company_name="AAPL Inc.",
+            published_at=datetime(2026, 7, 14, 12, 0, tzinfo=timezone.utc), headline="AAPL headline",
+            doc_type="guidance_change", native_doc_type="8-K", native_id="acc-1",
+            issuer_price_sensitive_flag=None, body_text="body", char_count=4, truncated=False,
+            source_url="https://sec.gov/AAPL", fetched_at=datetime(2026, 7, 14, 12, 0, tzinfo=timezone.utc),
+        )
+        cls = Classification(
+            announcement_id=ann.announcement_id, materiality="material", confidence=0.9,
+            categories=["guidance_change"], evidence_quote="a grounded quote", rationale="rationale text",
+            entities=Entities(), previously_disclosed=False, needs_human_review=False,
+            model_id="claude-haiku-4-5-20251001", prompt_version="v1", cost_nzd=0.01,
+            guardrail_flags=["G2_ungrounded_quote"], escalated=True,
+        )
+
+        c.require(store.get_cached_classification(ann.announcement_id, "v1") is None,
+                  "a cache miss returns None")
+
+        store.put_cached_classification(ann.announcement_id, "v1", cls)
+        rehydrated = store.get_cached_classification(ann.announcement_id, "v1")
+        c.require(rehydrated is not None, "a cached classification round-trips")
+        c.equal(rehydrated, cls, "the rehydrated Classification is field-for-field identical")
+
+        c.require(store.get_cached_classification(ann.announcement_id, "v2") is None,
+                  "a different prompt_version for the same announcement_id is a separate cache entry (miss)")
+
+        # updating the same (announcement_id, prompt_version) key overwrites, not duplicates
+        cls_v2 = cls.model_copy(update={"materiality": "immaterial", "confidence": 0.5})
+        store.put_cached_classification(ann.announcement_id, "v1", cls_v2)
+        rows = store.conn.execute(
+            "SELECT COUNT(*) FROM classification_cache WHERE announcement_id = ? AND prompt_version = 'v1'",
+            (ann.announcement_id,),
+        ).fetchone()[0]
+        c.equal(rows, 1, "re-caching the same (announcement_id, prompt_version) key updates in place")
+        c.equal(store.get_cached_classification(ann.announcement_id, "v1").materiality, "immaterial",
+                "the updated cache entry reflects the latest put")
+    finally:
+        store.close()
+
+
+def check_window_since_until(c: Check) -> None:
+    """`since`/`until` window filtering, offline — no network.
+
+    `EdgarAdapter._extract_filings` is exercised directly against a synthetic
+    submissions-JSON payload spanning timestamps outside/inside `[since, until]`,
+    asserting only the in-window ones survive (edgar.py's new upper-bound filter,
+    threaded through `_extract_filings`).
+    """
+    from src.adapters.edgar import EdgarAdapter
+
+    adapter = EdgarAdapter(watchlist=["AAPL"], user_agent="test-agent (test@example.com)",
+                           timeout_seconds=10, rate_limit_rps=0)
+
+    since = datetime(2026, 7, 10, 0, 0, tzinfo=timezone.utc)
+    until = datetime(2026, 7, 14, 0, 0, tzinfo=timezone.utc)
+
+    # Four filings: before the window, at the since boundary (exclusive), inside
+    # the window, and after the until boundary (exclusive).
+    timestamps = [
+        "2026-07-05T12:00:00.000Z",  # before since -> excluded
+        "2026-07-10T00:00:00.000Z",  # exactly at since (<=) -> excluded (exclusive lower bound)
+        "2026-07-12T09:30:00.000Z",  # inside the window -> included
+        "2026-07-20T08:00:00.000Z",  # after until -> excluded
+    ]
+    data = {
+        "name": "AAPL Inc.",
+        "sicDescription": "Technology",
+        "filings": {
+            "recent": {
+                "accessionNumber": [f"0001-{i}" for i in range(len(timestamps))],
+                "form": ["8-K"] * len(timestamps),
+                "acceptanceDateTime": timestamps,
+                "filingDate": [t[:10] for t in timestamps],
+                "reportDate": [t[:10] for t in timestamps],
+                "primaryDocument": ["doc.htm"] * len(timestamps),
+                "primaryDocDescription": ["desc"] * len(timestamps),
+                "items": ["2.02"] * len(timestamps),
+            }
+        },
+    }
+
+    out = adapter._extract_filings("AAPL", "0000320193", data, since, until=until)
+    c.equal(len(out), 1, "only the one in-window filing survives since/until filtering")
+    c.equal(out[0]["published_at"], "2026-07-12T09:30:00+00:00", "the surviving filing is the in-window one")
+
+    # No until -> only the lower bound applies (existing behaviour, unchanged).
+    out_no_until = adapter._extract_filings("AAPL", "0000320193", data, since, until=None)
+    c.equal(len(out_no_until), 2, "with no until, both post-since filings survive (12th and 20th)")
+
+
 def check_fetch_twice(c: Check, tmp: Path) -> None:
     """The acceptance criterion: fetch twice from a clean slate, second run returns 0 new."""
     from src.fetch import fetch, load_config
@@ -116,8 +218,15 @@ def check_fetch_twice(c: Check, tmp: Path) -> None:
         days=config["exchange"]["bootstrap_lookback_days"]
     )
 
-    c.note(f"run 1: live EDGAR fetch, {len(config['watchlist'])} tickers, clean slate")
-    run1 = fetch(config=config, db_path=db_path, raw_dir=raw_dir)
+    # fetch()'s window is now lookback_days-driven for every call (default 1 day —
+    # see src/fetch.py), not watermark/bootstrap-floored — `config` here is the raw
+    # config.yaml with no `_runtime` overlay, so an omitted `since` would default to
+    # just 1 day. Pass the wide bootstrap window explicitly so this network check
+    # reliably finds records across the ~500-ticker watchlist rather than depending
+    # on something having filed in the last 24h.
+    c.note(f"run 1: live EDGAR fetch, {len(config['watchlist'])} tickers, clean slate, "
+          f"explicit since={bootstrap_since.date().isoformat()} ({config['exchange']['bootstrap_lookback_days']}d)")
+    run1 = fetch(config=config, db_path=db_path, raw_dir=raw_dir, since=bootstrap_since)
     first = run1.new
     c.require(first > 0, f"first run fetches new records (got {first})")
     c.equal(run1.duplicate, 0, "first run has nothing to deduplicate")
@@ -144,8 +253,8 @@ def check_fetch_twice(c: Check, tmp: Path) -> None:
     c.equal(len(files_after_first), first, "one raw JSON written per new record")
 
     # --- the criterion --------------------------------------------------
-    c.note("run 2: identical fetch against the same store")
-    run2 = fetch(config=config, db_path=db_path, raw_dir=raw_dir)
+    c.note("run 2: identical fetch (same explicit since) against the same store")
+    run2 = fetch(config=config, db_path=db_path, raw_dir=raw_dir, since=bootstrap_since)
     c.equal(run2.new, 0, "SECOND RUN RETURNS ZERO NEW RECORDS (idempotency, SPEC §14 increment 2)")
 
     files_after_second = sorted(p.name for p in raw_dir.glob("*.json"))
@@ -171,23 +280,21 @@ def check_fetch_twice(c: Check, tmp: Path) -> None:
     finally:
         store.close()
 
-    # --- run 3: replay, so the zero is proved by dedupe, not by the watermark
+    # --- run 3: replay, so the zero is proved by dedupe, not by the window
     #
-    # Run 2 legitimately returns zero, but the watermark filters the feed before
-    # dedupe is ever consulted, so on its own it proves only that the filter
-    # works. SPEC §12 requires more: the source re-delivers (at-least-once), and
-    # re-running any window must be safe. Roll the watermark back to the
-    # bootstrap point and replay the identical window — every record is
-    # re-delivered, and only the announcement_id hash can stop it being written
-    # a second time.
-    store = Store(db_path)
-    try:
-        store.set_watermark(exchange, bootstrap_since)
-    finally:
-        store.close()
-
-    c.note("run 3: watermark rolled back — the whole window is re-delivered")
-    run3 = fetch(config=config, db_path=db_path, raw_dir=raw_dir)
+    # Run 2 legitimately returns zero, but fetch()'s own window (now lookback_days-
+    # driven, not watermark-floored — SPEC §12 / the lookback-window feature) filters
+    # the feed before dedupe is ever consulted, so on its own it proves only that the
+    # filter works. This still requires more: the source re-delivers (at-least-once),
+    # and re-running any window must be safe. Pass an EXPLICIT `since` back at the
+    # bootstrap point (fetch() no longer reads the watermark to compute its window at
+    # all, so rolling the watermark back — the old mechanism — would have zero effect
+    # under the new design; the explicit `since` param is the one lever that actually
+    # widens the window now) and replay the identical range — every record is
+    # re-delivered, and only the announcement_id hash can stop it being written a
+    # second time.
+    c.note("run 3: explicit since=bootstrap_since — the whole window is re-delivered")
+    run3 = fetch(config=config, db_path=db_path, raw_dir=raw_dir, since=bootstrap_since)
     c.require(run3.seen >= first, f"replay re-delivered the whole window ({run3.seen} filings seen)")
     c.equal(run3.new, 0, "REPLAY RETURNS ZERO NEW RECORDS (hash dedupe, not the watermark)")
     c.equal(run3.duplicate, run3.seen, "every re-delivered filing was recognised as already processed")
@@ -252,6 +359,8 @@ def body(c: Check) -> None:
     with tempfile.TemporaryDirectory() as tmpdir:
         tmp = Path(tmpdir)
         check_store(c, tmp)
+        check_classification_cache(c, tmp)
+        check_window_since_until(c)
         check_fetch_twice(c, tmp)
     check_real_store(c)
 

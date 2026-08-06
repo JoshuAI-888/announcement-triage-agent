@@ -78,9 +78,11 @@ def body(check):
     stats = {"processed": 5, "new": 4, "deduped": 1, "model_primary": "haiku", "model_escalation": "opus",
              "prompt_version": "v1", "escalation_count": 2, "guardrail_flag_counts": {"G2_ungrounded_quote": 1},
              "total_cost_nzd": 0.1234, "runtime_seconds": 3.4}
-    path = render_brief(ranked, needs_look, stats, brief_date=NOW.date(), out_dir=tmp)
+    path = render_brief(ranked, needs_look, stats, brief_date=NOW.date(),
+                        run_id="2026-07-14T00-00-00", kind="digest", out_dir=tmp)
     text = path.read_text()
-    check.require(path.name == "2026-07-14.md", "brief is written to a dated file")
+    check.require(path.name == "2026-07-14T00-00-00.md", "brief is written to a run_id-named file")
+    check.require("Daily digest" in text, "brief heading shows the Daily digest kind label")
     check.require("## Material — ranked" in text and "## Needs a look" in text and "## Run footer" in text,
                   "brief has all three sections")
     check.require("> body" in text, "material entry shows the verbatim evidence_quote")
@@ -122,30 +124,55 @@ def body(check):
     orig = B.BRIEFS_DIR
     B.BRIEFS_DIR = briefs_dir  # redirect the default brief location for the check
     try:
-        res = RUN.run_pipeline(recs, CONFIG, client, store, prompt_version="v1", now=NOW, sleeper=slept.append)
+        res = RUN.run_pipeline(recs, CONFIG, client, store, prompt_version="v1", now=NOW, sleeper=slept.append,
+                               run_id="2026-07-14T00-00-00", kind="digest")
         check.equal(res["stats"]["new"], 2, "two good records classified (AAPL, MSFT)")
+        check.equal(res["stats"]["reused"], 0, "first pass reuses nothing (cache empty)")
         check.equal(res["stats"]["dead_letters"], 1, "the bad-JSON record (JPM) was dead-lettered, run continued")
         check.equal(res["stats"]["dropped_offwatchlist"], 0, "AAPL/MSFT/JPM are all on the watchlist — no G4 drops")
         check.equal(len(res["all_items"]), 2, "all_items carries every classified record (material AND immaterial)")
-        check.require(res["brief_path"] is not None and res["brief_path"].exists(), "a dated brief was written")
+        check.require(res["brief_path"] is not None and res["brief_path"].exists(), "a run_id-named brief was written")
         check.require(2 in slept and 8 in slept, "retries used 2s then 8s backoff (SPEC §12)")
         check.require(store.is_audited(recs[0].announcement_id), "classified records are audited")
         check.require(not store.is_audited(recs[2].announcement_id), "the dead-lettered record is NOT audited")
         check.require(store.get_watermark("EDGAR") is not None, "watermark advanced after a successful full run")
+        check.require(store.get_cached_classification(recs[0].announcement_id, "v1") is not None,
+                      "a freshly-classified record is cached for reuse")
 
-        # idempotency: a second run skips already-audited records
-        res2 = RUN.run_pipeline(recs, CONFIG, client, store, prompt_version="v1", now=NOW, sleeper=slept.append)
-        check.equal(res2["stats"]["new"], 0, "re-run classifies nothing new (idempotent)")
-        check.require(res2["stats"]["deduped"] >= 2, "re-run skips the already-audited records")
+        # reuse-cache (replaces the old is_audited-skip idempotency test): a second run
+        # over the SAME records makes ZERO fresh LLM classifications (StubClient would
+        # raise on an unexpected re-invocation for a ticker it wasn't asked to re-answer,
+        # but more directly: stats["new"] must be 0) and REUSES both cached
+        # classifications, still producing a non-empty brief (rehydrated, not dropped).
+        res2 = RUN.run_pipeline(recs, CONFIG, client, store, prompt_version="v1", now=NOW, sleeper=slept.append,
+                                run_id="2026-07-14T00-00-01", kind="digest")
+        check.equal(res2["stats"]["new"], 0, "re-run makes zero fresh LLM classifications")
+        check.equal(res2["stats"]["reused"], 2, "re-run reuses both cached classifications (AAPL, MSFT)")
+        check.equal(len(res2["all_items"]), 2,
+                    "re-run's brief still covers both records (rehydrated from cache, not dropped)")
+        check.equal(res2["stats"]["dead_letters"], 1,
+                    "the dead-lettered record has no cache entry, so it is retried and dead-lettered again")
 
         # dry-run: no brief, no watermark advance
         db2 = Path(tempfile.mkdtemp(prefix="run2_")) / "state.db"
         store2 = Store(db2)
         res3 = RUN.run_pipeline(recs[:2], CONFIG, client, store2, prompt_version="v1", dry_run=True,
-                                now=NOW, sleeper=slept.append)
+                                now=NOW, sleeper=slept.append, run_id="2026-07-14T00-00-02", kind="digest")
         check.require(res3["brief_path"] is None, "--dry-run writes no brief")
         check.require(store2.get_watermark("EDGAR") is None, "--dry-run does not advance the watermark")
         store2.close()
+
+        # backfill kind: even with a fresh max_published, run_pipeline itself never
+        # advances the watermark for kind="backfill" (isolated — defence-in-depth
+        # alongside main()'s own advance_watermark=False on the fetch() call).
+        db3 = Path(tempfile.mkdtemp(prefix="run3_")) / "state.db"
+        store3 = Store(db3)
+        res4 = RUN.run_pipeline(recs[:2], CONFIG, client, store3, prompt_version="v1", now=NOW,
+                                sleeper=slept.append, run_id="2026-07-14T00-00-03", kind="backfill")
+        check.require(res4["brief_path"] is not None, "a backfill still writes a brief")
+        check.require(store3.get_watermark("EDGAR") is None,
+                      "run_pipeline never advances the watermark for kind='backfill'")
+        store3.close()
     finally:
         B.BRIEFS_DIR = orig
         store.close()

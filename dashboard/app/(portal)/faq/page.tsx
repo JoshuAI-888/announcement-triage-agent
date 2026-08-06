@@ -7,8 +7,9 @@ const GLOSSARY: { term: string; def: string }[] = [
   { term: "EDGAR", def: "The SEC's public filing system. Every 8-K, 10-K, Form 4, etc. lands here first — it's the source the agent watches." },
   { term: "Watchlist", def: "The set of tickers you care about (S&P 500 + your original names). Filings from companies not on it are dropped from the brief (see 'Off-watchlist')." },
   { term: "Filing / announcement", def: "A single document a company submitted to the SEC. The agent fetches the new ones, reads them, and classifies each." },
-  { term: "Digest", def: "The once-a-day batch: fetch everything new on the watchlist since yesterday, classify it all, and produce one consolidated brief. This is the main morning deliverable." },
-  { term: "Intraday", def: "A lighter mid-day pass that only surfaces newly-arrived material items as an alert. It never rewrites the morning digest." },
+  { term: "Digest", def: "The Daily digest: the once-a-day batch that fetches everything new on the watchlist since yesterday, classifies it all, and produces one consolidated brief. This is the main morning deliverable." },
+  { term: "Intraday", def: "A lighter mid-day pass that only surfaces newly-arrived material items as an alert. It never rewrites the Daily digest." },
+  { term: "Backfill", def: "A manually-triggered run over a chosen past window (an as-of date and a lookback in days). It fetches and classifies that window in isolation and never moves the live watermark used by the Daily digest." },
   { term: "Material", def: "The agent judged this filing likely to matter to an investor in that name (e.g. an M&A completion, earnings, a major agreement or executive change). Material items are ranked at the top of the brief." },
   { term: "Immaterial", def: "Routine or administrative — judged unlikely to move the investment view (e.g. a boilerplate ownership form). Kept in the all-filings table for completeness, not surfaced as a headline." },
   { term: "Needs a look / Needs more info", def: "The agent wasn't confident enough to call it either way — weak signal, a guardrail fired, or only metadata was available. Routed to a human rather than trusted automatically." },
@@ -47,7 +48,7 @@ export default function FaqPage() {
         <strong className="small">On this page</strong>
         <p className="small" style={{ margin: "6px 0 0" }}>
           <a href="#intent">What it is</a> · <a href="#flow">The flow</a> · <a href="#architecture">Architecture</a> ·{" "}
-          <a href="#digest">Digest vs intraday</a> · <a href="#confidence">Confidence</a> · <a href="#models">The AI models</a> ·{" "}
+          <a href="#digest">Daily digest vs intraday</a> · <a href="#confidence">Confidence</a> · <a href="#models">The AI models</a> ·{" "}
           <a href="#guardrails">Guardrails</a> · <a href="#glossary">Glossary</a>
         </p>
       </div>
@@ -79,7 +80,7 @@ export default function FaqPage() {
         <p>Two schedulers, kept deliberately separate:</p>
         <ul style={{ lineHeight: 1.7 }}>
           <li>
-            <strong>Generation — GitHub Actions (always-on, server-side).</strong> A workflow runs on a cron, decides digest / intraday / skip,
+            <strong>Generation — GitHub Actions (always-on, server-side).</strong> A workflow runs on a cron, decides Daily digest / intraday / skip,
             does the whole pipeline above, and commits the brief + logs to the <span className="mono">main</span> branch. This needs no device of yours to be on.
           </li>
           <li>
@@ -93,12 +94,14 @@ export default function FaqPage() {
         <p className="small muted">Because the portal only ever <em>reads</em> committed files, what you see here is exactly what the server produced — there&#39;s no separate live database to drift out of sync.</p>
       </Section>
 
-      <Section id="digest" title="What “digest” means (vs intraday)">
+      <Section id="digest" title="What “Daily digest” means (vs intraday)">
         <p>
-          A <strong>digest</strong> is the once-daily consolidated brief: it fetches everything new since yesterday, classifies all of it, and
-          produces one ranked brief — the main morning deliverable. An <strong>intraday</strong> run is a lighter mid-day pass that only alerts on
-          newly-arrived <em>material</em> items and never rewrites the morning digest. On the <a href="/history">Run history</a> page each workflow run is
-          labelled with which it did (or <em>skip</em>, when the schedule gate decided it wasn&#39;t time yet), and you can open the exact brief HTML a run produced.
+          A <strong>Daily digest</strong> is the once-daily consolidated brief: it fetches the last N days of filings (the configured lookback
+          window), classifies all of it, and produces one ranked brief — the main morning deliverable. An <strong>intraday</strong> run is a
+          lighter mid-day pass that only alerts on newly-arrived <em>material</em> items and never rewrites the Daily digest. A{" "}
+          <strong>Backfill</strong> is a manually-triggered run over a past window that never disturbs the live schedule. On the{" "}
+          <a href="/history">Run history</a> page each workflow run is labelled with which it did (or <em>skip</em>, when the schedule gate
+          decided it wasn&#39;t time yet), and you can open the exact brief HTML a run produced.
         </p>
       </Section>
 

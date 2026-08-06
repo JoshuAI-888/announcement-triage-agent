@@ -4,7 +4,8 @@ Four sections: the ranked material list, the "Needs a look" list (abstentions an
 guardrail-flagged records, each with the flag explained in plain English), the
 "All filings this run" table (every classified filing, material + immaterial +
 needs-a-look), and a run footer in which the system reports on itself. Written to
-out/briefs/YYYY-MM-DD.md. No HTML, no styling.
+out/briefs/<run_id>.md (run_id = UTC execution time to the second — every run
+kind gets a unique file, no same-day clobber). No HTML, no styling.
 
 Every guardrail flag and abstention is expanded to plain English via `src.flags`
 before it reaches this module's output — a raw `G#_...` code or the literal
@@ -17,7 +18,7 @@ from datetime import date as date_cls
 from pathlib import Path
 
 from src.enrich import Enrichment
-from src.flags import MATERIALITY_LABEL, doc_type_label, explain_flag, explain_flags
+from src.flags import KIND_LABEL, MATERIALITY_LABEL, doc_type_label, explain_flag, explain_flags
 from src.rank import RankedItem
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -122,6 +123,16 @@ def _flags_summary(flag_counts: dict) -> str:
     return ", ".join(f'{explain_flag(code)["label"]} ({n})' for code, n in sorted(flag_counts.items()))
 
 
+def _heading_suffix(kind: str, window: dict | None) -> str:
+    kind_label = KIND_LABEL.get(kind, kind)
+    suffix = f" — {kind_label}"
+    if kind == "backfill" and window and window.get("since"):
+        since_d = str(window["since"])[:10]
+        until_d = (str(window.get("until") or "") or "")[:10] or "now"
+        suffix += f" (window: {since_d} to {until_d})"
+    return suffix
+
+
 def render_brief(
     ranked: list[RankedItem],
     needs_look: list[RankedItem],
@@ -129,6 +140,10 @@ def render_brief(
     enrichment: list[Enrichment] | None = None,
     all_items: list[RankedItem] | None = None,
     brief_date: date_cls | None = None,
+    *,
+    run_id: str,
+    kind: str = "digest",
+    window: dict | None = None,
     out_dir: Path | None = None,
 ) -> Path:
     brief_date = brief_date or date_cls.today()
@@ -141,7 +156,7 @@ def render_brief(
     flags_str = _flags_summary(stats.get("guardrail_flag_counts", {}))
 
     lines = [
-        f"# SEC announcement brief — {brief_date.isoformat()}",
+        f"# SEC announcement brief{_heading_suffix(kind, window)} — {brief_date.isoformat()}",
         "",
         "## Material — ranked",
         "",
@@ -167,6 +182,6 @@ def render_brief(
         f"- Runtime: {stats.get('runtime_seconds', 0.0):.1f}s",
         "",
     ]
-    path = out_dir / f"{brief_date.isoformat()}.md"
+    path = out_dir / f"{run_id}.md"
     path.write_text("\n".join(lines), encoding="utf-8")
     return path

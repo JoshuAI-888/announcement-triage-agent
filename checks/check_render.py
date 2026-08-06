@@ -123,10 +123,12 @@ def body(check):
     from src.render_email import render_email
 
     tmp = Path(tempfile.mkdtemp(prefix="email_"))
+    DIGEST_RUN_ID = "2026-07-14T00-00-00"
     path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
-                        brief_date=NOW.date(), out_dir=tmp)
-    check.equal(path.name, "2026-07-14.email.html", "digest email uses the plain <DATE>.email.html name")
+                        brief_date=NOW.date(), run_id=DIGEST_RUN_ID, kind="digest", out_dir=tmp)
+    check.equal(path.name, f"{DIGEST_RUN_ID}.email.html", "digest email uses the <run_id>.email.html name")
     html = path.read_text(encoding="utf-8")
+    check.require("Daily digest" in html, "the email heading shows the 'Daily digest' kind label")
 
     check.require("AAPL" in html and "AAPL raises full-year guidance" in html, "material item AAPL is rendered")
     check.require("MSFT" in html and "MSFT announces acquisition" in html, "material item MSFT is rendered")
@@ -173,24 +175,42 @@ def body(check):
                   "no <style> block and no @font-face — mail clients drop both")
 
     # --- empty sections render a clear placeholder, not an empty page ---
-    empty_path = render_email([], [], stats, [], brief_date=NOW.date(), out_dir=tmp)
+    empty_path = render_email([], [], stats, [], brief_date=NOW.date(),
+                              run_id="2026-07-14T00-00-01", kind="digest", out_dir=tmp)
     empty_html = empty_path.read_text(encoding="utf-8")
     check.require("No material announcements this run" in empty_html, "empty ranked list has a placeholder")
     check.require("Nothing needs a look this run" in empty_html, "empty needs-look list has a placeholder")
     check.require("No filings classified this run" in empty_html, "empty all-filings list has a placeholder")
 
-    # --- intraday filename: a datetime with a non-midnight time gets <DATE>T<HH-MM> ---
+    # --- run_id naming: every kind is named by run_id, not by date/time ---
     intraday_dt = datetime(2026, 7, 14, 18, 2, tzinfo=timezone.utc)
+    INTRADAY_RUN_ID = "2026-07-14T18-02-00"
     intraday_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
-                                 brief_date=intraday_dt, out_dir=tmp)
-    check.equal(intraday_path.name, "2026-07-14T18-02.email.html",
-                "a datetime with a non-midnight time gets the intraday <DATE>T<HH-MM> filename")
+                                 brief_date=intraday_dt, run_id=INTRADAY_RUN_ID, kind="intraday", out_dir=tmp)
+    check.equal(intraday_path.name, f"{INTRADAY_RUN_ID}.email.html",
+                "an intraday run is named by its own run_id, not a <DATE>T<HH-MM> filename trick")
+    intraday_html = intraday_path.read_text(encoding="utf-8")
+    check.require("Intraday" in intraday_html, "the intraday email heading shows the 'Intraday' kind label")
+
+    # --- backfill: heading shows the kind + the covered window ---
+    BACKFILL_RUN_ID = "2026-07-14T09-00-00"
+    backfill_window = {"as_of": "2026-08-02", "lookback_days": 5,
+                       "since": "2026-07-28T00:00:00Z", "until": "2026-08-02T23:59:59Z"}
+    backfill_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                                 brief_date=NOW, run_id=BACKFILL_RUN_ID, kind="backfill",
+                                 window=backfill_window, out_dir=tmp)
+    check.equal(backfill_path.name, f"{BACKFILL_RUN_ID}.email.html", "a backfill is named by its run_id too")
+    backfill_html = backfill_path.read_text(encoding="utf-8")
+    check.require("Backfill" in backfill_html, "the backfill email heading shows the 'Backfill' kind label")
+    check.require("2026-07-28" in backfill_html and "2026-08-02" in backfill_html,
+                  "the backfill heading shows the covered window (since..until)")
 
     # --- brief.py (markdown) mirrors the same content, in markdown form ---
     from src.brief import render_brief
 
     md_path = render_brief(ranked, needs_look, stats, enrichment=enrichment, all_items=all_items,
-                           brief_date=NOW.date(), out_dir=tmp)
+                           brief_date=NOW.date(), run_id=DIGEST_RUN_ID, kind="digest", out_dir=tmp)
+    check.equal(md_path.name, f"{DIGEST_RUN_ID}.md", "brief.py's markdown twin is also named by run_id")
     md = md_path.read_text(encoding="utf-8")
     check.require("## All filings this run" in md, "brief.py has the all-filings section")
     check.require("INTC" in md, "brief.py's all-filings table carries the immaterial filing")
@@ -198,25 +218,49 @@ def body(check):
     check.require(not _RAW_CODE_RE.search(md) and "insufficient_info" not in md,
                   "brief.py leaks no raw G#_ code or 'insufficient_info' literal")
     check.require("makes and sells products in its sector" in md, "brief.py carries the AI business line too")
+    check.require("Daily digest" in md, "brief.py heading shows the 'Daily digest' kind label")
 
     # --- run_log.jsonl row shape (CONTRACTS §3) ---
-    row = _run_log_row("digest", stats, NOW)
-    expected_keys = {"date", "ts", "kind", "processed", "new", "deduped", "material", "needs_look",
-                     "escalations", "guardrail_flag_counts", "total_cost_nzd", "runtime_seconds",
-                     "prompt_version", "model_primary", "dashboard_url"}
+    digest_window = {"as_of": None, "lookback_days": 1, "since": "2026-07-13T12:00:00Z", "until": None}
+    row = _run_log_row("digest", stats, NOW, DIGEST_RUN_ID, digest_window)
+    expected_keys = {"date", "ts", "run_id", "kind", "processed", "new", "deduped", "reused", "material",
+                     "needs_look", "escalations", "guardrail_flag_counts", "total_cost_nzd", "runtime_seconds",
+                     "prompt_version", "model_primary", "window_days", "as_of", "dashboard_url"}
     check.equal(set(row.keys()), expected_keys, "run_log row carries exactly the CONTRACTS §3 keys")
     check.equal(row["kind"], "digest", "row records kind")
+    check.equal(row["run_id"], DIGEST_RUN_ID, "row records run_id")
+    check.equal(row["window_days"], 1, "row records window_days from the window dict")
+    check.equal(row["as_of"], None, "row records as_of (None for a non-backfill run)")
     check.equal(row["material"], 2, "row records the material count")
     check.equal(row["guardrail_flag_counts"], {"G2_ungrounded_quote": 1}, "row carries guardrail flag counts")
     check.require(row["ts"].endswith("Z"), "ts is a UTC Zulu timestamp")
 
+    backfill_row = _run_log_row("backfill", stats, NOW, BACKFILL_RUN_ID, backfill_window)
+    check.equal(backfill_row["as_of"], "2026-08-02", "a backfill row's as_of carries the window's as_of date")
+    check.equal(backfill_row["window_days"], 5, "a backfill row's window_days carries the window's lookback_days")
+
     log_path = tmp / "run_log.jsonl"
     append_run_log(row, log_path)
-    append_run_log(_run_log_row("intraday", stats, NOW), log_path)
+    append_run_log(_run_log_row("intraday", stats, NOW, INTRADAY_RUN_ID), log_path)
+    append_run_log(backfill_row, log_path)
     lines = log_path.read_text(encoding="utf-8").splitlines()
-    check.equal(len(lines), 2, "append_run_log appends one JSON line per call (append-only)")
+    check.equal(len(lines), 3, "append_run_log appends one JSON line per call (append-only)")
     parsed = [json.loads(l) for l in lines]
-    check.equal([p["kind"] for p in parsed], ["digest", "intraday"], "kind is one of digest/intraday, in append order")
+    check.equal([p["kind"] for p in parsed], ["digest", "intraday", "backfill"],
+               "kind is one of digest/intraday/backfill, in append order")
+    check.equal([p["run_id"] for p in parsed], [DIGEST_RUN_ID, INTRADAY_RUN_ID, BACKFILL_RUN_ID],
+               "each row's run_id matches what was passed in")
+
+    # --- run-id uniqueness: two runs on the same UTC date get two distinct files,
+    #     neither overwriting the other (the whole point of this feature) ---
+    briefs_before = set(tmp.glob("*.email.html"))
+    render_email(ranked, needs_look, stats, enrichment, all_items=all_items, brief_date=NOW.date(),
+                run_id="2026-07-14T11-00-00", kind="digest", out_dir=tmp)
+    render_email(ranked, needs_look, stats, enrichment, all_items=all_items, brief_date=NOW.date(),
+                run_id="2026-07-14T11-00-01", kind="digest", out_dir=tmp)
+    briefs_after = set(tmp.glob("*.email.html"))
+    check.equal(len(briefs_after - briefs_before), 2,
+               "two runs one second apart on the same UTC date write two distinct files")
 
     # --- write_eval_summary (CONTRACTS §2 shape) ---
     def _headline(recall, precision, grounded, wrong, abstain, cost):

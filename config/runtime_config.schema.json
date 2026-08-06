@@ -144,6 +144,12 @@
           "default": false,
           "title": "Intraday Alerts",
           "type": "boolean"
+        },
+        "lookback_days": {
+          "default": 1,
+          "minimum": 1,
+          "title": "Lookback Days",
+          "type": "integer"
         }
       },
       "title": "ScheduleCfg",

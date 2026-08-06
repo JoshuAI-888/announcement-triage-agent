@@ -43,7 +43,7 @@ const CONFIG_YAML_PATH = "config.yaml";
 const PORTAL_AUTH_PATH = "dashboard/portal_auth.json";
 const PROMPTS_DIR = "prompts";
 
-const BRIEF_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2})?\.email\.html$/;
+const BRIEF_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2}(-\d{2})?)?\.email\.html$/;
 
 export interface ConfigResult {
   config: RuntimeConfig;
@@ -266,7 +266,7 @@ export async function getPdfLog(limit = 200): Promise<PdfLogRow[]> {
 
 // --- out/filings/<date>.json / <date>T<HH-MM>.json ---
 
-const FILINGS_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2})?\.json$/;
+const FILINGS_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2}(-\d{2})?)?\.json$/;
 
 /** Latest classification run (digest or intraday), picked by filename. null if none exist yet. */
 export async function getLatestFilings(): Promise<FilingsRun | null> {
@@ -290,9 +290,21 @@ export async function getLatestFilings(): Promise<FilingsRun | null> {
 
 // --- out/briefs/*.email.html ---
 
-function briefMeta(name: string): { date: string; kind: "digest" | "intraday" } {
+/**
+ * Resolve a brief filename's date + kind. Prefers a join against run_log.jsonl
+ * by run_id (the filename minus ".email.html") — this is the source of truth
+ * once Stream A's runs carry an explicit, never-name-inferred `kind`. Falls
+ * back to the old "does the name contain T?" heuristic when no run_log row
+ * matches (older archived briefs from before this migration, or a run_log
+ * row missing `run_id`) — that fallback cannot represent "backfill" via
+ * filename alone, which is fine: backfill only exists in new-format data.
+ */
+function briefMeta(name: string, kindByRunId: Map<string, RunLogRow["kind"]>): { date: string; kind: "digest" | "intraday" | "backfill" } {
+  const runId = name.replace(/\.email\.html$/, "");
+  const date = runId.split("T")[0];
+  const joined = kindByRunId.get(runId);
+  if (joined) return { date, kind: joined };
   const isIntraday = name.includes("T");
-  const date = name.split("T")[0].replace(".email.html", "");
   return { date, kind: isIntraday ? "intraday" : "digest" };
 }
 
@@ -304,7 +316,13 @@ export async function listBriefVersions(limit = 20): Promise<BriefVersion[]> {
     names = (await gh.listDir(BRIEFS_DIR)).filter((e) => e.type === "file" && BRIEF_NAME_RE.test(e.name)).map((e) => e.name);
   }
   names.sort((a, b) => (a < b ? 1 : a > b ? -1 : 0)); // newest first (ISO-ish names sort lexicographically)
-  return names.slice(0, limit).map((name) => ({ name, url: `/api/versions/${encodeURIComponent(name)}`, ...briefMeta(name) }));
+  const runLog = await getRunLog();
+  const kindByRunId = new Map<string, RunLogRow["kind"]>(
+    runLog.filter((r): r is RunLogRow & { run_id: string } => Boolean(r.run_id)).map((r) => [r.run_id, r.kind])
+  );
+  return names
+    .slice(0, limit)
+    .map((name) => ({ name, url: `/api/versions/${encodeURIComponent(name)}`, ...briefMeta(name, kindByRunId) }));
 }
 
 export async function getBriefHtml(name: string): Promise<string | null> {
@@ -339,12 +357,27 @@ export async function savePortalAuth(auth: PortalAuth): Promise<{ mocked: boolea
 
 // --- workflow_dispatch (run-now / run-eval) ---
 
-export async function dispatchRunNow(): Promise<{ mocked: boolean }> {
+export interface RunNowInputs {
+  as_of?: string;
+  lookback_days?: string;
+}
+
+/**
+ * Trigger daily-brief.yml. Plain "Run now" (no args) stays a no-arg Daily
+ * digest dispatch. A backfill passes `as_of`/`lookback_days`, which map to
+ * the workflow_dispatch inputs `as_of_date` + `lookback_days` (the CLI/CI
+ * side names the date input `as_of_date`, not `as_of`).
+ */
+export async function dispatchRunNow(inputs: RunNowInputs = {}): Promise<{ mocked: boolean }> {
+  const payload: Record<string, string> = {
+    as_of_date: inputs.as_of ?? "",
+    lookback_days: inputs.lookback_days ?? "",
+  };
   if (LOCAL_DEV_MODE) {
-    local.mockDispatchLog("daily-brief.yml", {});
+    local.mockDispatchLog("daily-brief.yml", payload);
     return { mocked: true };
   }
-  await gh.dispatchWorkflow("daily-brief.yml", {});
+  await gh.dispatchWorkflow("daily-brief.yml", payload);
   return { mocked: false };
 }
 
@@ -383,6 +416,46 @@ export async function getRunStatus(limit = 8): Promise<RunStatusResult> {
     }
   }
 
+  // Resolve each completed+successful run's brief link server-side by joining
+  // to run_log.jsonl (closest ts to the GH run's startedAt/createdAt, same
+  // UTC day) instead of guessing a filename from the run's date — the
+  // guess broke once digest briefs are named by full run_id (with seconds).
+  // Never falls back to a guessed name: unresolved → null, link omitted.
+  let runLog: RunLogRow[] = [];
+  let briefNames: Set<string> = new Set();
+  try {
+    [runLog] = await Promise.all([getRunLog()]);
+    briefNames = new Set((await listBriefVersions(200)).map((v) => v.name));
+  } catch {
+    // best-effort: no brief links, still report run status
+  }
+
+  function resolveBriefUrl(r: (typeof raw)[number]): string | null {
+    if (r.status !== "completed" || r.conclusion !== "success") return null;
+    if (runLog.length === 0) return null;
+    const anchor = r.run_started_at ?? r.created_at;
+    const anchorMs = Date.parse(anchor);
+    if (Number.isNaN(anchorMs)) return null;
+    const anchorDay = anchor.slice(0, 10);
+    let best: RunLogRow | null = null;
+    let bestDelta = Infinity;
+    for (const row of runLog) {
+      if (!row.run_id) continue;
+      if (row.ts.slice(0, 10) !== anchorDay) continue; // same-day tolerance
+      const rowMs = Date.parse(row.ts);
+      if (Number.isNaN(rowMs)) continue;
+      const delta = Math.abs(rowMs - anchorMs);
+      if (delta < bestDelta) {
+        bestDelta = delta;
+        best = row;
+      }
+    }
+    if (!best || !best.run_id) return null;
+    const name = `${best.run_id}.email.html`;
+    if (!briefNames.has(name)) return null; // never link to a file that isn't actually there
+    return `/api/versions/${encodeURIComponent(name)}`;
+  }
+
   const runs: WorkflowRunView[] = raw.map((r) => {
     const isActive = activeRaw !== undefined && r.id === activeRaw.id;
     return {
@@ -400,6 +473,7 @@ export async function getRunStatus(limit = 8): Promise<RunStatusResult> {
       currentStep: isActive ? currentStep : null,
       stepsCompleted: isActive ? stepsCompleted : 0,
       stepsTotal: isActive ? stepsTotal : 0,
+      briefUrl: resolveBriefUrl(r),
     };
   });
 

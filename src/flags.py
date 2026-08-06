@@ -66,6 +66,16 @@ MATERIALITY_LABEL: dict[str, str] = {
     "insufficient_info": "Needs more info",
 }
 
+# Display mapping for a run's `kind` (CONTRACTS.md — frozen). The internal enum
+# slug (`"digest"`/`"intraday"`/`"backfill"`) never changes — only what's shown
+# to a human does. Single source of truth for the Python side; the portal's own
+# copy lives in dashboard/lib/flags.ts.
+KIND_LABEL: dict[str, str] = {
+    "digest": "Daily digest",
+    "intraday": "Intraday",
+    "backfill": "Backfill",
+}
+
 
 def explain_flag(code: str) -> dict[str, str]:
     """Plain-English `{label, meaning, why}` for one flag code.

@@ -23,6 +23,7 @@ export interface ScheduleCfg {
   poll_time_nzt: string;
   poll_frequency: PollFrequency;
   intraday_alerts: boolean;
+  lookback_days: number;
 }
 
 export interface DraftCfg {
@@ -95,7 +96,7 @@ export interface EvalSummary {
 export interface RunLogRow {
   date: string;
   ts: string;
-  kind: "digest" | "intraday";
+  kind: "digest" | "intraday" | "backfill";
   processed: number;
   new: number;
   deduped: number;
@@ -108,12 +109,18 @@ export interface RunLogRow {
   prompt_version: string;
   model_primary: string;
   dashboard_url: string | null;
+  // Optional — present on runs written after the run-identity/lookback-window
+  // migration; absent on pre-migration rows still on disk.
+  run_id?: string;
+  reused?: number;
+  window_days?: number;
+  as_of?: string | null;
 }
 
 export interface BriefVersion {
   name: string;
   date: string;
-  kind: "digest" | "intraday";
+  kind: "digest" | "intraday" | "backfill";
   url: string;
 }
 
@@ -206,9 +213,18 @@ export interface FilingsCounts {
 export interface FilingsRun {
   date: string;
   generated_at: string;
-  kind: "digest" | "intraday";
+  kind: "digest" | "intraday" | "backfill";
   counts: FilingsCounts;
   filings: FilingRow[];
+  // Optional — present on filings JSON written after the run-identity/
+  // lookback-window migration; absent on pre-migration files still on disk.
+  run_id?: string;
+  window?: {
+    as_of: string | null;
+    lookback_days: number;
+    since: string;
+    until: string | null;
+  };
 }
 
 // --- Live workflow runs (the "Run now" progress + ongoing/finished history) ---
@@ -229,6 +245,11 @@ export interface WorkflowRunView {
   currentStep: string | null; // name of the in-progress step ("current activity")
   stepsCompleted: number;
   stepsTotal: number;
+  // Resolved server-side by joining this run to its run_log row (by closest
+  // timestamp) and confirming the brief file exists. Null when unresolvable
+  // (no matching run_log row, pre-migration row without run_id, or the
+  // brief file isn't found) — never a guessed/dead link.
+  briefUrl: string | null;
 }
 
 export interface RunStatusResult {

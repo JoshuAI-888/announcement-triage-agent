@@ -38,6 +38,9 @@ export function TopbarActions({ mode }: { mode: "local-dev" | "github" }) {
   const [run, setRun] = useState<WorkflowRunView | null>(null);
   const [done, setDone] = useState<WorkflowRunView | null>(null);
   const [, forceTick] = useState(0); // drives the once-a-second elapsed re-render
+  const [backfillOpen, setBackfillOpen] = useState(false);
+  const [asOf, setAsOf] = useState("");
+  const [lookback, setLookback] = useState("1");
 
   const sawActive = useRef(false);
   const trackStart = useRef(0);
@@ -76,14 +79,18 @@ export function TopbarActions({ mode }: { mode: "local-dev" | "github" }) {
     };
   }, [tracking, poll]);
 
-  async function runNow() {
+  async function runNow(payload?: { as_of?: string; lookback_days?: string }) {
     setBusy("run");
     setStatus(null);
     setDone(null);
     setRun(null);
     sawActive.current = false;
     try {
-      const res = await fetch("/api/run-now", { method: "POST" });
+      const res = await fetch("/api/run-now", {
+        method: "POST",
+        headers: payload ? { "Content-Type": "application/json" } : undefined,
+        body: payload ? JSON.stringify(payload) : undefined,
+      });
       const body = await res.json();
       setStatus(body.message || (res.ok ? "Dispatched." : "Failed."));
       if (res.ok && mode === "github") {
@@ -95,6 +102,12 @@ export function TopbarActions({ mode }: { mode: "local-dev" | "github" }) {
     } finally {
       setBusy("");
     }
+  }
+
+  function runBackfill() {
+    if (!asOf) return;
+    runNow({ as_of: asOf, lookback_days: lookback });
+    setBackfillOpen(false);
   }
 
   async function runEval() {
@@ -127,10 +140,45 @@ export function TopbarActions({ mode }: { mode: "local-dev" | "github" }) {
         <button className="btn secondary" type="button" onClick={runEval} disabled={busy !== ""}>
           <Icon code="f201" /> {busy === "eval" ? "Dispatching…" : "Run eval now"}
         </button>
-        <button className="btn" type="button" onClick={runNow} disabled={busy !== "" || tracking}>
+        <button className="btn" type="button" onClick={() => runNow()} disabled={busy !== "" || tracking}>
           <Icon code="f04b" /> {busy === "run" ? "Dispatching…" : tracking ? "Running…" : "Run now"}
         </button>
+        <button
+          className="btn secondary"
+          type="button"
+          onClick={() => setBackfillOpen((o) => !o)}
+          disabled={busy !== "" || tracking}
+        >
+          <Icon code="f1da" /> Backfill…
+        </button>
       </div>
+
+      {backfillOpen && (
+        <div className="backfill-panel">
+          <label className="small muted" htmlFor="backfill-as-of">
+            As of
+          </label>
+          <input
+            id="backfill-as-of"
+            className="input"
+            type="date"
+            value={asOf}
+            onChange={(e) => setAsOf(e.target.value)}
+          />
+          <label className="small muted" htmlFor="backfill-lookback">
+            Lookback (days)
+          </label>
+          <select id="backfill-lookback" className="select" value={lookback} onChange={(e) => setLookback(e.target.value)}>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="5">5</option>
+            <option value="7">7</option>
+          </select>
+          <button className="btn" type="button" onClick={runBackfill} disabled={!asOf || busy !== "" || tracking}>
+            Run backfill
+          </button>
+        </div>
+      )}
 
       {showProgress && (
         <div className="run-progress" role="status" aria-live="polite">
@@ -185,6 +233,10 @@ export function TopbarActions({ mode }: { mode: "local-dev" | "github" }) {
 
       <style>{`
         .top-actions-wrap { display: flex; flex-direction: column; align-items: flex-end; gap: 8px; }
+        .backfill-panel { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; justify-content: flex-end;
+          background: var(--surface-2, rgba(127,127,127,0.06)); border: 1px solid var(--border, rgba(127,127,127,0.18));
+          border-radius: 10px; padding: 8px 12px; font-size: 12.5px; }
+        .backfill-panel .input, .backfill-panel .select { padding: 4px 8px; font-size: 12.5px; }
         .run-progress { width: min(520px, 100%); background: var(--surface-2, rgba(127,127,127,0.06));
           border: 1px solid var(--border, rgba(127,127,127,0.18)); border-radius: 10px; padding: 8px 12px; }
         .run-progress-head { display: flex; justify-content: space-between; align-items: center; gap: 12px; font-size: 12.5px; }

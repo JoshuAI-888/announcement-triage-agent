@@ -1,6 +1,6 @@
 import { Icon } from "@/components/Icon";
 import { getRunLog, listBriefVersions } from "@/lib/dataSource";
-import { explainFlag } from "@/lib/flags";
+import { explainFlag, KIND_LABEL } from "@/lib/flags";
 import { fmtDateTime, fmtNzd } from "@/lib/format";
 
 export const dynamic = "force-dynamic";
@@ -16,7 +16,7 @@ export default async function TodayPage() {
         <div>
           <p className="eyebrow">Today</p>
           <h1>Latest run</h1>
-          <p>The most recent digest or intraday pass, and the brief it produced.</p>
+          <p>The most recent Daily digest or intraday pass, and the brief it produced.</p>
         </div>
       </div>
 
@@ -25,7 +25,7 @@ export default async function TodayPage() {
           <p>
             <strong>No runs yet.</strong> out/run_log.jsonl has no rows in this checkout. Once{" "}
             <code>daily-brief.yml</code> runs (on schedule, or via &ldquo;Run now&rdquo; above), the latest
-            digest or intraday result will appear here.
+            Daily digest or intraday result will appear here.
           </p>
         </div>
       )}
@@ -35,7 +35,7 @@ export default async function TodayPage() {
           <div className="grid metrics">
             <article className="card card-pad metric">
               <span>Kind / date</span>
-              <strong style={{ fontSize: "1.3rem" }}>{latest.kind}</strong>
+              <strong style={{ fontSize: "1.3rem" }}>{KIND_LABEL[latest.kind] ?? latest.kind}</strong>
               <small className="muted">{fmtDateTime(latest.ts)}</small>
             </article>
             <article className="card card-pad metric">
@@ -97,7 +97,7 @@ export default async function TodayPage() {
               <div className="card-head">
                 <div>
                   <h3>Latest brief</h3>
-                  <p>{latestBrief ? `${latestBrief.name} (${latestBrief.kind})` : "No archived brief found"}</p>
+                  <p>{latestBrief ? `${latestBrief.name} (${KIND_LABEL[latestBrief.kind] ?? latestBrief.kind})` : "No archived brief found"}</p>
                 </div>
                 {latestBrief && (
                   <a className="btn secondary" href={latestBrief.url} target="_blank" rel="noreferrer">

@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { Icon } from "@/components/Icon";
 import { listBriefVersions } from "@/lib/dataSource";
+import { KIND_LABEL } from "@/lib/flags";
 
 export const dynamic = "force-dynamic";
 
@@ -38,7 +39,9 @@ export default async function VersionsPage() {
                   <td className="mono small">{v.name}</td>
                   <td>{v.date}</td>
                   <td>
-                    <span className={`badge ${v.kind === "intraday" ? "orange" : ""}`}>{v.kind}</span>
+                    <span className={`badge ${v.kind === "intraday" ? "orange" : v.kind === "backfill" ? "purple" : ""}`}>
+                      {KIND_LABEL[v.kind] ?? v.kind}
+                    </span>
                   </td>
                   <td>
                     <Link className="btn secondary" href={`/versions/${encodeURIComponent(v.name)}`}>
