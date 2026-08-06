@@ -6,13 +6,24 @@ name: daily-brief
 #   - `data-state` (this workflow's own branch) holds state.db + data/raw/ —
 #     bulky/binary, restored at the start of each run and committed back after.
 #
-# Cron ticks every 15 minutes; `scripts/ci_gate.py` (CONTRACTS §1 schedule block)
-# is the pure decider that turns that tick into digest / intraday / skip so the
-# *actual* NZT poll time and intraday cadence live in runtime_config.json, not here.
-
+# `scripts/ci_gate.py` (CONTRACTS §1 schedule block) is the pure decider that turns
+# each cron tick into digest / intraday / skip; the *actual* NZT poll time lives in
+# runtime_config.json, not here.
+#
+# The cron is scoped to the ~06:00 NZT digest window instead of firing all day. The
+# config is a DAILY digest with intraday OFF, so every tick outside that window was a
+# pure "skip" that still spun up a runner (checkout + pip install ≈ 40s) — 95 wasted
+# runs/day on a private repo, which exhausts the GitHub Actions minutes allowance and
+# then makes GitHub drop scheduled runs / fail them with "runner not acquired".
+# 06:00 NZT is 18:00 UTC in NZST (winter) and 17:00 UTC in NZDT (summer); firing at
+# :00/:20/:40 of both 17:00 and 18:00 UTC covers the digest tick in either season and
+# gives the run 2 extra chances to acquire a runner. 6 runs/day instead of 96 (~16x).
+# NOTE: if you re-enable hourly intraday (schedule.poll_frequency="hourly",
+# intraday_alerts=true), widen this cron back out (e.g. "7 * * * *" hourly) or intraday
+# passes won't fire outside the morning window.
 on:
   schedule:
-    - cron: "*/15 * * * *"
+    - cron: "0,20,40 17,18 * * *"
   workflow_dispatch:
     inputs:
       force:
@@ -23,8 +34,8 @@ on:
 permissions:
   contents: write
 
-# Ticks are frequent (15 min); serialize so a slow run can't overlap the next
-# tick and corrupt state.db / double-fire a digest. Queue rather than cancel.
+# Serialize so a slow run can't overlap the next tick and corrupt state.db /
+# double-fire a digest. Queue rather than cancel.
 concurrency:
   group: daily-brief
   cancel-in-progress: false
