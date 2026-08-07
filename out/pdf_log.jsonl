@@ -1,0 +1,1 @@
+{"ts": "2026-08-07T03:29:24.967224+00:00", "announcement_id": "a6476b76144ab10a12a7a2979d9c6f2f44501374e00b84ac935dbcefbc95c953", "ticker": "T", "form": "CERT", "primary_document": "GlobalNotes080626.pdf", "bytes": 294538, "decision": "pypdf_text", "chars_out": 593, "model_id": null, "cost_nzd": null, "detail": "pypdf extracted 489 non-whitespace chars"}
