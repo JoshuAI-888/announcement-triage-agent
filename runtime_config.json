@@ -21,7 +21,7 @@
   },
   "thresholds": {
     "confidence_floor": 0.65,
-    "escalate_below_confidence": 0,
+    "escalate_below_confidence": 0.65,
     "escalate_above_chars": 100000000
   },
   "ranking": {
