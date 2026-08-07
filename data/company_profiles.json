@@ -19,6 +19,11 @@
     "edge": "Scale and integrated service delivery model enabling end-to-end digital transformation and technology implementation at scope competitors struggle to match.",
     "generated_at": "2026-08-07T03:33:40.421281+00:00"
   },
+  "ADBE": {
+    "business": "Adobe develops and sells software for creative design, document management, and digital marketing applications.",
+    "edge": "Strong network effects and switching costs from its widely-adopted Creative Cloud suite and established position in professional creative workflows.",
+    "generated_at": "2026-08-07T19:08:33.987984+00:00"
+  },
   "ADM": {
     "business": "Processes agricultural commodities into food ingredients, animal feed, and biofuels.",
     "edge": "Integrated global supply chain and processing infrastructure that captures value across multiple stages of commodity transformation.",
@@ -109,6 +114,11 @@
     "edge": "Scale and diversification across multiple alternative asset classes with deep operational expertise and established relationships that enable access to deal flow and capital.",
     "generated_at": "2026-08-07T11:09:07.789729+00:00"
   },
+  "AVY": {
+    "business": "Manufactures and sells pressure-sensitive adhesive materials, labeling solutions, and software platforms for packaging, logistics, and retail applications.",
+    "edge": "Extensive global distribution network, proprietary adhesive technology, and integrated software ecosystem that create switching costs for customers.",
+    "generated_at": "2026-08-07T19:08:35.272470+00:00"
+  },
   "AXP": {
     "business": "Provides payment processing, credit card services, and travel-related financial products to consumers and businesses globally.",
     "edge": "Strong brand recognition and customer loyalty, particularly among affluent consumers, combined with a closed-loop network model that captures both sides of transactions.",
@@ -118,6 +128,11 @@
     "business": "Provides retail and commercial banking, investment banking, wealth management, and trading services globally.",
     "edge": "Extensive branch network and customer base across the United States, combined with diversified revenue streams across consumer and institutional banking.",
     "generated_at": "2026-08-07T03:34:00.841929+00:00"
+  },
+  "BALL": {
+    "business": "Manufactures aluminum and steel beverage containers, as well as aerospace and specialty packaging products.",
+    "edge": "Vertically integrated production with significant scale in beverage can manufacturing and long-term contracts with major global beverage companies.",
+    "generated_at": "2026-08-07T19:08:36.491044+00:00"
   },
   "BDX": {
     "business": "Manufactures and distributes medical devices, diagnostic systems, and laboratory equipment used in healthcare settings worldwide.",
@@ -143,6 +158,11 @@
     "business": "BlackRock is a global investment management firm that manages assets through mutual funds, exchange-traded funds, and other investment products for institutional and individual clients.",
     "edge": "Its scale—managing trillions in assets under management—provides advantages in technology infrastructure, client relationships, and the ability to influence corporate governance through voting power.",
     "generated_at": "2026-08-07T03:32:09.806140+00:00"
+  },
+  "BMY": {
+    "business": "Develops, manufactures, and markets pharmaceuticals and biologics across oncology, immunology, cardiovascular, and cell therapy categories.",
+    "edge": "Extensive patent portfolio, established distribution networks, and significant R&D capabilities in high-barrier therapeutic areas.",
+    "generated_at": "2026-08-07T19:08:37.560492+00:00"
   },
   "BNY": {
     "business": "Provides custody, asset servicing, clearing, and investment management services primarily to institutional clients globally.",
@@ -204,6 +224,11 @@
     "edge": "Integrated production capabilities and significant natural gas reserves that provide cost advantages in nitrogen fertilizer manufacturing.",
     "generated_at": "2026-08-07T03:33:25.383539+00:00"
   },
+  "CFG": {
+    "business": "Provides retail and commercial banking services, including lending, deposits, and wealth management across the United States.",
+    "edge": "Established branch network and customer relationships built through regional presence and acquisition integration capabilities.",
+    "generated_at": "2026-08-07T19:08:39.402407+00:00"
+  },
   "CHD": {
     "business": "Manufactures and markets consumer products including baking soda-based brands (Arm & Hammer), household cleaning products, personal care items, and specialty products for various retail channels.",
     "edge": "Strong portfolio of established brands with high brand recognition and loyalty, particularly Arm & Hammer, which serves as a platform for product line extensions across multiple categories.",
@@ -239,6 +264,11 @@
     "edge": "Vertically integrated supply chain with emphasis on sourcing high-quality ingredients and maintaining operational consistency across locations.",
     "generated_at": "2026-08-05T18:15:55.995447+00:00"
   },
+  "CMI": {
+    "business": "Designs, manufactures, and distributes diesel and natural gas engines, power generation systems, and related components for industrial, commercial, and automotive applications.",
+    "edge": "Extensive global distribution network, decades of engineering expertise in engine technology, and established relationships with major OEM customers across multiple end markets.",
+    "generated_at": "2026-08-07T19:08:40.953131+00:00"
+  },
   "COP": {
     "business": "ConocoPhillips is an integrated energy company engaged in crude oil and natural gas exploration, production, refining, and marketing globally.",
     "edge": "The company maintains a diversified portfolio of low-cost production assets across multiple geographic regions, providing resilience through commodity price cycles and operational scale advantages.",
@@ -268,6 +298,11 @@
     "business": "Provides cloud-native cybersecurity software, primarily endpoint protection and threat intelligence services.",
     "edge": "Large-scale threat intelligence database built from billions of events across its global customer base, creating a network effect that improves detection capabilities.",
     "generated_at": "2026-08-05T05:45:03.308568+00:00"
+  },
+  "CSCO": {
+    "business": "Designs and sells networking equipment, software, and services for connecting computers and devices across networks.",
+    "edge": "Dominant market position in enterprise networking infrastructure with strong customer lock-in through integrated product ecosystems and switching costs.",
+    "generated_at": "2026-08-07T19:08:42.145002+00:00"
   },
   "CSGP": {
     "business": "Provides commercial real estate information, analytics, and online marketplaces through platforms serving brokers, investors, and property managers.",
@@ -304,10 +339,20 @@
     "edge": "Network effects from its large driver base and merchant partnerships, combined with operational efficiency in logistics and unit economics relative to competitors.",
     "generated_at": "2026-08-07T03:34:20.838752+00:00"
   },
+  "DD": {
+    "business": "Manufactures and sells specialty chemicals, materials, and pigments for industrial, automotive, construction, and consumer applications.",
+    "edge": "Extensive portfolio of proprietary chemical formulations and established relationships with large industrial customers that create switching costs.",
+    "generated_at": "2026-08-07T19:08:43.345270+00:00"
+  },
   "DDOG": {
     "business": "Datadog provides cloud-based monitoring, logging, and analytics software for infrastructure, applications, and user experience across distributed systems.",
     "edge": "Unified platform integrating multiple observability functions reduces switching costs and creates network effects as customers consolidate vendors.",
     "generated_at": "2026-08-07T03:32:51.296462+00:00"
+  },
+  "DG": {
+    "business": "Operates a chain of discount retail stores offering consumables, home goods, apparel, and seasonal merchandise primarily to price-conscious consumers in rural and underserved markets.",
+    "edge": "Extensive network of small-format stores in rural areas with limited competition, combined with efficient supply chain and low-cost operating model that enables competitive pricing.",
+    "generated_at": "2026-08-07T19:08:44.988212+00:00"
   },
   "DHR": {
     "business": "Danaher is a diversified conglomerate that manufactures and sells scientific instruments, laboratory equipment, environmental monitoring systems, and life sciences tools across multiple industries.",
@@ -324,10 +369,25 @@
     "edge": "Efficient supply chain and vendor relationships that enable profitable operations at low price points, combined with extensive store network and brand recognition in the discount retail segment.",
     "generated_at": "2026-08-07T03:34:23.821258+00:00"
   },
+  "DOC": {
+    "business": "Owns and operates a diversified portfolio of healthcare real estate properties including medical offices, life science facilities, and senior housing communities.",
+    "edge": "Scale and diversification across multiple healthcare property types provide stable cash flows and reduce dependence on any single asset class or tenant.",
+    "generated_at": "2026-08-07T19:08:46.391373+00:00"
+  },
+  "DOW": {
+    "business": "Produces and sells chemicals, plastics, and agricultural products globally for industrial, consumer, and specialty applications.",
+    "edge": "Integrated manufacturing network and scale in commodity chemical production that enables cost efficiency and supply chain resilience.",
+    "generated_at": "2026-08-07T19:08:47.747512+00:00"
+  },
   "DPZ": {
     "business": "Operates and franchises pizza delivery and carryout restaurants globally under the Domino's brand.",
     "edge": "Highly efficient delivery logistics network and digital ordering platform that drive faster service and lower costs than competitors.",
     "generated_at": "2026-08-07T03:34:25.673924+00:00"
+  },
+  "DRI": {
+    "business": "Operates a portfolio of casual dining restaurant brands including Olive Garden, LongHorn Steakhouse, Cheddar's Scratch Kitchen, and others across North America.",
+    "edge": "Scale advantages in purchasing, supply chain management, and real estate portfolio that support operational efficiency across its diverse brand portfolio.",
+    "generated_at": "2026-08-07T19:08:49.455945+00:00"
   },
   "DVN": {
     "business": "Devon Energy is an independent oil and natural gas exploration and production company that develops and operates upstream energy assets primarily in the United States.",
@@ -384,10 +444,20 @@
     "edge": "Its primary competitive advantage derives from its regulated utility model with predictable cash flows, essential infrastructure assets, and established service territories with limited competition.",
     "generated_at": "2026-08-07T03:32:38.688535+00:00"
   },
+  "EXE": {
+    "business": "Expand Energy Corp develops and operates renewable energy projects, primarily focused on solar and energy storage solutions.",
+    "edge": "The company leverages proprietary technology and development expertise in distributed energy systems to differentiate its project offerings in competitive renewable markets.",
+    "generated_at": "2026-08-07T19:08:50.689561+00:00"
+  },
   "EXPD": {
     "business": "Provides freight forwarding, customs brokerage, and logistics services for international shipments across air, ocean, and ground transportation.",
     "edge": "Global network of owned offices and established relationships with carriers and customs authorities that enable efficient movement of goods across borders.",
     "generated_at": "2026-08-05T18:16:13.272813+00:00"
+  },
+  "EXPE": {
+    "business": "Online travel agency and platform that enables consumers to search, compare, and book flights, hotels, car rentals, and vacation packages.",
+    "edge": "Large network effects from its marketplace connecting millions of travelers with suppliers, combined with extensive inventory aggregation and brand portfolio including Vrbo, Hotels.com, and Trivago.",
+    "generated_at": "2026-08-07T19:08:52.083656+00:00"
   },
   "FAST": {
     "business": "Fastenal distributes industrial and construction fasteners, tools, and supplies through a network of company-operated stores and distribution centers.",
@@ -429,10 +499,20 @@
     "edge": "Established brand portfolio including Fox News and sports broadcasting rights, combined with integrated distribution across broadcast, cable, and digital platforms.",
     "generated_at": "2026-08-07T03:33:32.375378+00:00"
   },
+  "FSLR": {
+    "business": "Manufactures thin-film photovoltaic solar panels and provides solar energy solutions for utility-scale projects.",
+    "edge": "Proprietary cadmium telluride (CdTe) thin-film technology that offers lower manufacturing costs and better performance in high-temperature and low-light conditions compared to conventional silicon panels.",
+    "generated_at": "2026-08-07T19:08:53.315821+00:00"
+  },
   "GD": {
     "business": "Manufactures defense systems, aircraft, combat vehicles, and related technologies for military and government customers worldwide.",
     "edge": "Established relationships with U.S. Department of Defense and long-term defense contracts that create high barriers to entry for competitors.",
     "generated_at": "2026-08-05T05:45:04.543097+00:00"
+  },
+  "GEHC": {
+    "business": "Manufactures and sells medical imaging equipment, healthcare IT software, and diagnostic monitoring systems globally.",
+    "edge": "Extensive installed base of imaging systems and integrated software platforms that create switching costs and recurring revenue streams.",
+    "generated_at": "2026-08-07T19:08:54.843633+00:00"
   },
   "GEN": {
     "business": "Develops and sells cybersecurity software products including Norton antivirus, LifeLock identity theft protection, and enterprise security solutions.",
@@ -489,6 +569,11 @@
     "edge": "Extensive brand portfolio and loyalty program (Hilton Honors) that drive customer retention and franchise network scale economies.",
     "generated_at": "2026-08-07T03:34:36.556851+00:00"
   },
+  "HON": {
+    "business": "Honeywell manufactures and sells diversified industrial products, software, and services including aerospace components, building technologies, performance materials, and safety equipment.",
+    "edge": "Strong brand reputation and integrated technology platforms that create switching costs and enable cross-selling across its portfolio of mission-critical products.",
+    "generated_at": "2026-08-07T19:08:56.284555+00:00"
+  },
   "HONA": {
     "business": "Manufactures aerospace and defense systems including engines, avionics, wheels, brakes, and auxiliary power units for commercial and military aircraft.",
     "edge": "Integrated portfolio of critical aircraft components with high switching costs and long-term OEM contracts that create substantial barriers to entry.",
@@ -503,6 +588,11 @@
     "business": "Distributes dental and medical supplies, equipment, and technology solutions to healthcare providers worldwide.",
     "edge": "Extensive distribution network and scale advantages that enable competitive pricing and reliable supply chain access for dental and medical practices.",
     "generated_at": "2026-08-07T03:34:37.665348+00:00"
+  },
+  "HST": {
+    "business": "A real estate investment trust (REIT) that owns and operates upscale and upper-midscale hotels across the United States.",
+    "edge": "Portfolio of premium branded properties in high-demand markets with long-term management agreements that generate consistent revenue streams.",
+    "generated_at": "2026-08-07T19:08:30.181101+00:00"
   },
   "HSY": {
     "business": "Manufactures and distributes chocolate confectionery and snacking products globally, with a portfolio including iconic brands like Hershey's, Reese's, and Kisses.",
@@ -548,6 +638,11 @@
     "business": "Manufactures and sells diversified industrial products and equipment across segments including automotive, construction, food equipment, and specialty materials.",
     "edge": "Decentralized operating structure with numerous small business units that enables rapid innovation, customer responsiveness, and operational efficiency across fragmented markets.",
     "generated_at": "2026-08-07T03:33:18.204337+00:00"
+  },
+  "J": {
+    "business": "Provides engineering, consulting, and technical services for infrastructure, energy, and industrial projects globally.",
+    "edge": "Large scale and established client relationships across government and private sectors create high barriers to entry and recurring revenue streams.",
+    "generated_at": "2026-08-07T19:08:57.693266+00:00"
   },
   "JAZZ": {
     "business": "Jazz Pharmaceuticals develops and commercializes medicines primarily in neurology, oncology, and other specialty care areas.",
@@ -624,10 +719,25 @@
     "edge": "Leading market position in critical process steps with high switching costs and deep customer relationships with major chipmakers.",
     "generated_at": "2026-08-07T03:34:46.760294+00:00"
   },
+  "LYV": {
+    "business": "Live Nation Entertainment is a global entertainment company that operates ticketing platforms, promotes live events and concerts, and manages artist venues and festivals.",
+    "edge": "Its integrated ecosystem combining ticketing (Ticketmaster), promotion, and venue operations creates significant barriers to entry and cross-selling opportunities across the live entertainment value chain.",
+    "generated_at": "2026-08-07T19:08:59.068763+00:00"
+  },
   "MA": {
     "business": "Operates a global payments network that processes credit, debit, and prepaid card transactions between financial institutions and merchants.",
     "edge": "Extensive network effects from its large installed base of cardholders, merchants, and issuing banks, combined with brand recognition and switching costs that create barriers to competition.",
     "generated_at": "2026-08-07T03:34:48.092540+00:00"
+  },
+  "MAS": {
+    "business": "Manufactures and distributes building products and home improvement materials including cabinets, plumbing fixtures, windows, and decorative architectural products.",
+    "edge": "Vertically integrated operations and broad distribution network that provide cost advantages and strong relationships with builders and retailers.",
+    "generated_at": "2026-08-07T19:09:00.579929+00:00"
+  },
+  "MCD": {
+    "business": "McDonald's operates a global fast-food restaurant chain serving hamburgers, chicken, breakfast items, and beverages through company-owned and franchised locations.",
+    "edge": "The company maintains competitive advantages through its extensive franchise model, global brand recognition, established supply chain infrastructure, and real estate portfolio.",
+    "generated_at": "2026-08-07T19:08:28.538299+00:00"
   },
   "MCHP": {
     "business": "Designs and manufactures microcontrollers, analog semiconductors, and mixed-signal integrated circuits for embedded systems applications.",
@@ -648,6 +758,11 @@
     "business": "Operates social media platforms (Facebook, Instagram, WhatsApp) and develops virtual reality hardware and software.",
     "edge": "Massive global user base exceeding 3 billion people across its platforms, creating network effects and advertising scale advantages.",
     "generated_at": "2026-08-05T05:45:11.056351+00:00"
+  },
+  "MLM": {
+    "business": "Produces and sells aggregates (crushed stone, sand, gravel) and related construction materials primarily for infrastructure and building projects across North America.",
+    "edge": "Vertically integrated operations with extensive quarry reserves, strategic geographic footprint, and high barriers to entry due to the capital intensity and transportation costs of the aggregates business.",
+    "generated_at": "2026-08-07T19:09:02.184258+00:00"
   },
   "MMM": {
     "business": "Manufactures and sells diversified products across industrial, safety, healthcare, and consumer segments including adhesives, abrasives, filtration, and medical devices.",
@@ -704,10 +819,20 @@
     "edge": "Dominant market position in mission-critical radio communications systems with high switching costs and long-term customer relationships.",
     "generated_at": "2026-08-07T03:33:35.205177+00:00"
   },
+  "MTB": {
+    "business": "Provides retail and commercial banking services, including lending, deposit products, and wealth management across the northeastern United States and select other regions.",
+    "edge": "Established branch network and customer relationships in its core Mid-Atlantic markets, combined with a diversified loan portfolio spanning commercial, residential, and consumer segments.",
+    "generated_at": "2026-08-07T19:09:03.669100+00:00"
+  },
   "MTD": {
     "business": "Manufactures and sells precision instruments for weighing, analytical, and diagnostic applications across laboratory, industrial, and healthcare markets.",
     "edge": "Strong brand reputation and installed base that creates switching costs, combined with proprietary technology and extensive service networks that are difficult for competitors to replicate.",
     "generated_at": "2026-08-05T18:17:00.533865+00:00"
+  },
+  "NEE": {
+    "business": "Generates and distributes electricity and natural gas through regulated utility subsidiaries and renewable energy projects across North America.",
+    "edge": "Extensive regulated utility asset base with predictable cash flows combined with significant renewable energy development capabilities and portfolio.",
+    "generated_at": "2026-08-07T19:08:26.956640+00:00"
   },
   "NEM": {
     "business": "Newmont is a gold mining company that explores for, develops, and operates gold and copper mines across multiple continents.",
@@ -744,6 +869,21 @@
     "edge": "Dominant market position in GPU architecture and software ecosystem (CUDA) that creates high switching costs for customers in AI and data center applications.",
     "generated_at": "2026-08-04T19:05:50.762536+00:00"
   },
+  "NWS": {
+    "business": "News Corporation is a media and information services company that operates newspapers, television networks, publishing divisions, and digital platforms across multiple countries.",
+    "edge": "Established brand portfolio and extensive content distribution networks that create barriers to entry in media markets.",
+    "generated_at": "2026-08-07T19:09:05.026263+00:00"
+  },
+  "NWSA": {
+    "business": "News Corporation is a media and information services company that operates newspapers, television networks, publishing divisions, and digital platforms across multiple countries.",
+    "edge": "Its portfolio of established media brands with large audiences and significant influence in news, entertainment, and publishing provides substantial pricing power and cross-platform distribution advantages.",
+    "generated_at": "2026-08-07T19:09:06.444202+00:00"
+  },
+  "OMC": {
+    "business": "Omnicom is a global advertising and marketing communications company that provides services including advertising, public relations, media planning, and digital marketing to clients across various industries.",
+    "edge": "Its scale and integrated service offerings across multiple disciplines allow it to serve large multinational clients with coordinated campaigns while maintaining deep industry expertise and established client relationships.",
+    "generated_at": "2026-08-07T19:09:08.645695+00:00"
+  },
   "PANW": {
     "business": "Develops and sells cybersecurity software and cloud-based platforms for network protection, threat detection, and security operations.",
     "edge": "Broad integrated platform spanning multiple security domains that creates switching costs and cross-selling opportunities for enterprise customers.",
@@ -759,6 +899,11 @@
     "edge": "Broad portfolio of complementary products and established distribution network that create switching costs and cross-selling opportunities across diverse customer bases.",
     "generated_at": "2026-08-07T03:32:14.612924+00:00"
   },
+  "PKG": {
+    "business": "Manufactures containerboard and corrugated packaging products for shipping and protective packaging applications.",
+    "edge": "Vertically integrated operations with significant containerboard production capacity and established relationships with major consumer goods and e-commerce customers.",
+    "generated_at": "2026-08-07T19:08:31.305415+00:00"
+  },
   "PLD": {
     "business": "Prologis is a real estate investment trust (REIT) that owns and operates industrial logistics properties globally, primarily leasing warehouse and distribution facilities.",
     "edge": "The company benefits from a large, diversified portfolio of strategically located properties in major logistics markets and strong relationships with institutional investors and tenants.",
@@ -769,10 +914,25 @@
     "edge": "Established relationships with U.S. government agencies and proprietary data fusion technology that creates switching costs for existing customers.",
     "generated_at": "2026-08-07T03:35:00.410986+00:00"
   },
+  "PNC": {
+    "business": "Provides retail and commercial banking, asset management, and financial services across the United States.",
+    "edge": "Extensive branch network and established relationships with institutional and individual clients across multiple regions.",
+    "generated_at": "2026-08-07T19:09:09.915525+00:00"
+  },
   "PODD": {
     "business": "Manufactures and sells the Omnipod insulin delivery system, a tubeless, wearable insulin pump for diabetes management.",
     "edge": "Proprietary pod-based technology that eliminates tubing and offers simplified user interface, creating switching costs and brand loyalty among insulin-dependent patients.",
     "generated_at": "2026-08-05T18:16:16.603281+00:00"
+  },
+  "PPG": {
+    "business": "Manufactures and sells paints, coatings, and specialty materials for industrial, architectural, and consumer applications.",
+    "edge": "Vertically integrated supply chain and extensive portfolio of proprietary coating technologies across diverse end markets.",
+    "generated_at": "2026-08-07T19:09:11.333959+00:00"
+  },
+  "PPL": {
+    "business": "PPL Corporation is a utility company that generates, transmits, and distributes electricity to millions of customers across the United States and United Kingdom.",
+    "edge": "Regulated utility business model with long-term contracts and stable cash flows from essential infrastructure serving captive customer bases.",
+    "generated_at": "2026-08-07T19:08:32.508557+00:00"
   },
   "PRU": {
     "business": "Prudential Financial is a diversified financial services company that provides insurance, investment management, and retirement income solutions to individual and institutional customers globally.",
@@ -784,6 +944,11 @@
     "edge": "Integrated downstream and midstream operations with strategically located refineries that benefit from crude oil sourcing flexibility and product distribution networks.",
     "generated_at": "2026-08-05T18:15:41.040018+00:00"
   },
+  "PTC": {
+    "business": "PTC develops cloud-based and on-premise software for product lifecycle management, computer-aided design, and Internet of Things applications.",
+    "edge": "Strong installed base of enterprise customers with high switching costs and deep integration into product development workflows across manufacturing and industrial sectors.",
+    "generated_at": "2026-08-07T19:09:12.753302+00:00"
+  },
   "PWR": {
     "business": "Provides specialized infrastructure services including engineering, procurement, construction, and maintenance for energy, industrial, and communications sectors.",
     "edge": "Established relationships with major utility and energy clients combined with technical expertise in complex infrastructure projects that create high switching costs.",
@@ -793,6 +958,11 @@
     "business": "I don't have reliable information about a company called \"Qnity Electronics, Inc.\" with ticker symbol (Q) in my training data.",
     "edge": "This could be because:  - The company name or ticker may be slightly different than stated - It may be a smaller or newer company with limited public information - It may operate under a different legal name  I'd recommend verifying the exact company name and ticker symbol, then checking current sources like SEC filings, the company website, or financial databases for accurate information.",
     "generated_at": "2026-08-07T03:35:04.054527+00:00"
+  },
+  "QCOM": {
+    "business": "Designs and licenses semiconductor technology and manufactures mobile processors, RF components, and networking equipment.",
+    "edge": "Dominant market position in mobile baseband and RF chipsets with extensive patent portfolio and licensing agreements across the wireless industry.",
+    "generated_at": "2026-08-07T19:09:14.088730+00:00"
   },
   "RCL": {
     "business": "Operates a fleet of cruise ships offering multi-day voyages to destinations worldwide, generating revenue from passenger fares, onboard spending, and ancillary services.",
@@ -819,6 +989,11 @@
     "edge": "Integrated ecosystem of hardware, software, and data analytics that creates switching costs and network effects across connected care settings.",
     "generated_at": "2026-08-07T03:31:59.547195+00:00"
   },
+  "ROP": {
+    "business": "Roper Technologies is a diversified industrial company that manufactures and sells engineered products and software solutions across multiple markets including water, energy, healthcare, and transportation.",
+    "edge": "The company maintains a competitive advantage through its portfolio of niche market leaders with strong recurring revenue streams, particularly from software and subscription-based businesses, combined with an efficient acquisition and integration strategy.",
+    "generated_at": "2026-08-07T19:09:15.983385+00:00"
+  },
   "RSG": {
     "business": "Provides waste collection, transfer, recycling, and disposal services to residential, commercial, and industrial customers across North America.",
     "edge": "Extensive network of landfills and transfer stations, combined with scale advantages in fleet operations and customer density, creates high switching costs and operational efficiency.",
@@ -838,6 +1013,11 @@
     "business": "Provides retail and institutional brokerage services, investment advisory, banking, and financial planning solutions.",
     "edge": "Large scale and brand recognition that enable competitive pricing, broad product offerings, and significant customer acquisition advantages.",
     "generated_at": "2026-08-05T05:45:15.167745+00:00"
+  },
+  "SHW": {
+    "business": "Manufactures and distributes architectural and industrial coatings, paints, and related products for professional and consumer markets.",
+    "edge": "Extensive network of company-owned stores providing direct customer access, technical expertise, and supply chain control that competitors cannot easily replicate.",
+    "generated_at": "2026-08-07T19:09:17.249385+00:00"
   },
   "SNA": {
     "business": "Manufactures and distributes professional tools, diagnostic equipment, and shop equipment primarily for automotive technicians and industrial customers.",
@@ -879,6 +1059,11 @@
     "edge": "Vertically integrated manufacturing capabilities and established relationships with major original equipment manufacturers and cloud service providers.",
     "generated_at": "2026-08-05T05:45:17.668976+00:00"
   },
+  "SW": {
+    "business": "Produces containerboard, corrugated packaging, and paper-based packaging solutions for consumer and industrial goods.",
+    "edge": "Vertically integrated operations spanning pulp production through converted packaging products, combined with extensive geographic footprint and customer relationships.",
+    "generated_at": "2026-08-07T19:09:18.705511+00:00"
+  },
   "SWKS": {
     "business": "Designs and manufactures semiconductor solutions for mobile, broadband, automotive, and aerospace applications.",
     "edge": "Extensive portfolio of analog and mixed-signal integrated circuits with established relationships across major wireless and infrastructure customers.",
@@ -914,6 +1099,11 @@
     "edge": "Efficient supply chain and store network combined with a strong private-label brand portfolio that differentiates its product offerings from competitors.",
     "generated_at": "2026-08-07T03:35:13.802284+00:00"
   },
+  "TKO": {
+    "business": "TKO Group Holdings operates as a sports and entertainment company that promotes mixed martial arts events and professional wrestling through the UFC and WWE brands.",
+    "edge": "The company benefits from exclusive content libraries, established fan bases, and long-term athlete contracts that create high barriers to entry in combat sports entertainment.",
+    "generated_at": "2026-08-07T19:09:20.047856+00:00"
+  },
   "TMO": {
     "business": "Provides life sciences tools, laboratory equipment, reagents, and services for research, diagnostics, and bioproduction.",
     "edge": "Extensive portfolio of complementary products and services with significant switching costs, combined with global distribution scale and customer relationships across academic, pharmaceutical, and clinical markets.",
@@ -948,6 +1138,11 @@
     "business": "Provides a software platform for programmatic advertising that enables advertisers and agencies to purchase digital ad inventory across multiple channels.",
     "edge": "Operates a large, independent demand-side platform with significant scale and data advantages that create switching costs for its customer base.",
     "generated_at": "2026-08-07T03:32:45.959735+00:00"
+  },
+  "TTWO": {
+    "business": "Develops and publishes video games and interactive entertainment software, including franchises like Grand Theft Auto, Red Dead Redemption, and NBA 2K.",
+    "edge": "Owns highly valuable intellectual property franchises with strong brand loyalty and recurring revenue from online services and in-game monetization.",
+    "generated_at": "2026-08-07T19:08:25.297688+00:00"
   },
   "TWLO": {
     "business": "Provides cloud-based communications APIs and platforms enabling businesses to send and receive SMS, voice calls, video, and messaging through software integration.",
@@ -1019,10 +1214,20 @@
     "edge": "Vertically integrated manufacturing capabilities and established relationships with major PC and server manufacturers provide scale advantages in a capital-intensive industry.",
     "generated_at": "2026-08-07T03:35:26.580053+00:00"
   },
+  "WELL": {
+    "business": "A real estate investment trust (REIT) that owns and operates healthcare properties including senior housing, medical offices, and wellness facilities across North America and Europe.",
+    "edge": "Large diversified portfolio of essential healthcare real estate with long-term tenant relationships and recurring revenue streams from demographic trends favoring aging populations.",
+    "generated_at": "2026-08-07T19:09:22.884132+00:00"
+  },
   "WFC": {
     "business": "Provides diversified financial services including retail banking, commercial banking, wealth management, and investment banking across the United States and internationally.",
     "edge": "Extensive branch network and established customer relationships built over decades of operations, combined with scale advantages in deposit gathering and cross-selling financial products.",
     "generated_at": "2026-08-05T18:17:13.950461+00:00"
+  },
+  "WMB": {
+    "business": "Operates natural gas pipelines, storage facilities, and related energy infrastructure across North America.",
+    "edge": "Extensive integrated network of pipelines and storage assets that create high barriers to entry and generate stable, long-term contracted revenues.",
+    "generated_at": "2026-08-07T19:09:24.151329+00:00"
   },
   "WRB": {
     "business": "Provides property and casualty insurance products and services through multiple subsidiaries operating in domestic and international markets.",
@@ -1058,6 +1263,11 @@
     "business": "Designs, manufactures, and markets orthopedic implants, surgical instruments, and related products for joint reconstruction, spine, trauma, and dental applications.",
     "edge": "Extensive portfolio of established brands, global distribution network, and significant scale in orthopedic device manufacturing that creates barriers to entry.",
     "generated_at": "2026-08-05T18:15:43.025915+00:00"
+  },
+  "ZBRA": {
+    "business": "Designs and manufactures mobile computing devices, data capture solutions, and printing systems for enterprise and industrial applications.",
+    "edge": "Proprietary software platforms and ecosystem integration that create switching costs and lock-in for customers across supply chain and field service operations.",
+    "generated_at": "2026-08-07T19:09:25.485373+00:00"
   },
   "ZTS": {
     "business": "Develops and manufactures vaccines, medicines, and diagnostic products for livestock and companion animals.",
