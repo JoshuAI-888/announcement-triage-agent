@@ -161,12 +161,17 @@ def body(check):
     check.require("7D" in html and "30D" in html and "90D" in html,
                   "the market strip shows all three window labels (7D/30D/90D)")
 
-    # --- needs-a-look: plain-English flag labels, never a raw code ---
-    check.require("GOOGL" in html and FLAG_VOCAB["insufficient_info"]["label"] in html,
-                  "needs-a-look shows the plain-English insufficient_info label for an abstention")
-    check.require("NVDA" in html and FLAG_VOCAB["G2_ungrounded_quote"]["label"] in html,
-                  "needs-a-look shows the plain-English label for a guardrail flag")
-    check.require("Why flagged" in html, "needs-a-look has a 'Why flagged' lead-in")
+    # --- summary tiles replace the long inline needs-a-look / all-filings lists ---
+    check.require("Material" in html and "Needs a look" in html and "Immaterial" in html,
+                  "the three tier tiles (material / needs a look / immaterial) are present")
+    check.require("of run" in html, "each tile shows its share of the run")
+    check.require("Why 2 need a look" in html, "the needs-a-look reason breakdown names the count")
+
+    # --- needs-a-look reasons: plain-English labels in the breakdown, never a raw code ---
+    check.require(FLAG_VOCAB["insufficient_info"]["label"] in html,
+                  "the reason breakdown shows the plain-English insufficient_info label for an abstention")
+    check.require(FLAG_VOCAB["G2_ungrounded_quote"]["label"] in html,
+                  "the reason breakdown shows the plain-English label for a guardrail flag")
     check.require(not _RAW_CODE_RE.search(html), "no raw G#_ literal anywhere in the rendered email")
     check.require("insufficient_info" not in html, "no raw 'insufficient_info' literal anywhere in the rendered email")
 
@@ -174,11 +179,12 @@ def body(check):
     check.require(f'{FLAG_VOCAB["G2_ungrounded_quote"]["label"]} (1)' in html,
                   "the footer's guardrail-flag-count line uses the plain-English label")
 
-    # --- "All filings this run" table: every classified filing, including immaterial ---
-    check.require("All filings this run" in html, "the all-filings section header is present")
-    check.require("INTC" in html, "the immaterial (excluded-from-brief) filing still appears in the all-filings table")
-    check.require("Routine quarterly filing, nothing new." in html, "the all-filings table carries the rationale")
-    check.require("Material event report (8-K)" in html, "the all-filings table uses the friendly doc_type_label")
+    # --- the 547-row 'All filings this run' table is gone: it lives on the portal now ---
+    check.require("All filings this run" not in html, "the all-filings table is no longer inlined in the email")
+    check.require("browsable, sortable and searchable" in html,
+                  "a closing pointer sends the reader to the portal for the full lists")
+    check.require("need a look and" in html and "immaterial" in html.lower(),
+                  "the pointer names both the needs-a-look and immaterial counts")
 
     check.require("processed: 4" in html or "Announcements processed: 5" in html, "footer reports processed count")
     check.require("NZ$0.4567" in html, "footer reports total cost")
@@ -187,13 +193,23 @@ def body(check):
     check.require("<style" not in html.lower() and "@font-face" not in html.lower(),
                   "no <style> block and no @font-face — mail clients drop both")
 
+    # --- portal_url, when set, links the pointer's counts to <portal_url>/filings ---
+    linked_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                               brief_date=NOW.date(), run_id="2026-07-14T00-00-03", kind="digest",
+                               out_dir=tmp, portal_url="https://portal.example.test/")
+    linked_html = linked_path.read_text(encoding="utf-8")
+    check.require('href="https://portal.example.test/filings"' in linked_html,
+                  "a set brief.portal_url links the pointer to <portal_url>/filings (trailing slash trimmed)")
+    check.require("the portal" in html and 'href="https://portal' not in html,
+                  "with portal_url unset the pointer text is unlinked, not a dead link")
+
     # --- empty sections render a clear placeholder, not an empty page ---
     empty_path = render_email([], [], stats, [], brief_date=NOW.date(),
                               run_id="2026-07-14T00-00-01", kind="digest", out_dir=tmp)
     empty_html = empty_path.read_text(encoding="utf-8")
     check.require("No material announcements this run" in empty_html, "empty ranked list has a placeholder")
-    check.require("Nothing needs a look this run" in empty_html, "empty needs-look list has a placeholder")
-    check.require("No filings classified this run" in empty_html, "empty all-filings list has a placeholder")
+    check.require("<strong>0</strong> filings need a look and <strong>0</strong> were" in empty_html,
+                  "with nothing to show, the portal pointer still renders zero counts")
 
     # --- run_id naming: every kind is named by run_id, not by date/time ---
     intraday_dt = datetime(2026, 7, 14, 18, 2, tzinfo=timezone.utc)

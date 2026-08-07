@@ -24,6 +24,7 @@ either way.
 
 from __future__ import annotations
 
+from collections import Counter
 from datetime import date as date_cls
 from datetime import datetime
 from html import escape
@@ -61,9 +62,8 @@ def _native_form(ann) -> str:
 
 
 # Materiality -> frozen semantic color (CONTRACTS.md §5 — material=green,
-# needs-more-info=warning, immaterial=muted). Shared by the header pill
-# (_materiality_pill_style) and the all-filings table chip (_materiality_chip_style)
-# so the two never drift apart.
+# needs-more-info=warning, immaterial=muted). Used by the material card's header
+# pill (_materiality_pill_style) and the summary tiles.
 _MATERIALITY_COLOR: dict[str, str] = {
     "material": THEME["success"],
     "immaterial": THEME["muted"],
@@ -383,87 +383,6 @@ def _material_block(
     return "".join(rows)
 
 
-def _needs_look_block(items: list[RankedItem]) -> str:
-    if not items:
-        return _card(f'<p style="margin:0; color:{THEME["muted"]};">Nothing needs a look this run.</p>')
-    rows = []
-    for it in items:
-        c, ann = it.classification, it.announcement
-        # Genuine guardrail flags (G#_...) are a pipeline PROBLEM -> danger/red.
-        # A bare abstention (no guardrail_flags, materiality == insufficient_info)
-        # is a MATERIALITY signal ("needs attention") -> warning/orange, per the
-        # frozen color contract. These two cases share this block but must not
-        # share a color.
-        if c.guardrail_flags:
-            explained = explain_flags(c.guardrail_flags)
-            flag_color = THEME["danger"]
-        else:
-            explained = [explain_flag("insufficient_info")]
-            flag_color = THEME["warning"]
-        flags_html = "".join(
-            f'<p style="margin:0 0 4px 0; font-size:13px; color:{flag_color};">'
-            f'<strong>{escape(f["label"])}</strong> &mdash; {escape(f["why"])}</p>'
-            for f in explained
-        )
-        rows.append(_card(
-            f'<p style="margin:0 0 4px 0; color:{THEME["slate"]}; font-weight:bold;">'
-            f'{escape(ann.ticker)} &mdash; {escape(ann.headline)}</p>'
-            f'<p style="margin:0 0 4px 0; font-size:11px; color:{THEME["muted"]}; '
-            f'text-transform:uppercase; letter-spacing:.04em;">Why flagged</p>'
-            f'{flags_html}'
-            f'<p style="margin:0; font-size:12px;">'
-            f'<a href="{escape(ann.source_url)}" style="color:{THEME["orange"]}; text-decoration:none;">Filing</a></p>'
-        ))
-    return "".join(rows)
-
-
-def _materiality_chip_style(materiality: str) -> str:
-    color = _MATERIALITY_COLOR.get(materiality, THEME["muted"])
-    return (f'display:inline-block; padding:2px 8px; border-radius:{THEME["radius_control"]}px; '
-            f'background:{color}; color:#ffffff; font-size:11px; font-weight:bold; white-space:nowrap;')
-
-
-def _all_filings_table(items: list[RankedItem]) -> str:
-    """One row per classified filing this run (material + immaterial + needs-a-look)."""
-    if not items:
-        return _card(f'<p style="margin:0; color:{THEME["muted"]};">No filings classified this run.</p>')
-    header_cell = (f'style="text-align:left; padding:6px 8px; font-size:11px; color:{THEME["muted"]}; '
-                   f'text-transform:uppercase; letter-spacing:.03em; border-bottom:1px solid #dce2e4;"')
-    header = (
-        f'<tr><th {header_cell}>Company</th><th {header_cell}>Document</th>'
-        f'<th {header_cell}>Materiality</th><th {header_cell}>Rationale</th></tr>'
-    )
-
-    def _td(content: str, extra_style: str = "") -> str:
-        style = f'padding:6px 8px; border-bottom:1px solid {THEME["cloud"]}; font-size:12px; vertical-align:top; {extra_style}'
-        return f'<td style="{style}">{content}</td>'
-
-    rows = []
-    for it in items:
-        c, ann = it.classification, it.announcement
-        label = doc_type_label(ann.doc_type, _native_form(ann))
-        rationale = c.rationale if len(c.rationale) <= 160 else c.rationale[:157] + "..."
-        mlabel = MATERIALITY_LABEL.get(c.materiality, c.materiality)
-        chip_style = _materiality_chip_style(c.materiality)
-        company_cell = (f'<a href="{escape(ann.source_url)}" style="color:{THEME["orange"]}; '
-                        f'text-decoration:none; font-weight:bold;">{escape(ann.ticker)}</a> '
-                        f'&mdash; {escape(ann.company_name)}')
-        rows.append(
-            '<tr>'
-            + _td(company_cell)
-            + _td(escape(label), f'color:{THEME["slate_2"]};')
-            + _td(f'<span style="{chip_style}">{escape(mlabel)}</span>')
-            + _td(escape(rationale), f'color:{THEME["slate_2"]};')
-            + '</tr>'
-        )
-    table = (
-        f'<table role="presentation" cellpadding="0" cellspacing="0" '
-        f'style="width:100%; border-collapse:collapse; background:{THEME["paper"]};">'
-        f'{header}{"".join(rows)}</table>'
-    )
-    return _card(table)
-
-
 def _footer_block(stats: dict) -> str:
     flag_counts = stats.get("guardrail_flag_counts", {})
     if flag_counts:
@@ -501,6 +420,118 @@ def _heading_suffix(kind: str, window: dict | None) -> str:
     return suffix
 
 
+def _immaterial_count(ranked: list, needs_look: list, all_items: list) -> int:
+    """Immaterial-and-clean = everything classified this run minus the two shown tiers.
+
+    rank() puts material items in `ranked` and flagged/abstained items in `needs_look`;
+    the remainder of `all_items` (immaterial with no guardrail flag) is what neither tier
+    shows. Never negative.
+    """
+    return max(0, len(all_items) - len(ranked) - len(needs_look))
+
+
+def _tile_html(count: int, label: str, color: str, total: int) -> str:
+    pct = f"{(100 * count / total):.0f}%" if total else "0%"
+    return (
+        f'<td style="width:33%; padding:0 6px; vertical-align:top;">'
+        f'<div style="border:1px solid #dce2e4; border-top:3px solid {color}; '
+        f'border-radius:{THEME["radius_control"]}px; padding:12px 14px; background:{THEME["paper"]};">'
+        f'<div style="font-size:26px; font-weight:bold; color:{THEME["slate"]}; line-height:1;">{count}</div>'
+        f'<div style="font-size:11px; color:{THEME["muted"]}; text-transform:uppercase; '
+        f'letter-spacing:.06em; margin-top:6px;">{escape(label)}</div>'
+        f'<div style="font-size:11px; color:{color}; font-weight:bold; margin-top:2px;">{pct} of run</div>'
+        f'</div></td>'
+    )
+
+
+def _needs_reason_counts(needs_look: list) -> Counter:
+    """Plain-English reason label -> count across the needs-a-look tier.
+
+    A guardrail-flagged item contributes each of its flags' labels; a bare abstention
+    (no flags, insufficient_info) contributes the insufficient_info label. This is the
+    same partition rank() uses for the needs-a-look tier, always expanded to plain
+    English (never a raw G#_ code or the literal "insufficient_info").
+    """
+    reason: Counter = Counter()
+    for it in needs_look:
+        flags = it.classification.guardrail_flags
+        if flags:
+            for f in explain_flags(flags):
+                reason[f["label"]] += 1
+        else:
+            reason[explain_flag("insufficient_info")["label"]] += 1
+    return reason
+
+
+def _summary_tiles_block(ranked: list, needs_look: list, all_items: list) -> str:
+    """Three tier tiles (material / needs a look / immaterial) + a needs-reason breakdown.
+
+    This is the at-a-glance summary that replaces the long inline needs-a-look and
+    all-filings lists in the email (those move to the portal). Always visible; the
+    counts are the authoritative run tiers, so "Material 23" here matches the material
+    cards below exactly.
+    """
+    n_mat, n_needs = len(ranked), len(needs_look)
+    n_imm = _immaterial_count(ranked, needs_look, all_items)
+    total = n_mat + n_needs + n_imm
+
+    tiles = (
+        f'<table role="presentation" cellpadding="0" cellspacing="0" '
+        f'style="width:100%; border-collapse:separate; border-spacing:0; margin:0 0 14px 0;"><tr>'
+        f'{_tile_html(n_mat, "Material", THEME["success"], total)}'
+        f'{_tile_html(n_needs, "Needs a look", THEME["warning"], total)}'
+        f'{_tile_html(n_imm, "Immaterial", THEME["muted"], total)}'
+        f'</tr></table>'
+    )
+
+    reason = _needs_reason_counts(needs_look)
+    if reason:
+        rows = "".join(
+            f'<tr><td style="padding:3px 0; font-size:12px; color:{THEME["slate_2"]};">{escape(lbl)}</td>'
+            f'<td style="padding:3px 0; font-size:12px; color:{THEME["slate"]}; font-weight:bold; '
+            f'text-align:right;">{n} '
+            f'<span style="color:{THEME["muted"]}; font-weight:normal;">'
+            f'({(100 * n / n_needs):.0f}%)</span></td></tr>'
+            for lbl, n in reason.most_common()
+        )
+        breakdown = (
+            f'<div style="border:1px solid #f0d7bf; background:#fff8f1; '
+            f'border-radius:{THEME["radius_control"]}px; padding:12px 14px; margin:0 0 8px 0;">'
+            f'<div style="font-size:12px; font-weight:bold; color:{THEME["orange"]}; '
+            f'text-transform:uppercase; letter-spacing:.05em; margin-bottom:6px;">'
+            f'Why {n_needs} need a look</div>'
+            f'<table role="presentation" style="width:100%; border-collapse:collapse;">{rows}</table>'
+            f'</div>'
+        )
+    else:
+        breakdown = ""
+    return tiles + breakdown
+
+
+def _portal_pointer(ranked: list, needs_look: list, all_items: list, portal_url: str) -> str:
+    """Closing pointer to the portal for the full needs-a-look + immaterial detail.
+
+    The email carries the material cards in full and summarises the rest; the browsable,
+    sortable, searchable lists live on the portal. When `portal_url` is set the counts
+    link to /filings; otherwise the same text renders unlinked (still informative).
+    """
+    n_needs = len(needs_look)
+    n_imm = _immaterial_count(ranked, needs_look, all_items)
+    base = portal_url.rstrip("/")
+    if base:
+        target = f'<a href="{escape(base)}/filings" style="color:{THEME["orange"]}; ' \
+                 f'text-decoration:none; font-weight:bold;">the portal &#8599;</a>'
+    else:
+        target = "the portal"
+    return _card(
+        f'<p style="margin:0; font-size:13px; color:{THEME["slate_2"]};">'
+        f'<strong>{n_needs}</strong> filings need a look and <strong>{n_imm}</strong> were '
+        f'immaterial. Every filing this run &mdash; material, needs-a-look and immaterial &mdash; '
+        f'is browsable, sortable and searchable on {target}.</p>',
+        extra=f"background:{THEME['cloud']};",
+    )
+
+
 def render_email(
     ranked: list[RankedItem],
     needs_look: list[RankedItem],
@@ -515,6 +546,7 @@ def render_email(
     out_dir: Path | None = None,
     assets_base_url: str = "",
     assets_dir: Path | None = None,
+    portal_url: str = "",
 ) -> Path:
     """Render the self-contained, Milford-themed HTML email brief and write it to disk.
 
@@ -554,12 +586,11 @@ border-radius:{THEME['radius_surface']}px; padding:24px; border:1px solid #dce2e
 letter-spacing:.08em; text-transform:uppercase;">Milford &middot; SEC Announcement Triage</p>
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
 SEC announcement brief{_heading_suffix(kind, window)} &mdash; {escape(_display_date(brief_date))}</h1>
+    {_summary_tiles_block(ranked, needs_look, all_items)}
     {_section_header("Material — ranked")}
     {_material_block(ranked, enrichment_by_id, run_id=run_id, assets_base_url=assets_base_url, assets_dir=assets_dir)}
-    {_section_header("Needs a look")}
-    {_needs_look_block(needs_look)}
-    {_section_header("All filings this run")}
-    {_all_filings_table(all_items)}
+    {_section_header("Needs a look & immaterial")}
+    {_portal_pointer(ranked, needs_look, all_items, portal_url)}
     {_section_header("Run footer")}
     {_footer_block(stats)}
   </div>

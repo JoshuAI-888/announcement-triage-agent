@@ -476,9 +476,11 @@ def publish(
     all_items = result.get("all_items", [])
     enrichment = enrich(result["ranked"], result["needs_look"], config, news_mode=news_mode)
     assets_base_url = (config.get("brief") or {}).get("assets_base_url", DEFAULT_ASSETS_BASE_URL)
+    portal_url = (config.get("brief") or {}).get("portal_url", "")
     email_path = render_email(result["ranked"], result["needs_look"], stats, enrichment,
                               all_items=all_items, brief_date=now, run_id=run_id, kind=kind,
-                              window=window, out_dir=briefs_dir, assets_base_url=assets_base_url)
+                              window=window, out_dir=briefs_dir, assets_base_url=assets_base_url,
+                              portal_url=portal_url)
     if kind == "digest":
         # Re-render the markdown brief now that enrichment (company/price) is
         # available — run_pipeline already wrote a plain-classification version
