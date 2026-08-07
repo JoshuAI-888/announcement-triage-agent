@@ -16,6 +16,7 @@ const NAV_ITEMS = [
   { href: "/optimisations", label: "Optimisations", icon: "f0e7" },
   { href: "/cadence", label: "Eval cadence", icon: "f017" },
   { href: "/versions", label: "Draft versions", icon: "f0f6" },
+  { href: "/databricks", label: "On Databricks", icon: "f0e8" },
   { href: "/faq", label: "How it works", icon: "f059" },
 ];
 

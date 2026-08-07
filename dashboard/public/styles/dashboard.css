@@ -110,3 +110,128 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
   .top-actions .small.muted { display: none; }
   .search { order: 3; flex-basis: 100%; }
 }
+
+/* ============================================================
+   "On Databricks" reference-architecture page + interactive diagram.
+   Milford portal theme (--milford-*) as the base, Databricks brand
+   accents for layer colour-coding: lava-red #ff3621 (AI/Mosaic),
+   navy #1b3139 (governance/lakehouse). Professional, restrained.
+   ============================================================ */
+
+/* Databricks brand tokens (scoped to this page's components) */
+.db-page { --db-lava: #ff3621; --db-navy: #1b3139; --db-oat: #f7f4ef; }
+
+.db-eyebrow { color: var(--db-lava) !important; }
+.db-theme-tags { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+.db-swatch { display: inline-flex; align-items: center; gap: 7px; font-size: .7rem; font-weight: 700;
+  color: var(--milford-slate); background: var(--milford-cloud); border-radius: 999px; padding: 5px 11px 5px 8px; }
+.db-swatch i { width: 12px; height: 12px; border-radius: 3px; display: inline-block; }
+
+/* Layer legend chips used in the section intros */
+.db-layer-key { display: inline-flex; align-items: center; gap: 6px; font-size: .7rem; font-weight: 800;
+  padding: 2px 9px; border-radius: 999px; background: var(--milford-cloud); color: var(--milford-slate); }
+.db-layer-key i { width: 9px; height: 9px; border-radius: 2px; }
+
+/* ---- Interactive architecture diagram ---- */
+.arch-card { background: linear-gradient(180deg, #fbfcfc 0%, #ffffff 60%); }
+.arch-grid { display: grid; grid-template-columns: minmax(0, 1fr) 300px; gap: 20px; align-items: start; }
+@media (max-width: 940px) { .arch-grid { grid-template-columns: 1fr; } }
+
+.arch-wrap { overflow-x: auto; }
+.arch-svg { width: 100%; min-width: 760px; height: auto; display: block; }
+
+/* nodes */
+.arch-node { cursor: pointer; }
+.arch-node:focus { outline: none; }
+.arch-node rect { fill: #ffffff; stroke: #d5dcdf; stroke-width: 1.5;
+  filter: drop-shadow(0 1px 2px rgba(27, 49, 57, .07)); transition: stroke .14s ease, fill .14s ease, stroke-width .14s ease; }
+.arch-node text { font-family: var(--font-ui); fill: var(--milford-slate); font-size: 12.5px; font-weight: 700; pointer-events: none; }
+.arch-node .node-sub { fill: var(--milford-muted); font-size: 10px; font-weight: 600; letter-spacing: .02em; }
+
+/* per-layer accent colours (Databricks + Milford palette) */
+.arch-node.k-ingest rect { stroke: #7cc4e6; }
+.arch-node.k-store rect { stroke: #8fa3ab; }
+.arch-node.k-ai rect { stroke: #ff8b7d; }
+.arch-node.k-eval rect { stroke: #7fd08f; }
+.arch-node.k-serve rect { stroke: #bfa0d6; }
+.arch-node.k-app rect { stroke: #f0b483; }
+.arch-node.k-ingest .node-sub { fill: var(--milford-blue); }
+.arch-node.k-store .node-sub { fill: var(--db-navy, #1b3139); }
+.arch-node.k-ai .node-sub { fill: var(--db-lava, #ff3621); }
+.arch-node.k-eval .node-sub { fill: var(--milford-success); }
+.arch-node.k-serve .node-sub { fill: #915fb4; }
+.arch-node.k-app .node-sub { fill: var(--milford-orange); }
+
+/* hover / focus / active: full-strength accent + tint + lift */
+.arch-node:hover rect, .arch-node:focus rect, .arch-node.active rect { stroke-width: 2.4;
+  filter: drop-shadow(0 3px 7px rgba(27, 49, 57, .16)); }
+.arch-node.k-ingest:hover rect, .arch-node.k-ingest:focus rect, .arch-node.k-ingest.active rect { stroke: var(--milford-blue); fill: #f1f9fd; }
+.arch-node.k-store:hover rect, .arch-node.k-store:focus rect, .arch-node.k-store.active rect { stroke: #1b3139; fill: #f2f5f6; }
+.arch-node.k-ai:hover rect, .arch-node.k-ai:focus rect, .arch-node.k-ai.active rect { stroke: #ff3621; fill: #fff4f2; }
+.arch-node.k-eval:hover rect, .arch-node.k-eval:focus rect, .arch-node.k-eval.active rect { stroke: var(--milford-success); fill: #f0faf3; }
+.arch-node.k-serve:hover rect, .arch-node.k-serve:focus rect, .arch-node.k-serve.active rect { stroke: #915fb4; fill: #f8f4fb; }
+.arch-node.k-app:hover rect, .arch-node.k-app:focus rect, .arch-node.k-app.active rect { stroke: var(--milford-orange); fill: #fff6ef; }
+
+/* rails (orchestration top, governance bottom) */
+.arch-node.rail rect { fill: var(--milford-cloud); stroke: #c9d2d6; filter: none; }
+.arch-node.rail text { font-size: 12px; }
+.arch-node.rail:hover rect, .arch-node.rail:focus rect, .arch-node.rail.active rect { stroke: var(--milford-slate); fill: #e6ebec; }
+.arch-node.gov rect { fill: #eef2f3; stroke: #b7c4c9; }
+.arch-node.gov text { fill: var(--db-navy, #1b3139); }
+.arch-node.gov:hover rect, .arch-node.gov:focus rect, .arch-node.gov.active rect { stroke: #1b3139; fill: #e4ebec; }
+
+/* edges */
+.arch-edge { fill: none; }
+.arch-edge.control { stroke: #b9c2c7; stroke-width: 1.5; stroke-dasharray: 3 4; }
+.arch-edge.flow { stroke: var(--milford-blue); stroke-width: 2; stroke-dasharray: 5 6; animation: arch-march 1s linear infinite; }
+@keyframes arch-march { to { stroke-dashoffset: -22; } }
+.flow-dot { fill: var(--milford-orange); }
+@media (prefers-reduced-motion: reduce) { .arch-edge.flow { animation: none; } }
+
+/* legend under the diagram */
+.arch-legend { display: flex; flex-wrap: wrap; gap: 16px; margin-top: 12px; padding-top: 10px; border-top: 1px solid #e5e9ea;
+  font-size: .72rem; color: var(--milford-muted); font-weight: 600; }
+.arch-legend span { display: inline-flex; align-items: center; gap: 7px; }
+.arch-legend i { display: inline-block; }
+.arch-legend .dot-blue { width: 22px; height: 0; border-top: 2px dashed var(--milford-blue); }
+.arch-legend .dash-grey { width: 22px; height: 0; border-top: 2px dashed #b9c2c7; }
+
+/* detail panel */
+.arch-panel { position: sticky; top: 12px; background: #fff; border: 1px solid #dce2e4; border-radius: var(--radius);
+  padding: 16px 16px 18px; min-height: 220px; box-shadow: 0 1px 3px rgba(27, 49, 57, .05); }
+.arch-panel h4 { margin: 8px 0 4px; font-size: 15px; color: var(--milford-slate); font-family: var(--font-display); }
+.arch-panel .arch-lbl { font-size: 10px; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--milford-muted); margin: 12px 0 3px; }
+.arch-panel .arch-txt { font-size: 12.8px; line-height: 1.5; color: var(--milford-slate); margin: 0; }
+.arch-panel .arch-txt.muted-note { color: var(--milford-muted); font-size: 11.5px; margin-top: 10px; }
+.arch-panel .arch-ref { display: inline-block; margin-top: 14px; font-size: 12px; font-weight: 700;
+  color: var(--db-lava, #ff3621); text-decoration: none; }
+.arch-panel .arch-ref:hover { text-decoration: underline; }
+.arch-chip { display: inline-block; font-size: 10px; font-weight: 800; letter-spacing: .04em; text-transform: uppercase;
+  padding: 3px 9px; border-radius: 999px; color: #fff; }
+.arch-chip.k-ingest { background: var(--milford-blue); }
+.arch-chip.k-store { background: #1b3139; }
+.arch-chip.k-ai { background: #ff3621; }
+.arch-chip.k-eval { background: var(--milford-success); }
+.arch-chip.k-serve { background: #915fb4; }
+.arch-chip.k-app { background: var(--milford-orange); }
+.arch-chip.k-govern { background: #1b3139; }
+.arch-chip.k-orchestrate { background: var(--milford-slate); }
+
+/* page prose helpers */
+.db-flow-steps { counter-reset: dbstep; list-style: none; margin: 0; padding: 0; }
+.db-flow-steps li { position: relative; padding: 0 0 14px 40px; }
+.db-flow-steps li::before { counter-increment: dbstep; content: counter(dbstep); position: absolute; left: 0; top: 0;
+  width: 26px; height: 26px; border-radius: 999px; background: var(--db-navy, #1b3139); color: #fff;
+  font-size: 12px; font-weight: 800; display: grid; place-items: center; }
+.db-flow-steps li:not(:last-child)::after { content: ""; position: absolute; left: 13px; top: 30px; bottom: 2px;
+  width: 2px; background: #e0e6e8; }
+.db-flow-steps strong { color: var(--milford-slate); }
+.gap-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 12px; }
+.gap-list li { padding-left: 18px; position: relative; font-size: .84rem; color: var(--milford-slate); }
+.gap-list li::before { content: ""; position: absolute; left: 0; top: 7px; width: 9px; height: 9px; border-radius: 2px; background: var(--db-lava, #ff3621); }
+.gap-list li b { color: var(--milford-slate); }
+.db-map-table td:first-child { font-weight: 700; color: var(--milford-slate); white-space: nowrap; }
+.db-source-list { columns: 2; column-gap: 26px; font-size: .76rem; }
+@media (max-width: 700px) { .db-source-list { columns: 1; } }
+.db-source-list li { break-inside: avoid; margin-bottom: 6px; }
