@@ -76,6 +76,39 @@ class _OpenAICompatClient:
         raise last  # type: ignore[misc]
 
 
+class _AnthropicCachingClient:
+    """The native Anthropic client with prompt caching on the system prompt.
+
+    The classifier re-sends an identical ~2.1k-token system prompt on every
+    filing; without caching each call pays full input price for it. Marking the
+    system block `cache_control: ephemeral` makes the first call a one-time cache
+    write (1.25x) and every call within the 5-min window a cheap cache read
+    (0.1x) — see classify._call, which folds those usage fields into the cost.
+
+    NOTE: Anthropic only caches a block once it clears the model's minimum
+    (2048 tokens for Haiku); classify_v3.md is ~2117, a thin margin — if that
+    prompt is trimmed below 2048 the cache silently stops engaging on Haiku.
+
+    Exposes the same `.messages.create(...)` shape classify.py expects, so the
+    call site is unchanged; only the system arg is wrapped in a cached block.
+    """
+
+    def __init__(self):
+        from anthropic import Anthropic
+
+        self._client = Anthropic()
+        self.messages = SimpleNamespace(create=self._create)
+
+    def _create(self, *, model, max_tokens, temperature, system, messages):
+        return self._client.messages.create(
+            model=model,
+            max_tokens=max_tokens,
+            temperature=temperature,
+            system=[{"type": "text", "text": system, "cache_control": {"type": "ephemeral"}}],
+            messages=messages,
+        )
+
+
 def provider_config(provider: str, config: dict) -> dict:
     pconf = (config.get("providers") or {}).get(provider)
     if pconf is None and provider == "claude":
@@ -97,9 +130,7 @@ def build_client(provider: str, config: dict):
     pconf = provider_config(provider, config)
     kind = pconf.get("kind", "anthropic")
     if kind == "anthropic":
-        from anthropic import Anthropic
-
-        return Anthropic()
+        return _AnthropicCachingClient()
     if kind == "openai":
         return _OpenAICompatClient(pconf.get("api_key_env", "OPENAI_API_KEY"),
                                    pconf.get("base_url"), pconf.get("extra_body"))

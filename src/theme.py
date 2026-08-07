@@ -13,11 +13,6 @@ font stacks (Georgia/serif for display, Arial/Helvetica for body) — see
 
 from __future__ import annotations
 
-from pathlib import Path
-
-ROOT = Path(__file__).resolve().parent.parent
-THEME_CSS_PATH = ROOT / "assets" / "theme" / "theme.css"
-
 # CONTRACTS.md §5 — exact hexes, do not invent or adjust.
 THEME: dict[str, object] = {
     "slate": "#303c42",       # nav, headings, primary text
@@ -40,11 +35,6 @@ THEME: dict[str, object] = {
 # Web-safe fallback stacks — mail clients drop @font-face (CONTRACTS §5).
 FONT_DISPLAY = "Georgia, 'Times New Roman', serif"
 FONT_BODY = "Arial, Helvetica, sans-serif"
-
-
-def read_css() -> str:
-    """Return the shared `assets/theme/theme.css` token file verbatim."""
-    return THEME_CSS_PATH.read_text(encoding="utf-8")
 
 
 def inline_style(**props: object) -> str:

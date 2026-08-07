@@ -93,7 +93,16 @@ def _default_client():
 
 
 def _call(client, model: str, system: str, user: str, max_tokens: int, temperature: float):
-    """One model call. Returns (text, input_tokens, output_tokens)."""
+    """One model call. Returns (text, billed_input_tokens, output_tokens).
+
+    With prompt caching (Anthropic, via providers._AnthropicCachingClient) the
+    input splits into fresh `input_tokens`, a one-time cache write (billed 1.25x)
+    and cheap cache reads (0.1x). We fold those into a single price-equivalent
+    input count so the existing `_cost_nzd` stays correct with no rate plumbing —
+    and so the reported cost actually reflects the cache saving. Non-Anthropic
+    clients (and the offline fakes) have no cache fields → getattr 0 → the billed
+    count equals `input_tokens`, exactly as before.
+    """
     resp = client.messages.create(
         model=model,
         max_tokens=max_tokens,
@@ -101,7 +110,11 @@ def _call(client, model: str, system: str, user: str, max_tokens: int, temperatu
         system=system,
         messages=[{"role": "user", "content": user}],
     )
-    return resp.content[0].text, resp.usage.input_tokens, resp.usage.output_tokens
+    u = resp.usage
+    cache_read = getattr(u, "cache_read_input_tokens", 0) or 0
+    cache_write = getattr(u, "cache_creation_input_tokens", 0) or 0
+    billed_in = int(round(u.input_tokens + 1.25 * cache_write + 0.1 * cache_read))
+    return resp.content[0].text, billed_in, u.output_tokens
 
 
 _JSON_RE = re.compile(r"\{.*\}", re.DOTALL)
