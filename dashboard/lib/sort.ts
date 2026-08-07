@@ -23,6 +23,10 @@ export interface UseMultiSort<T, K extends string> {
   rankOf: (key: K) => number | null;
   /** Current direction for this key, or null if inactive. */
   dirOf: (key: K) => SortDir | null;
+  /** Drop a single key from the active sort order (leaves the rest in place). */
+  removeSort: (key: K) => void;
+  /** Reset the sort order back to `initial` (empty when none was given). */
+  resetSorts: () => void;
 }
 
 /**
@@ -78,8 +82,14 @@ export function useMultiSort<T, K extends string>(
   function dirOf(key: K): SortDir | null {
     return sorts.find((s) => s.key === key)?.dir ?? null;
   }
+  function removeSort(key: K) {
+    setSorts((prev) => prev.filter((s) => s.key !== key));
+  }
+  function resetSorts() {
+    setSorts(initial);
+  }
 
-  return { sorted, sorts, onHeaderClick, rankOf, dirOf };
+  return { sorted, sorts, onHeaderClick, rankOf, dirOf, removeSort, resetSorts };
 }
 
 /** Locale-aware string comparator, null/undefined-safe (nulls sort last). */

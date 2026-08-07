@@ -76,9 +76,49 @@ th.sortable .sort-arrow { margin-left: 4px; opacity: .6; }
 /* Multi-key sort: superscript rank on each active sort header (1 = primary) */
 th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacity: .85; font-weight: 800; }
 
-/* Table toolbar (search + result count) above This-run / history tables */
-.table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+/* Table toolbar (search + filters + export) above This-run / history tables */
+.table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; flex-wrap: wrap; }
 .table-toolbar .search-input { max-width: 420px; min-height: 40px; }
+.table-toolbar .toolbar-left { display: flex; align-items: center; gap: 10px; flex: 1 1 320px; min-width: 0; }
+.table-toolbar .toolbar-left .search-input { flex: 1 1 auto; }
+.table-toolbar .toolbar-actions { display: flex; align-items: center; gap: 10px; }
+.btn.small-btn { min-height: 34px; padding: 0 12px; font-size: .72rem; }
+
+/* Per-column multi-select filter dropdown (components/ColumnFilter.tsx) */
+.th-inner { display: inline-flex; align-items: center; gap: 6px; }
+.th-label { cursor: pointer; }
+.col-filter { position: relative; display: inline-block; }
+.col-filter-btn { display: inline-flex; align-items: center; gap: 3px; border: 1px solid transparent; background: transparent;
+  color: var(--milford-muted); border-radius: var(--radius-sm); padding: 2px 4px; font-size: .58rem; line-height: 1; cursor: pointer; }
+.col-filter-btn:hover { background: var(--milford-cloud); color: var(--milford-slate); }
+.col-filter-btn.is-active { color: var(--milford-orange); background: #fff1e7; }
+.col-filter-count { font-size: .58rem; font-weight: 800; }
+.col-filter-pop { min-width: 190px; max-width: 280px; background: white; border: 1px solid #cdd5d8; border-radius: var(--radius-sm);
+  box-shadow: 0 6px 20px rgba(27, 49, 57, .16); padding: 8px; margin-top: 4px; font-weight: 500; }
+.col-filter-pop-head { display: flex; align-items: center; justify-content: space-between; font-size: .7rem; font-weight: 800;
+  color: var(--milford-slate); padding: 2px 4px 8px; border-bottom: 1px solid #eef1f2; margin-bottom: 6px; text-transform: none; letter-spacing: 0; }
+.col-filter-list { max-height: 240px; overflow-y: auto; display: grid; gap: 2px; }
+.col-filter-opt { display: flex; align-items: center; gap: 8px; font-size: .74rem; font-weight: 600; color: var(--milford-ink);
+  padding: 4px 4px; border-radius: 4px; cursor: pointer; white-space: nowrap; }
+.col-filter-opt:hover { background: var(--milford-cloud); }
+.col-filter-opt input { width: 15px; height: 15px; flex: 0 0 auto; }
+.col-filter-foot { display: flex; justify-content: space-between; gap: 8px; padding-top: 8px; margin-top: 6px; border-top: 1px solid #eef1f2; }
+.col-filter-foot button, .col-filter-clear { border: 0; background: transparent; color: var(--milford-orange); font-size: .68rem;
+  font-weight: 800; cursor: pointer; padding: 2px 4px; }
+.col-filter-foot button:hover, .col-filter-clear:hover { text-decoration: underline; }
+
+/* Active multi-key sort order, shown as removable chips (discoverable multi-sort) */
+.sort-levels { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin-bottom: 12px; font-size: .72rem; }
+.sort-levels-label { font-weight: 800; color: var(--milford-muted); text-transform: uppercase; letter-spacing: .04em; font-size: .64rem; }
+.sort-level-chip { display: inline-flex; align-items: center; gap: 5px; background: var(--milford-cloud); border-radius: 999px;
+  padding: 3px 6px 3px 10px; font-weight: 700; color: var(--milford-slate); }
+.sort-level-rank { display: inline-grid; place-items: center; width: 15px; height: 15px; border-radius: 999px;
+  background: var(--milford-slate); color: white; font-size: .58rem; font-weight: 800; }
+.sort-level-dir, .sort-level-rm { border: 0; background: transparent; cursor: pointer; color: var(--milford-muted); line-height: 1; padding: 1px 2px; font-size: .68rem; }
+.sort-level-dir:hover { color: var(--milford-orange); }
+.sort-level-rm { font-size: .9rem; }
+.sort-level-rm:hover { color: var(--milford-danger); }
+.sort-levels .sort-hint { margin-left: auto; }
 
 /* Scrollable table with a sticky header row — keeps long run/filing lists in a fixed viewport */
 .table-wrap.table-scroll { max-height: 440px; overflow: auto; }

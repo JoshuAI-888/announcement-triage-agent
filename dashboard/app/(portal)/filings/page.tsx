@@ -59,7 +59,7 @@ export default async function FilingsPage() {
             </article>
           </div>
 
-          <FilingsTable filings={run.filings} />
+          <FilingsTable filings={run.filings} generatedAt={run.generated_at} kindLabel={KIND_LABEL[run.kind] ?? run.kind} />
         </>
       )}
     </section>
