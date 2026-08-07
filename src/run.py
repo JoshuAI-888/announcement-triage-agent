@@ -293,7 +293,6 @@ def _load_new_records(config: dict, new_ids: tuple[str, ...]) -> list[Announceme
 
 def _run_log_row(
     kind: str, stats: dict, now: datetime, run_id: str | None = None, window: dict | None = None,
-    dashboard_url: str | None = None,
 ) -> dict:
     """Build one `out/run_log.jsonl` row (CONTRACTS.md §3). `kind` is "digest"/"intraday"/"backfill"."""
     run_id = run_id or compute_run_id(now)
@@ -317,7 +316,6 @@ def _run_log_row(
         "model_primary": stats.get("model_primary", ""),
         "window_days": window.get("lookback_days"),
         "as_of": window.get("as_of"),
-        "dashboard_url": dashboard_url,
     }
 
 

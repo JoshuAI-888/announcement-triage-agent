@@ -159,9 +159,19 @@ def _needs_look_block(items: list[RankedItem]) -> str:
     rows = []
     for it in items:
         c, ann = it.classification, it.announcement
-        explained = explain_flags(c.guardrail_flags) if c.guardrail_flags else [explain_flag("insufficient_info")]
+        # Genuine guardrail flags (G#_...) are a pipeline PROBLEM -> danger/red.
+        # A bare abstention (no guardrail_flags, materiality == insufficient_info)
+        # is a MATERIALITY signal ("needs attention") -> warning/orange, per the
+        # frozen color contract. These two cases share this block but must not
+        # share a color.
+        if c.guardrail_flags:
+            explained = explain_flags(c.guardrail_flags)
+            flag_color = THEME["danger"]
+        else:
+            explained = [explain_flag("insufficient_info")]
+            flag_color = THEME["warning"]
         flags_html = "".join(
-            f'<p style="margin:0 0 4px 0; font-size:13px; color:{THEME["danger"]};">'
+            f'<p style="margin:0 0 4px 0; font-size:13px; color:{flag_color};">'
             f'<strong>{escape(f["label"])}</strong> &mdash; {escape(f["why"])}</p>'
             for f in explained
         )

@@ -225,7 +225,7 @@ def body(check):
     row = _run_log_row("digest", stats, NOW, DIGEST_RUN_ID, digest_window)
     expected_keys = {"date", "ts", "run_id", "kind", "processed", "new", "deduped", "reused", "material",
                      "needs_look", "escalations", "guardrail_flag_counts", "total_cost_nzd", "runtime_seconds",
-                     "prompt_version", "model_primary", "window_days", "as_of", "dashboard_url"}
+                     "prompt_version", "model_primary", "window_days", "as_of"}
     check.equal(set(row.keys()), expected_keys, "run_log row carries exactly the CONTRACTS §3 keys")
     check.equal(row["kind"], "digest", "row records kind")
     check.equal(row["run_id"], DIGEST_RUN_ID, "row records run_id")

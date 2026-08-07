@@ -46,7 +46,7 @@ def _digest_row(ts_utc: datetime) -> dict:
         "date": ts_utc.date().isoformat(), "ts": ts_utc.isoformat().replace("+00:00", "Z"),
         "kind": "digest", "processed": 10, "new": 2, "deduped": 8, "material": 1, "needs_look": 0,
         "escalations": 0, "guardrail_flag_counts": {}, "total_cost_nzd": 0.1, "runtime_seconds": 5.0,
-        "prompt_version": "v3", "model_primary": "claude-haiku-4-5-20251001", "dashboard_url": None,
+        "prompt_version": "v3", "model_primary": "claude-haiku-4-5-20251001",
     }
 
 

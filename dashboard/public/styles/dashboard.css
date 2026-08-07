@@ -73,6 +73,31 @@ th.sortable .sort-arrow { margin-left: 4px; opacity: .6; }
 .flag-chip-row { display: flex; flex-wrap: wrap; gap: 4px; }
 .flag-chip-row .badge { cursor: help; }
 
+/* Multi-key sort: superscript rank on each active sort header (1 = primary) */
+th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacity: .85; font-weight: 800; }
+
+/* Table toolbar (search + result count) above This-run / history tables */
+.table-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 12px; }
+.table-toolbar .search-input { max-width: 420px; min-height: 40px; }
+
+/* Scrollable table with a sticky header row — keeps long run/filing lists in a fixed viewport */
+.table-wrap.table-scroll { max-height: 440px; overflow: auto; }
+.table-wrap.table-scroll thead th { position: sticky; top: 0; z-index: 2; }
+
+/* Form-type "?" hint in the This-run Type column (hover shows the plain-English blurb) */
+.type-hint { display: inline-grid; place-items: center; width: 15px; height: 15px; margin-left: 6px; border-radius: 999px; background: var(--milford-cloud); color: var(--milford-muted); font-size: .62rem; font-weight: 800; cursor: help; vertical-align: middle; }
+.type-hint:hover { background: #e0e6e8; color: var(--milford-slate); }
+
+/* Click-to-expand rationale ("Why") cell on the This-run table */
+.rationale-cell { cursor: pointer; max-width: 360px; }
+.rationale-cell .rationale-clamp { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.rationale-cell .rationale-toggle { display: inline-block; margin-top: 3px; font-size: .62rem; font-weight: 800; color: var(--milford-orange); }
+.rationale-cell:hover .rationale-toggle { text-decoration: underline; }
+
+/* Manual refresh control on the live Workflow-runs table */
+.refresh-btn { display: inline-flex; align-items: center; gap: 6px; }
+.refresh-btn[disabled] { opacity: .55; cursor: default; }
+
 @media (max-width: 760px) {
   .config-form-grid { grid-template-columns: 1fr; }
   .config-form-grid .span-2 { grid-column: auto; }

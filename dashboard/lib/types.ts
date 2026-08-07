@@ -108,7 +108,6 @@ export interface RunLogRow {
   runtime_seconds: number;
   prompt_version: string;
   model_primary: string;
-  dashboard_url: string | null;
   // Optional — present on runs written after the run-identity/lookback-window
   // migration; absent on pre-migration rows still on disk.
   run_id?: string;

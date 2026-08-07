@@ -89,8 +89,6 @@ export default async function TodayPage() {
                     </span>
                   )}
                 </dd>
-                <dt>Dashboard URL</dt>
-                <dd>{latest.dashboard_url ?? <span className="muted">n/a</span>}</dd>
               </dl>
             </article>
             <article className="card card-pad">
@@ -116,11 +114,11 @@ export default async function TodayPage() {
           <div className="card-head">
             <div>
               <h3>Material list &mdash; {latestBrief.name}</h3>
-              <p>Ranked material items with filing/news links, rendered from the archived brief HTML.</p>
+              <p>The full ranked brief (material items with filing/news links) opens in a new tab &mdash; it can&rsquo;t be embedded inline because the brief page blocks framing.</p>
             </div>
-          </div>
-          <div className="brief-frame-wrap">
-            <iframe className="brief-frame" src={latestBrief.url} title={`Brief ${latestBrief.name}`} />
+            <a className="btn" href={latestBrief.url} target="_blank" rel="noreferrer">
+              <Icon code="f08e" /> Open brief in new tab
+            </a>
           </div>
         </article>
       )}

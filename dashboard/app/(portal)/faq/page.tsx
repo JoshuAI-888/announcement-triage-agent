@@ -1,5 +1,6 @@
 import { FLAG_VOCAB } from "@/lib/flags";
 import { MODEL_TIERS } from "@/lib/models";
+import { DOC_TYPE_LIST } from "@/lib/docTypes";
 
 export const dynamic = "force-static";
 
@@ -49,7 +50,7 @@ export default function FaqPage() {
         <p className="small" style={{ margin: "6px 0 0" }}>
           <a href="#intent">What it is</a> · <a href="#flow">The flow</a> · <a href="#architecture">Architecture</a> ·{" "}
           <a href="#digest">Daily digest vs intraday</a> · <a href="#confidence">Confidence</a> · <a href="#models">The AI models</a> ·{" "}
-          <a href="#guardrails">Guardrails</a> · <a href="#glossary">Glossary</a>
+          <a href="#guardrails">Guardrails</a> · <a href="#form-types">Form types</a> · <a href="#glossary">Glossary</a>
         </p>
       </div>
 
@@ -150,9 +151,33 @@ export default function FaqPage() {
             <tbody>
               {Object.values(FLAG_VOCAB).map((f) => (
                 <tr key={f.label}>
-                  <td className="small"><span className="badge orange">{f.label}</span></td>
+                  <td className="small"><span className="badge red">{f.label}</span></td>
                   <td className="small">{f.meaning}</td>
                   <td className="small muted">{f.why}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+      </Section>
+
+      <Section id="form-types" title="Form types explained — what 10-K, 8-K, Form 4… mean">
+        <p>
+          Every filing is tagged with the SEC form it was submitted on. The brief and the This-run table show a friendly
+          label (e.g. &ldquo;Material event report (8-K)&rdquo;), and on the This-run table you can hover the{" "}
+          <span className="type-hint" style={{ cursor: "default" }}>?</span> next to a type for this same plain-English blurb.
+          Here&#39;s what each common form actually is.
+        </p>
+        <div className="table-wrap" style={{ marginTop: 10 }}>
+          <table>
+            <thead>
+              <tr><th>Form</th><th>What it is</th></tr>
+            </thead>
+            <tbody>
+              {DOC_TYPE_LIST.map((d) => (
+                <tr key={d.code}>
+                  <td className="small mono"><strong>{d.code}</strong></td>
+                  <td className="small">{d.blurb}</td>
                 </tr>
               ))}
             </tbody>
