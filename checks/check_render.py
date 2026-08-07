@@ -200,8 +200,11 @@ def body(check):
     linked_html = linked_path.read_text(encoding="utf-8")
     check.require('href="https://portal.example.test/filings"' in linked_html,
                   "a set brief.portal_url links the pointer to <portal_url>/filings (trailing slash trimmed)")
-    check.require("the portal" in html and 'href="https://portal' not in html,
-                  "with portal_url unset the pointer text is unlinked, not a dead link")
+    check.require('href="https://portal.example.test"' in linked_html and "Open the portal dashboard" in linked_html,
+                  "a set brief.portal_url also adds a header link to the portal dashboard")
+    check.require("the portal" in html and 'href="https://portal' not in html
+                  and "Open the portal dashboard" not in html,
+                  "with portal_url unset both the header link and the pointer link are absent (no dead links)")
 
     # --- empty sections render a clear placeholder, not an empty page ---
     empty_path = render_email([], [], stats, [], brief_date=NOW.date(),

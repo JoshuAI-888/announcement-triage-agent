@@ -158,11 +158,12 @@ brief:
   assets_base_url: "https://raw.githubusercontent.com/JoshuAI-888/announcement-triage-agent/main"
 
   # Public base URL of the deployed portal (the Vercel app). When set, the email
-  # brief's closing pointer links the needs-a-look / immaterial counts to
-  # <portal_url>/filings (the full sortable, searchable list). Leave empty to
-  # render that text unlinked — the brief is still complete without it. No
-  # trailing slash needed. Example: "https://your-portal.vercel.app"
-  portal_url: ""
+  # brief carries a header link to the portal and links the closing pointer's
+  # needs-a-look / immaterial counts to <portal_url>/filings (the full sortable,
+  # searchable list). Leave empty to render both unlinked — the brief is still
+  # complete without it. No trailing slash needed. This is the stable production
+  # alias for the main branch; swap for a custom domain if you add one.
+  portal_url: "https://announcement-triage-agent-git-main-joshu-ai.vercel.app"
 
 ranking:
   materiality_weight:

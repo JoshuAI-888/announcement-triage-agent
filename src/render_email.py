@@ -532,6 +532,20 @@ def _portal_pointer(ranked: list, needs_look: list, all_items: list, portal_url:
     )
 
 
+def _portal_top_link(portal_url: str) -> str:
+    """A header link to the portal dashboard. Empty when `portal_url` is unset, so the
+    email never carries a dead link; when set it points at the portal root."""
+    base = portal_url.rstrip("/")
+    if not base:
+        return ""
+    return (
+        f'<p style="margin:0 0 16px 0;">'
+        f'<a href="{escape(base)}" style="display:inline-block; color:{THEME["orange"]}; '
+        f'text-decoration:none; font-weight:bold; font-size:12px;">'
+        f'Open the portal dashboard &#8599;</a></p>'
+    )
+
+
 def render_email(
     ranked: list[RankedItem],
     needs_look: list[RankedItem],
@@ -586,6 +600,7 @@ border-radius:{THEME['radius_surface']}px; padding:24px; border:1px solid #dce2e
 letter-spacing:.08em; text-transform:uppercase;">Milford &middot; SEC Announcement Triage</p>
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
 SEC announcement brief{_heading_suffix(kind, window)} &mdash; {escape(_display_date(brief_date))}</h1>
+    {_portal_top_link(portal_url)}
     {_summary_tiles_block(ranked, needs_look, all_items)}
     {_section_header("Material — ranked")}
     {_material_block(ranked, enrichment_by_id, run_id=run_id, assets_base_url=assets_base_url, assets_dir=assets_dir)}
