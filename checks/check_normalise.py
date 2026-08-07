@@ -250,10 +250,64 @@ def check_normalised_records(c: Check) -> None:
     c.note(f"{len(records)} records; {len(forms)} native forms; doc_types={sorted(doc_types)}")
 
 
+def check_pin_decoupling(c: Check) -> None:
+    """The gold-candidate pin sampler must never abort an operational window run.
+
+    Regression guard for the backfill failure: the pin file exists only to keep the
+    labelling export's row ids stable, and its divergence guard aborts the whole run
+    when a pinned id is absent from the corpus. A backfill (src.run._load_window)
+    fetches a window that cannot be guaranteed to contain the frozen pin ids, so the
+    window path must NOT consult the pin sampler — while the pinned export path
+    (normalise_all with a pin_file) still fails loudly on divergence.
+    """
+    import copy
+    import tempfile
+    from datetime import timedelta
+
+    from src.fetch import load_config
+    from src.normalise import load_raw_payloads, normalise_all
+    from src.run import _load_window
+    from src.store import parse_iso
+
+    config = copy.deepcopy(load_config())
+    with tempfile.NamedTemporaryFile("w", suffix=".txt", delete=False, encoding="utf-8") as fh:
+        fh.write("# forced divergence — an id that cannot be in the corpus\n")
+        fh.write("edgar:0000000000-00-000000:NONEXISTENT-FORM\n")
+        bogus_pin = fh.name
+    config["normalise"] = copy.deepcopy(config["normalise"])
+    config["normalise"]["pin_file"] = str(Path(bogus_pin).resolve())
+
+    try:
+        # 1. Export safety unchanged: normalise_all still aborts loudly on divergence.
+        raised = False
+        try:
+            normalise_all(config=config, limit=5)
+        except RuntimeError as exc:
+            raised = "pinned announcement_id" in str(exc)
+        c.require(raised, "the pinned export path still aborts loudly when the pin file has diverged")
+
+        # 2. The backfill/window path is immune to that guard even with a diverged pin
+        #    file configured. Use a narrow window around the newest payload so the check
+        #    stays fast (and proves the window pre-filter, not a whole-corpus normalise).
+        payloads = load_raw_payloads()
+        newest = max(parse_iso(raw["published_at"]) for raw in payloads)
+        since, until = newest - timedelta(days=2), newest
+        records = _load_window(config, since, until)
+        c.require(
+            len(records) > 0,
+            f"_load_window ignores the pin file and normalises the window ({len(records)} records) "
+            "— a backfill can no longer be aborted by pin divergence",
+        )
+        c.note("backfill/window path is decoupled from the gold-candidate pin sampler")
+    finally:
+        Path(bogus_pin).unlink(missing_ok=True)
+
+
 def body(c: Check) -> None:
     check_doc_type_map(c)
     check_adapters(c)
     check_normalised_records(c)
+    check_pin_decoupling(c)
 
 
 if __name__ == "__main__":

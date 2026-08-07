@@ -188,7 +188,14 @@ def normalise_all(
     limit: int | None = None,
     raw_dir: Path | None = None,
 ) -> list[Announcement]:
-    """Normalise the selected slice of data/raw/. Loud on failure, never silent."""
+    """Normalise the selected slice of data/raw/. Loud on failure, never silent.
+
+    NB: when a `pin_file` is configured this applies the gold-candidate sampler,
+    whose divergence guard aborts if a pinned id is absent from the corpus. That
+    is correct for the labelling export but wrong for operational window runs —
+    the backfill/window path (src.run._load_window) therefore normalises payloads
+    directly and never routes through here.
+    """
     config = config or load_config()
     if limit is None:
         limit = config["normalise"]["sample_limit"]

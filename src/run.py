@@ -259,14 +259,45 @@ def run_pipeline(
 
 
 def _load_window(config: dict, since: datetime | None, until: datetime | None) -> list[Announcement]:
-    """Replay/backfill: normalise the EXISTING corpus in a date window (--from/--to)."""
-    from src.normalise import normalise_all
+    """Replay/backfill: normalise the corpus filings whose published_at is in [since, until].
 
-    records = normalise_all(config=config)
+    Deliberately does NOT use the gold-candidate pin sampler (normalise_all's pin path):
+    that sampler exists only to keep the labelling export's row ids stable, and its
+    divergence guard aborts when a pinned id is absent from the corpus — which a backfill
+    window can never guarantee to contain. Instead the raw payloads are pre-filtered to
+    the window by their published_at and only those are normalised, so a backfill costs
+    work proportional to the window, not the whole of data/raw/.
+    """
+    from src.store import parse_iso
+    from src.normalise import build_normalising_adapter, load_raw_payloads, normalise_one
+
+    payloads = load_raw_payloads()
+
+    def _in_window(raw: dict) -> bool:
+        pub = parse_iso(raw["published_at"])
+        if since and pub < since:
+            return False
+        if until and pub > until:
+            return False
+        return True
+
+    windowed = [raw for raw in payloads if _in_window(raw)]
+
+    adapter = build_normalising_adapter(config)
+    records: list[Announcement] = []
+    for raw in windowed:
+        try:
+            records.append(normalise_one(raw, config, adapter))
+        except Exception as exc:  # one bad filing never kills the brief
+            print(f"WARNING: could not normalise {raw.get('ticker', '?')} {raw.get('form', '?')}: {exc}")
+
+    # Belt-and-suspenders: re-apply the window on the normalised published_at, which
+    # can differ subtly from the raw string the adapter parsed.
     if since:
         records = [r for r in records if r.published_at >= since]
     if until:
         records = [r for r in records if r.published_at <= until]
+    print(f"Window [{since} .. {until}] -> {len(records)} record(s) from {len(payloads)} raw payload(s).")
     return records
 
 
