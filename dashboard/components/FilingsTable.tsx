@@ -89,6 +89,7 @@ export function FilingsTable({ filings }: { filings: FilingRow[] }) {
   );
 
   const { sorted, sorts, onHeaderClick, rankOf, dirOf } = useMultiSort<FilingRow, SortKey>(filtered, comparators, [
+    { key: "materiality", dir: "asc" },
     { key: "published_at", dir: "desc" },
   ]);
 

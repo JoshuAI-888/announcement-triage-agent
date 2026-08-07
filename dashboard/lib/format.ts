@@ -8,7 +8,7 @@ export function fmtNum(v: number | null | undefined, digits = 2): string {
   return v.toFixed(digits);
 }
 
-export function fmtNzd(v: number | null | undefined, digits = 4): string {
+export function fmtNzd(v: number | null | undefined, digits = 2): string {
   if (v === null || v === undefined || Number.isNaN(v)) return "—";
   return `NZ$${v.toFixed(digits)}`;
 }

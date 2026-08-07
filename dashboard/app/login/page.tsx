@@ -46,7 +46,7 @@ function LoginForm() {
       <section className="login-form" aria-labelledby="login-title">
         <img className="logo" src="/brand/milfordasset.svg" alt="Milford" />
         <p className="eyebrow">Milford Workspace</p>
-        <h1 id="login-title">Announcement triage.</h1>
+        <h1 id="login-title">SEC Announcement Triage Agent.</h1>
         <p className="intro">Sign in with the portal password to view the operator dashboard.</p>
         <form onSubmit={onSubmit}>
           <div className="field">
