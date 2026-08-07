@@ -29,21 +29,41 @@ type SortKey =
 
 const RATIONALE_WORD_CAP = 100;
 
-function materialityBadgeClass(materiality: string): string {
-  const m = materiality.toLowerCase();
-  if (m === "material") return "badge green";
-  if (m === "immaterial") return "badge";
-  if (m.includes("needs") || m.includes("more_info") || m.includes("insufficient")) return "badge orange";
+type Tier = "material" | "needs_look" | "immaterial";
+
+const TIER_LABEL: Record<Tier, string> = {
+  material: "Material",
+  needs_look: "Needs a look",
+  immaterial: "Immaterial",
+};
+
+/** The authoritative brief tier for a row: the committed `tier` when present, else
+ *  derived from materiality + flags exactly as the Python side does. Materiality wins:
+ *  a material-classified filing stays material even when flagged (the flag rides along
+ *  as a red "verify" chip in the Flags column). Needs-a-look is the NON-material items
+ *  that still want a human eye (abstentions + flagged immaterial). Badging/sorting by
+ *  this keeps the table's material count equal to the summary tile / email. */
+function tierOf(f: FilingRow): Tier {
+  if (f.tier) return f.tier;
+  const m = f.materiality.toLowerCase();
+  if (m === "material") return "material";
+  if (f.flags.length > 0 || m.includes("insufficient") || m.includes("more_info") || m.includes("needs")) {
+    return "needs_look";
+  }
+  return "immaterial";
+}
+
+function tierBadgeClass(tier: Tier): string {
+  if (tier === "material") return "badge green";
+  if (tier === "needs_look") return "badge orange";
   return "badge";
 }
 
-/** material > needs/insufficient > immaterial, per the frozen color/priority contract. */
-function materialityRank(materiality: string): number {
-  const m = materiality.toLowerCase();
-  if (m === "material") return 0;
-  if (m.includes("needs") || m.includes("more_info") || m.includes("insufficient")) return 1;
-  if (m === "immaterial") return 2;
-  return 3;
+/** material > needs a look > immaterial, per the frozen color/priority contract. */
+function tierRank(tier: Tier): number {
+  if (tier === "material") return 0;
+  if (tier === "needs_look") return 1;
+  return 2;
 }
 
 function typeTooltip(label: string): string {
@@ -60,7 +80,7 @@ function capWords(text: string, maxWords: number): { text: string; truncated: bo
 
 function matchesSearch(f: FilingRow, needle: string): boolean {
   if (!needle) return true;
-  const haystack = [f.company_name, f.ticker, f.doc_type_label, f.materiality_label, f.rationale].join(" \n ").toLowerCase();
+  const haystack = [f.company_name, f.ticker, f.doc_type_label, TIER_LABEL[tierOf(f)], f.materiality_label, f.rationale].join(" \n ").toLowerCase();
   return haystack.includes(needle);
 }
 
@@ -79,7 +99,7 @@ export function FilingsTable({ filings }: { filings: FilingRow[] }) {
       company_name: (a, b) => cmpStr(a.company_name, b.company_name),
       ticker: (a, b) => cmpStr(a.ticker, b.ticker),
       doc_type_label: (a, b) => cmpStr(a.doc_type_label, b.doc_type_label),
-      materiality: (a, b) => materialityRank(a.materiality) - materialityRank(b.materiality),
+      materiality: (a, b) => tierRank(tierOf(a)) - tierRank(tierOf(b)),
       confidence: (a, b) => cmpNum(a.confidence, b.confidence),
       rationale: (a, b) => cmpStr(a.rationale, b.rationale),
       flags_count: (a, b) => cmpNum(a.flags.length, b.flags.length),
@@ -179,7 +199,16 @@ export function FilingsTable({ filings }: { filings: FilingRow[] }) {
                     )}
                   </td>
                   <td>
-                    <span className={materialityBadgeClass(f.materiality)}>{f.materiality_label}</span>
+                    <span
+                      className={tierBadgeClass(tierOf(f))}
+                      title={
+                        tierOf(f) === "material" && f.flags.length > 0
+                          ? `Material — but a data-quality flag needs verifying (see Flags)`
+                          : `Model classification: ${f.materiality_label}`
+                      }
+                    >
+                      {TIER_LABEL[tierOf(f)]}
+                    </span>
                   </td>
                   <td className="align-right tabular">{fmtPct(f.confidence, 0)}</td>
                   <td

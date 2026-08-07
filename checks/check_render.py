@@ -104,13 +104,16 @@ def body(check):
     nvda_c = make_cls(nvda, "material", 0.9, flags=["G2_ungrounded_quote"], quote="unverifiable claim")
     intc_c = make_cls(intc, "immaterial", 0.85, quote="body", rationale="Routine quarterly filing, nothing new.")
 
+    # Materiality wins: NVDA is material AND carries a guardrail flag, so it belongs in
+    # the material tier (with a "verify" caveat), not in needs-a-look. needs-a-look is
+    # the non-material review item (the GOOGL abstention).
     ranked = [
         RankedItem(classification=aapl_c, announcement=aapl, score=0.83, reason="aapl reason"),
         RankedItem(classification=msft_c, announcement=msft, score=0.61, reason="msft reason"),
+        RankedItem(classification=nvda_c, announcement=nvda, score=0.55, reason="nvda reason"),
     ]
     needs_look = [
         RankedItem(classification=googl_c, announcement=googl, score=0.20, reason="googl reason"),
-        RankedItem(classification=nvda_c, announcement=nvda, score=0.55, reason="nvda reason"),
     ]
     immaterial_item = RankedItem(classification=intc_c, announcement=intc, score=0.05, reason="intc reason")
     all_items = ranked + needs_look + [immaterial_item]
@@ -165,13 +168,16 @@ def body(check):
     check.require("Material" in html and "Needs a look" in html and "Immaterial" in html,
                   "the three tier tiles (material / needs a look / immaterial) are present")
     check.require("of run" in html, "each tile shows its share of the run")
-    check.require("Why 2 need a look" in html, "the needs-a-look reason breakdown names the count")
+    check.require("Why 1 need a look" in html, "the needs-a-look reason breakdown names the count")
 
-    # --- needs-a-look reasons: plain-English labels in the breakdown, never a raw code ---
-    check.require(FLAG_VOCAB["insufficient_info"]["label"] in html,
-                  "the reason breakdown shows the plain-English insufficient_info label for an abstention")
+    # --- materiality wins: a flagged material item stays a material CARD, with a red
+    #     'verify' caveat carrying the plain-English flag (never a raw code) ---
+    check.require("Verify before relying" in html,
+                  "a flagged material card shows the 'verify before relying' caveat")
     check.require(FLAG_VOCAB["G2_ungrounded_quote"]["label"] in html,
-                  "the reason breakdown shows the plain-English label for a guardrail flag")
+                  "the flagged material card names its guardrail flag in plain English")
+    check.require(FLAG_VOCAB["insufficient_info"]["label"] in html,
+                  "the reason breakdown shows the plain-English insufficient_info label for the abstention")
     check.require(not _RAW_CODE_RE.search(html), "no raw G#_ literal anywhere in the rendered email")
     check.require("insufficient_info" not in html, "no raw 'insufficient_info' literal anywhere in the rendered email")
 

@@ -350,6 +350,26 @@ def _action_footer_html(filing_url: str, news_html: str, score: float) -> str:
     )
 
 
+def _verify_flags_html(c) -> str:
+    """A red 'verify before relying' banner for a material card that carries a guardrail
+    flag. Materiality wins (the item stays material), but the flag is a data-quality
+    caveat on the model's output, so it rides along here in plain English (red per the
+    colour contract). Empty when the item is clean."""
+    if not c.guardrail_flags:
+        return ""
+    items = "".join(
+        f'<p style="margin:2px 0 0 0; font-size:12px; color:{THEME["danger"]};">'
+        f'<strong>{escape(f["label"])}</strong> &mdash; {escape(f["why"])}</p>'
+        for f in explain_flags(c.guardrail_flags)
+    )
+    return (
+        f'<div style="margin:10px 0 0 0; padding:8px 11px; background:#fdecea; '
+        f'border-left:3px solid {THEME["danger"]}; border-radius:{THEME["radius_control"]}px;">'
+        f'<p style="margin:0; font-size:10px; font-weight:bold; letter-spacing:.06em; '
+        f'text-transform:uppercase; color:{THEME["danger"]};">Verify before relying</p>{items}</div>'
+    )
+
+
 def _material_block(
     items: list[RankedItem],
     enrichment_by_id: dict[str, Enrichment],
@@ -378,6 +398,7 @@ def _material_block(
             + market_html
             + company_html
             + _analysis_body_html(c)
+            + _verify_flags_html(c)
             + _action_footer_html(filing_url, news_html, it.score)
         ))
     return "".join(rows)

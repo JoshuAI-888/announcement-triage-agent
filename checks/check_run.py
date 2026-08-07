@@ -65,13 +65,54 @@ def body(check):
     ]
     ranked, needs_look = rank(pairs, CONFIG, now=NOW)
     ranked_tickers = [it.announcement.ticker for it in ranked]
-    check.equal(ranked_tickers, ["AAPL", "TSLA"], "ranked list = material & clean, recency orders AAPL over TSLA")
+    # Materiality wins: NVDA is material but flagged, so it stays in the material tier
+    # (the flag rides along as a caveat), not demoted to Needs a look.
+    check.equal(set(ranked_tickers), {"AAPL", "TSLA", "NVDA"},
+                "ranked list = every material item, including the flagged NVDA")
     check.require("MSFT" not in ranked_tickers, "immaterial+clean record is excluded from the ranked list")
+    check.equal(ranked_tickers[-1], "TSLA", "the oldest material item (TSLA, 24h) ranks last by recency decay")
     look_tickers = {it.announcement.ticker for it in needs_look}
-    check.equal(look_tickers, {"GOOGL", "NVDA"}, "abstention and guardrail-flagged records go to Needs a look")
-    check.require(ranked[0].score > ranked[1].score, "score decreases with age (recency decay)")
+    check.equal(look_tickers, {"GOOGL"}, "Needs a look = non-material items wanting review (the abstention GOOGL)")
+    check.require(ranked[0].score > ranked[-1].score, "score decreases with age (recency decay)")
     check.require(ranked[0].reason.count("=") >= 1 and "score" in ranked[0].reason.lower(),
                   "each ranked item carries a one-sentence 'why' reason")
+
+    # --- tier field + per-run count invariant (numbers must agree across surfaces) ---
+    from src.rank import RankedItem, tier_of
+
+    all_items = [RankedItem(classification=c, announcement=a, score=0.0, reason="") for c, a in pairs]
+    payload = {
+        "counts": RUN._filings_counts({"processed": 5}, all_items),
+        "filings": [RUN._filing_row(it) for it in all_items],
+    }
+    by_ticker = {r["ticker"]: r for r in payload["filings"]}
+    # Materiality wins (the user's call): a material-CLASSIFIED filing that carries a
+    # guardrail flag STAYS material — the flag is a caveat, not a demotion.
+    check.equal(by_ticker["NVDA"]["materiality"], "material", "NVDA is classified material by the model")
+    check.equal(by_ticker["NVDA"]["tier"], "material", "a flagged material filing stays tier=material")
+    check.require(len(by_ticker["NVDA"]["flags"]) > 0, "the flagged material filing still carries its flag (shown as a caveat)")
+    check.equal(by_ticker["AAPL"]["tier"], "material", "clean material filing has tier=material")
+    check.equal(by_ticker["MSFT"]["tier"], "immaterial", "clean immaterial filing has tier=immaterial")
+    check.equal(by_ticker["GOOGL"]["tier"], "needs_look", "a non-material abstention has tier=needs_look")
+    check.equal(payload["counts"]["material"], 3, "counts.material equals tier=material rows (AAPL, TSLA, NVDA)")
+    check.equal(payload["counts"]["needs_more_info"], 1, "counts.needs equals tier=needs_look rows (GOOGL)")
+    check.equal(payload["counts"]["immaterial"], 1, "counts.immaterial equals tier=immaterial rows (MSFT)")
+    check.equal(tier_of(make_cls(nvda, "material", 0.9, flags=["G2_ungrounded_quote"])), "material",
+                "tier_of is the single source of truth: material + flag -> material (materiality wins)")
+
+    RUN._assert_count_invariants(payload)  # the good payload passes cleanly
+    check.require(True, "the per-run count invariant passes when the numbers add up")
+
+    # And it FAILS LOUDLY on a payload whose numbers disagree (regression guard for the
+    # exact class of 'portal says 5, email says 1' bug).
+    corrupt = {"counts": dict(payload["counts"]), "filings": [dict(r) for r in payload["filings"]]}
+    next(r for r in corrupt["filings"] if r["ticker"] == "NVDA")["tier"] = "immaterial"  # now 2 material vs counts=3
+    raised = False
+    try:
+        RUN._assert_count_invariants(corrupt)
+    except AssertionError:
+        raised = True
+    check.require(raised, "the invariant aborts the run when a tier count disagrees with counts")
 
     # --- brief: three sections + self-reporting footer ---
     tmp = Path(tempfile.mkdtemp(prefix="brief_"))

@@ -49,6 +49,24 @@ def is_needs_a_look(c: Classification) -> bool:
     return bool(c.guardrail_flags) or c.materiality == "insufficient_info"
 
 
+# The single source of truth for which of the three brief TIERS a classification
+# lands in. rank(), the filings counts, the per-row tier field and the portal must
+# all agree, so they all go through here.
+#
+# Materiality wins over a guardrail flag: a filing the model calls material stays in
+# the MATERIAL tier even when a data-quality flag (unverified quote/figure) is present
+# — the flag is about the model's OUTPUT, not whether the filing matters, so it shows
+# as a "verify this" signal on the material item rather than demoting it. "Needs a
+# look" is therefore the NON-material items that still want a human eye: abstentions
+# (insufficient_info) and flagged immaterial items.
+def tier_of(c: Classification) -> str:
+    if c.materiality == "material":
+        return "material"
+    if is_needs_a_look(c):
+        return "needs_look"
+    return "immaterial"
+
+
 def rank(
     pairs: list[tuple[Classification, Announcement]],
     config: dict,
@@ -56,9 +74,13 @@ def rank(
 ) -> tuple[list[RankedItem], list[RankedItem]]:
     """Split into (ranked material, needs-a-look) and sort the ranked list by score.
 
-    Ranked  = material, no guardrail flag, not an abstention.
-    Needs a look = any abstention OR any guardrail flag (never mixed in, never buried).
+    Ranked  = material (materiality wins; a guardrail flag does NOT demote it — it
+              rides along as a "verify this" signal on the item).
+    Needs a look = NON-material items that still want a human eye: abstentions
+              (insufficient_info) and flagged immaterial items.
     Immaterial-and-clean records appear in neither — there is nothing to see.
+
+    Routing goes through tier_of so rank(), the counts and the portal never diverge.
     """
     now = now or datetime.now(timezone.utc)
     ranked: list[RankedItem] = []
@@ -66,10 +88,11 @@ def rank(
     for c, ann in pairs:
         score, reason = score_one(c, ann, config, now)
         item = RankedItem(classification=c, announcement=ann, score=score, reason=reason)
-        if is_needs_a_look(c):
-            needs_look.append(item)
-        elif c.materiality == "material":
+        tier = tier_of(c)
+        if tier == "material":
             ranked.append(item)
+        elif tier == "needs_look":
+            needs_look.append(item)
         # else: immaterial + clean → excluded from the brief
     ranked.sort(key=lambda it: it.score, reverse=True)
     needs_look.sort(key=lambda it: it.score, reverse=True)

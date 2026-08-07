@@ -52,7 +52,7 @@ from src.enrich import enrich
 from src.fetch import DB_PATH, RAW_DIR, fetch, load_config
 from src.flags import KIND_LABEL, MATERIALITY_LABEL, doc_type_label, explain_flag
 from src.models import Announcement, Classification
-from src.rank import RankedItem, is_needs_a_look, rank, score_one
+from src.rank import RankedItem, rank, score_one, tier_of
 from src.render_email import render_email
 from src.store import Store
 from src.verify import verify
@@ -384,6 +384,12 @@ def _filing_row(item: RankedItem) -> dict:
         "doc_type_label": doc_type_label(ann.doc_type, native_form),
         "materiality": c.materiality,
         "materiality_label": MATERIALITY_LABEL.get(c.materiality, c.materiality),
+        # `tier` is the authoritative brief bucket (material / needs_look / immaterial)
+        # this row is counted in — the SAME split rank() and `counts` use. It differs
+        # from `materiality` (the model's raw call): a material-classified filing with a
+        # guardrail flag has materiality="material" but tier="needs_look". The portal must
+        # badge/count by `tier` so its numbers can never disagree with the email/counts.
+        "tier": tier_of(c),
         "confidence": c.confidence,
         "rationale": c.rationale,
         "flags": flags,
@@ -396,20 +402,59 @@ def _filing_row(item: RankedItem) -> dict:
 def _filings_counts(stats: dict, all_items: list[RankedItem]) -> dict:
     """CONTRACTS.md `counts` block. `total_received` == every attempt this pass made
     (material + immaterial + needs_more_info + dropped_offwatchlist + dead_lettered
-    sum back to it exactly — see run_pipeline's `processed` counter)."""
-    material = sum(1 for it in all_items
-                   if it.classification.materiality == "material" and not it.classification.guardrail_flags)
-    needs_more_info = sum(1 for it in all_items if is_needs_a_look(it.classification))
-    immaterial = sum(1 for it in all_items
-                     if it.classification.materiality == "immaterial" and not it.classification.guardrail_flags)
+    sum back to it exactly — see run_pipeline's `processed` counter).
+
+    Counts go through `tier_of` — the same split rank(), the per-row `tier` field and
+    the portal use — so the three tier totals here always equal the number of rows with
+    each `tier`, and material/needs/immaterial can never mean different things on
+    different surfaces."""
+    tiers = Counter(tier_of(it.classification) for it in all_items)
     return {
         "total_received": stats.get("processed", 0),
-        "material": material,
-        "immaterial": immaterial,
-        "needs_more_info": needs_more_info,
+        "material": tiers.get("material", 0),
+        "immaterial": tiers.get("immaterial", 0),
+        "needs_more_info": tiers.get("needs_look", 0),
         "dropped_offwatchlist": stats.get("dropped_offwatchlist", 0),
         "dead_lettered": stats.get("dead_letters", 0),
     }
+
+
+def _assert_count_invariants(payload: dict) -> None:
+    """Fail loudly if the run's numbers don't add up — run on EVERY publish.
+
+    Guards the class of bug where the material/needs/immaterial a reader sees on one
+    surface disagree with another. Checks, against the actual `filings[]` rows:
+      1. every row carries a tier in {material, needs_look, immaterial};
+      2. each `counts` tier equals the number of rows with that tier;
+      3. the three tiers sum to len(filings); and
+      4. filings + dropped_offwatchlist + dead_lettered == total_received.
+    Raises AssertionError (which aborts the run) rather than shipping wrong numbers.
+    """
+    counts = payload["counts"]
+    rows = payload["filings"]
+    valid = {"material", "needs_look", "immaterial"}
+    by_tier = Counter(r.get("tier") for r in rows)
+    bad = by_tier.keys() - valid
+    assert not bad, f"count invariant: {len(bad)} filing row(s) have an unknown tier {sorted(bad)}"
+
+    checks = {
+        "material": counts["material"],
+        "needs_look": counts["needs_more_info"],
+        "immaterial": counts["immaterial"],
+    }
+    for tier, expected in checks.items():
+        got = by_tier.get(tier, 0)
+        assert got == expected, (
+            f"count invariant: counts says {tier}={expected} but {got} filing row(s) have tier '{tier}'"
+        )
+    assert sum(checks.values()) == len(rows), (
+        f"count invariant: tiers sum to {sum(checks.values())} but there are {len(rows)} filing rows"
+    )
+    accounted = len(rows) + counts["dropped_offwatchlist"] + counts["dead_lettered"]
+    assert accounted == counts["total_received"], (
+        f"count invariant: filings({len(rows)}) + dropped({counts['dropped_offwatchlist']}) + "
+        f"dead({counts['dead_lettered']}) = {accounted} != total_received {counts['total_received']}"
+    )
 
 
 def _filings_filename(run_id: str) -> str:
@@ -435,6 +480,7 @@ def write_filings_json(
         "counts": _filings_counts(stats, all_items),
         "filings": [_filing_row(it) for it in all_items],
     }
+    _assert_count_invariants(payload)  # every run: the numbers must add up before we ship them
     path = out_dir / _filings_filename(run_id)
     path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
     return path

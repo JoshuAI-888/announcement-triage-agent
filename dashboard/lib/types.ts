@@ -192,6 +192,12 @@ export interface FilingRow {
   doc_type_label: string;
   materiality: string;
   materiality_label: string;
+  // The authoritative brief tier this row is counted in (material / needs_look /
+  // immaterial) — the SAME split as `counts`. Differs from `materiality` (the model's
+  // raw call): a material-classified filing with a guardrail flag has tier "needs_look".
+  // Optional: absent on filings JSON written before the tier field shipped, so the
+  // table falls back to computing it from materiality + flags (see tierOf).
+  tier?: "material" | "needs_look" | "immaterial";
   confidence: number;
   rationale: string;
   flags: FilingFlag[];
