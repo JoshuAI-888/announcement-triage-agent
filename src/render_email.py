@@ -12,8 +12,9 @@ Every guardrail flag and abstention is expanded to plain English via
 `src.flags` before it reaches this module's output — a raw `G#_...` code or the
 literal `insufficient_info` must never appear in the rendered HTML.
 
-The 7-day price sparkline is built from an HTML `<table>` of bottom-aligned
-`<div>` bars, NOT inline `<svg>` — Gmail and most mail clients strip `<svg>`.
+The 7/30/90-day price sparklines are built from an HTML `<table>` of
+bottom-aligned `<div>` bars, NOT inline `<svg>` — Gmail and most mail clients
+strip `<svg>`.
 """
 
 from __future__ import annotations
@@ -52,25 +53,45 @@ def _native_form(ann) -> str:
     return ann.native_doc_type.split(" [")[0]
 
 
-def _sparkline_html(series7: list[float]) -> str:
-    """Mail-safe 7-day sparkline: a `<table>` of bottom-aligned coloured `<div>` bars.
+# Materiality -> frozen semantic color (CONTRACTS.md §5 — material=green,
+# needs-more-info=warning, immaterial=muted). Shared by the header pill
+# (_materiality_pill_style) and the all-filings table chip (_materiality_chip_style)
+# so the two never drift apart.
+_MATERIALITY_COLOR: dict[str, str] = {
+    "material": THEME["success"],
+    "immaterial": THEME["muted"],
+    "insufficient_info": THEME["warning"],
+}
+
+
+def _sparkline_html(series: list[float]) -> str:
+    """Mail-safe sparkline: a `<table>` of bottom-aligned coloured `<div>` bars.
 
     NOT inline `<svg>` — Gmail and most mail clients strip it. The most recent
-    bar (last in the chronological series) is highlighted orange.
+    bar (last in the chronological series) is highlighted orange. Works for any
+    window length (7/30/90) — bar width narrows as the series grows so a
+    90-point chart still fits a narrow column alongside its 7D/30D siblings.
     """
-    if not series7:
+    if not series:
         return ""
-    lo, hi = min(series7), max(series7)
+    lo, hi = min(series), max(series)
     span = (hi - lo) or 1.0
     max_px = 26
-    n = len(series7)
+    n = len(series)
+    if n <= 10:
+        bar_w, gap = 6, 1
+    elif n <= 40:
+        bar_w, gap = 3, 1
+    else:
+        bar_w, gap = 1, 0
+    pad = f"0 {gap}px 0 0" if gap else "0"
     cells = []
-    for i, v in enumerate(series7):
+    for i, v in enumerate(series):
         h = max(2, round((v - lo) / span * max_px))
         color = THEME["orange"] if i == n - 1 else THEME["blue"]
         cells.append(
-            f'<td style="width:8px; height:{max_px}px; vertical-align:bottom; padding:0 1px 0 0;">'
-            f'<div style="width:6px; height:{h}px; background:{color}; border-radius:1px;"></div></td>'
+            f'<td style="width:{bar_w}px; height:{max_px}px; vertical-align:bottom; padding:{pad};">'
+            f'<div style="width:{bar_w}px; height:{h}px; background:{color}; border-radius:1px;"></div></td>'
         )
     return (
         f'<table role="presentation" cellpadding="0" cellspacing="0" '
@@ -79,8 +100,38 @@ def _sparkline_html(series7: list[float]) -> str:
     )
 
 
+def _market_window_cell_html(label: str, series: list[float], window: dict | None) -> str:
+    """One market-strip period cell: period label, sparkline, %change.
+
+    THE SEAM for Phase 3 — this is the single per-window helper a future
+    orchestrator swaps to render a pre-rendered PNG line-chart `<img>` instead
+    of the bar-table; the label/%change plumbing around it, and its three call
+    sites in `_price_block_html`, stay untouched.
+    """
+    if not series:
+        return ""
+    chg_pct = (window or {}).get("change_pct")
+    chg_html = ""
+    if chg_pct is not None:
+        up = chg_pct >= 0
+        color = THEME["green"] if up else THEME["danger"]
+        sign = "+" if up else "&minus;"
+        chg_html = (f'<div style="margin-top:2px; font-size:11px; font-weight:bold; '
+                    f'color:{color};">{sign}{abs(chg_pct):.1f}%</div>')
+    return (
+        f'<td style="text-align:center; vertical-align:bottom; padding:0 8px;">'
+        f'<div style="font-size:10px; font-weight:bold; letter-spacing:.05em; text-transform:uppercase; '
+        f'color:{THEME["muted"]};">{escape(label)}</div>'
+        f'<div style="margin-top:2px;">{_sparkline_html(series)}</div>'
+        f'{chg_html}'
+        f'</td>'
+    )
+
+
 def _price_block_html(price: dict | None) -> str:
-    """Last price + change (▲/▼, coloured) + the 7-day sparkline. "" if no snapshot."""
+    """Market strip: last price + daily change + asof (left); 7/30/90-day
+    sparklines with their own per-window %change (right). "" if no snapshot.
+    """
     if not price or price.get("last") is None:
         return ""
     change = price.get("change") or 0.0
@@ -88,37 +139,171 @@ def _price_block_html(price: dict | None) -> str:
     up = change >= 0
     color = THEME["green"] if up else THEME["danger"]
     arrow = "&#9650;" if up else "&#9660;"  # ▲ / ▼
-    spark = _sparkline_html(price.get("series7") or [])
+    asof = price.get("asof")
+    asof_html = (f'<div style="margin-top:3px; font-size:10px; color:{THEME["muted"]};">as of {escape(asof)}</div>'
+                 if asof else "")
+    price_col = (
+        f'<div style="font-size:20px; font-weight:bold; color:{THEME["slate"]};">'
+        f'{price["last"]:.2f} <span style="font-size:11px; font-weight:bold; color:{THEME["muted"]};">'
+        f'{escape(price.get("currency", "USD"))}</span></div>'
+        f'<div style="margin-top:4px; font-size:12.5px; font-weight:bold; color:{color};">'
+        f'{arrow} {abs(change):.2f} ({abs(change_pct):.2f}%)</div>'
+        f'{asof_html}'
+    )
+
+    windows = (
+        ("7D", price.get("series7") or [], price.get("window_7d")),
+        ("30D", price.get("series30") or [], price.get("window_30d")),
+        ("90D", price.get("series90") or [], price.get("window_90d")),
+    )
+    chart_cells = "".join(_market_window_cell_html(lbl, series, win) for lbl, series, win in windows if series)
+    charts_html = (
+        f'<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">'
+        f'<tr>{chart_cells}</tr></table>'
+        if chart_cells else ""
+    )
+
     return (
-        f'<p style="margin:6px 0 0 0; font-size:13px; color:{THEME["slate"]};">'
-        f'{escape(price.get("currency", "USD"))} {price["last"]:.2f}&nbsp; '
-        f'<span style="color:{color}; font-weight:bold;">{arrow} {abs(change):.2f} '
-        f'({abs(change_pct):.2f}%)</span>'
-        f'{"&nbsp;&nbsp;" + spark if spark else ""}'
-        f'</p>'
+        f'<table role="presentation" cellpadding="0" cellspacing="0" width="100%" '
+        f'style="border-collapse:collapse; margin:10px 0 0 0;"><tr>'
+        f'<td style="vertical-align:bottom; padding:8px 12px 8px 0; border-top:1px solid {THEME["cloud"]}; '
+        f'border-bottom:1px solid {THEME["cloud"]};">{price_col}</td>'
+        f'<td style="vertical-align:bottom; text-align:right; padding:8px 0; border-top:1px solid {THEME["cloud"]}; '
+        f'border-bottom:1px solid {THEME["cloud"]};">{charts_html}</td>'
+        f'</tr></table>'
     )
 
 
 def _company_block_html(ann, company: dict | None) -> str:
-    """Industry line + AI business/edge blurb + its caveat footnote. "" if nothing to show."""
-    parts = []
-    if ann.industry:
+    """AI business/edge blurb + its caveat footnote. "" if nothing to show.
+
+    Industry now renders in the card's identity header (`_card_header_html`)
+    alongside ticker/company name, so this block carries only the AI-generated
+    company context.
+    """
+    if not company:
+        return ""
+    text = " ".join(t for t in ((company.get("business") or "").strip(), (company.get("edge") or "").strip()) if t)
+    if not text:
+        return ""
+    parts = [f'<p style="margin:8px 0 0 0; font-size:12px; color:{THEME["slate_2"]};">{escape(text)}</p>']
+    caveat = (company.get("caveat") or "").strip()
+    if caveat:
         parts.append(
-            f'<p style="margin:2px 0 0 0; font-size:12px; color:{THEME["muted"]};">{escape(ann.industry)}</p>'
+            f'<p style="margin:2px 0 0 0; font-size:10px; color:{THEME["muted"]}; font-style:italic;">'
+            f'{escape(caveat)}</p>'
         )
-    if company:
-        text = " ".join(t for t in ((company.get("business") or "").strip(), (company.get("edge") or "").strip()) if t)
-        if text:
-            parts.append(
-                f'<p style="margin:4px 0 0 0; font-size:12px; color:{THEME["slate_2"]};">{escape(text)}</p>'
-            )
-            caveat = (company.get("caveat") or "").strip()
-            if caveat:
-                parts.append(
-                    f'<p style="margin:2px 0 0 0; font-size:10px; color:{THEME["muted"]}; font-style:italic;">'
-                    f'{escape(caveat)}</p>'
-                )
     return "".join(parts)
+
+
+def _materiality_pill_style(materiality: str) -> str:
+    """The header's rounded MATERIAL chip — frozen color contract (material=green)."""
+    color = _MATERIALITY_COLOR.get(materiality, THEME["muted"])
+    return (f'display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; '
+            f'font-weight:bold; letter-spacing:.03em; white-space:nowrap; background:{color}; color:#ffffff;')
+
+
+def _form_badge_text(ann) -> str:
+    """"{native form} · {friendly label}", e.g. "8-K · Material event report".
+
+    Built from `_native_form(ann)` + `doc_type_label`; the trailing "(<form>)"
+    that `doc_type_label` appends is stripped since the native form is already
+    the badge's prefix (avoids "8-K · Material event report (8-K)").
+    """
+    native = _native_form(ann)
+    label = doc_type_label(ann.doc_type, native)
+    suffix = f" ({native})"
+    if label.upper().endswith(suffix.upper()):
+        label = label[: -len(suffix)]
+    return f"{native} · {label}" if label else native
+
+
+def _form_badge_style() -> str:
+    """A light-blue-tinted pill, distinct from the green materiality chip and
+    never reusing orange (brand-action-only, per the frozen color contract).
+    The tint is derived from THEME["blue"] at render time rather than a new
+    invented hex, so the theme stays the single source of truth for hues.
+    """
+    blue = str(THEME["blue"])
+    r, g, b = int(blue[1:3], 16), int(blue[3:5], 16), int(blue[5:7], 16)
+    return (f'display:inline-block; padding:3px 9px; border-radius:999px; font-size:10.5px; '
+            f'font-weight:bold; letter-spacing:.03em; white-space:nowrap; '
+            f'background:rgba({r}, {g}, {b}, 0.12); color:{blue}; '
+            f'border:1px solid rgba({r}, {g}, {b}, 0.35);')
+
+
+def _filed_time_text(ann) -> str:
+    """Plain "Filed HH:MM UTC" from `published_at` — simple and robust, no
+    timezone conversion (`published_at` is stored UTC per SPEC.md §5.1)."""
+    return f"Filed {ann.published_at.strftime('%H:%M')} UTC"
+
+
+def _card_header_html(ann, rank: int, materiality: str) -> str:
+    """Identity header row: ticker (large) / company / industry on the left;
+    the MATERIAL chip, native form-type badge, and "Filed HH:MM · #rank" on
+    the right, stacked."""
+    ticker = escape(ann.ticker)
+    company = escape(ann.company_name)
+    industry_html = (
+        f'<p style="margin:2px 0 0 0; font-size:11px; color:{THEME["muted"]}; '
+        f'text-transform:uppercase; letter-spacing:.04em;">{escape(ann.industry)}</p>'
+        if ann.industry else ""
+    )
+    identity_html = (
+        f'<p style="margin:0; font-family:{FONT_DISPLAY}; font-size:20px; font-weight:bold; '
+        f'color:{THEME["slate"]}; line-height:1.1;">{ticker}</p>'
+        f'<p style="margin:3px 0 0 0; font-size:12.5px; color:{THEME["slate_2"]}; font-weight:bold;">{company}</p>'
+        f'{industry_html}'
+    )
+
+    mat_label = escape(MATERIALITY_LABEL.get(materiality, materiality).upper())
+    mat_chip = f'<span style="{_materiality_pill_style(materiality)}">{mat_label}</span>'
+    form_chip = f'<span style="{_form_badge_style()}">{escape(_form_badge_text(ann))}</span>'
+    time_html = (f'<span style="font-size:10.5px; color:{THEME["muted"]};">'
+                 f'{escape(_filed_time_text(ann))} &middot; #{rank}</span>')
+    badges_html = (
+        f'<p style="margin:0 0 6px 0; text-align:right;">{mat_chip}</p>'
+        f'<p style="margin:0 0 6px 0; text-align:right;">{form_chip}</p>'
+        f'<p style="margin:0; text-align:right;">{time_html}</p>'
+    )
+
+    return (
+        f'<table role="presentation" cellpadding="0" cellspacing="0" width="100%" style="border-collapse:collapse;">'
+        f'<tr>'
+        f'<td style="vertical-align:top;">{identity_html}</td>'
+        f'<td style="vertical-align:top; text-align:right; white-space:nowrap; padding-left:10px;">{badges_html}</td>'
+        f'</tr></table>'
+    )
+
+
+def _analysis_body_html(c) -> str:
+    """"Why it matters" (rationale) then "Evidence" (the verbatim pull-quote)."""
+    return (
+        f'<p style="margin:10px 0 3px 0; font-size:10px; font-weight:bold; letter-spacing:.06em; '
+        f'text-transform:uppercase; color:{THEME["muted"]};">Why it matters</p>'
+        f'<p style="margin:0 0 10px 0; font-size:13.5px; color:{THEME["slate"]}; line-height:1.5;">'
+        f'{escape(c.rationale)}</p>'
+        f'<p style="margin:0 0 3px 0; font-size:10px; font-weight:bold; letter-spacing:.06em; '
+        f'text-transform:uppercase; color:{THEME["muted"]};">Evidence</p>'
+        f'<p style="margin:0; padding:9px 12px; background:{THEME["cloud"]}; '
+        f'border-left:3px solid {THEME["orange"]}; font-size:12.5px; color:{THEME["slate_2"]}; '
+        f'font-style:italic;">&ldquo;{escape(c.evidence_quote)}&rdquo;</p>'
+    )
+
+
+def _action_footer_html(filing_url: str, news_html: str, score: float) -> str:
+    """Quiet footer row: Filing link (orange) · news link (blue), score on the right."""
+    return (
+        f'<table role="presentation" cellpadding="0" cellspacing="0" width="100%" '
+        f'style="border-collapse:collapse; margin-top:10px; padding-top:8px; border-top:1px solid {THEME["cloud"]};">'
+        f'<tr>'
+        f'<td style="font-size:12px;">'
+        f'<a href="{escape(filing_url)}" style="color:{THEME["orange"]}; text-decoration:none; '
+        f'font-weight:bold;">Filing</a>{news_html}</td>'
+        f'<td style="text-align:right; font-size:10.5px; color:{THEME["muted"]};">score '
+        f'<strong style="color:{THEME["slate_2"]};">{score:.3f}</strong></td>'
+        f'</tr></table>'
+    )
 
 
 def _material_block(items: list[RankedItem], enrichment_by_id: dict[str, Enrichment]) -> str:
@@ -134,21 +319,14 @@ def _material_block(items: list[RankedItem], enrichment_by_id: dict[str, Enrichm
             news_html = (f' &middot; <a href="{escape(enr.news_url)}" '
                          f'style="color:{THEME["blue"]}; text-decoration:none;">{escape(enr.news_label)}</a>')
         company_html = _company_block_html(ann, enr.company if enr else None)
-        price_html = _price_block_html(enr.price if enr else None)
+        market_html = _price_block_html(enr.price if enr else None)
         rows.append(_card(
-            f'<p style="margin:0 0 2px 0; font-family:{FONT_DISPLAY}; font-size:16px; color:{THEME["slate"]};">'
-            f'{i}. {escape(ann.ticker)} &mdash; {escape(ann.headline)}</p>'
-            f'<p style="margin:0; font-size:13px; color:{THEME["slate_2"]}; font-weight:bold;">'
-            f'{escape(ann.company_name)}</p>'
-            f'{company_html}'
-            f'{price_html}'
-            f'<p style="margin:8px 0 8px 0; color:{THEME["slate_2"]}; font-size:14px;">{escape(c.rationale)}</p>'
-            f'<p style="margin:0 0 8px 0; padding:8px 10px; background:{THEME["cloud"]}; '
-            f'border-left:3px solid {THEME["orange"]}; font-size:13px; color:{THEME["slate"]};">'
-            f'&ldquo;{escape(c.evidence_quote)}&rdquo;</p>'
-            f'<p style="margin:0; font-size:12px; color:{THEME["muted"]};">'
-            f'<a href="{escape(filing_url)}" style="color:{THEME["orange"]}; text-decoration:none; '
-            f'font-weight:bold;">Filing</a>{news_html} &middot; score {it.score:.3f}</p>'
+            _card_header_html(ann, i, c.materiality)
+            + f'<p style="margin:8px 0 0 0; font-size:13px; color:{THEME["slate_2"]};">{escape(ann.headline)}</p>'
+            + market_html
+            + company_html
+            + _analysis_body_html(c)
+            + _action_footer_html(filing_url, news_html, it.score)
         ))
     return "".join(rows)
 
@@ -188,11 +366,7 @@ def _needs_look_block(items: list[RankedItem]) -> str:
 
 
 def _materiality_chip_style(materiality: str) -> str:
-    color = {
-        "material": THEME["success"],
-        "immaterial": THEME["muted"],
-        "insufficient_info": THEME["warning"],
-    }.get(materiality, THEME["muted"])
+    color = _MATERIALITY_COLOR.get(materiality, THEME["muted"])
     return (f'display:inline-block; padding:2px 8px; border-radius:{THEME["radius_control"]}px; '
             f'background:{color}; color:#ffffff; font-size:11px; font-weight:bold; white-space:nowrap;')
 

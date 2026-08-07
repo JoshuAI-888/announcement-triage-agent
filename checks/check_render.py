@@ -42,6 +42,11 @@ _RAW_CODE_RE = re.compile(r"\bG[1-6]_[a-z_]+\b")
 _FAKE_PRICE = {
     "last": 245.67, "prev_close": 240.10, "change": 5.57, "change_pct": 2.32,
     "currency": "USD", "series7": [230.0, 232.5, 238.0, 236.0, 241.0, 240.10, 245.67],
+    "series30": [200.0 + i * 1.5 for i in range(30)],
+    "series90": [180.0 + i * 0.8 for i in range(90)],
+    "window_7d": {"change": 15.67, "change_pct": 6.82},
+    "window_30d": {"change": 45.67, "change_pct": 22.85},
+    "window_90d": {"change": 65.67, "change_pct": 36.48},
     "asof": "2026-07-14",
 }
 
@@ -147,6 +152,14 @@ def body(check):
     check.require("245.67" in html, "the price snapshot's last price is rendered")
     check.require("<svg" not in html.lower(), "no inline <svg> anywhere — Gmail strips it")
     check.require("<table" in html, "the sparkline (and the all-filings table) use <table>, not <svg>")
+
+    # --- redesigned card: MATERIAL chip + native form-type badge in the identity header ---
+    check.require("MATERIAL" in html, "a material card renders the 'MATERIAL' chip")
+    check.require("8-K" in html, "a material card renders the native form-type badge (e.g. '8-K')")
+
+    # --- tri-period (7D/30D/90D) market strip ---
+    check.require("7D" in html and "30D" in html and "90D" in html,
+                  "the market strip shows all three window labels (7D/30D/90D)")
 
     # --- needs-a-look: plain-English flag labels, never a raw code ---
     check.require("GOOGL" in html and FLAG_VOCAB["insufficient_info"]["label"] in html,

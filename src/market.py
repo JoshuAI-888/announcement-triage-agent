@@ -1,9 +1,9 @@
 """market.py — best-effort price snapshots via Twelve Data (deploy build, Phase 1).
 
-`price_snapshot()` powers the price block + 7-day sparkline on MATERIAL items in
-the brief. It is best-effort and must NEVER raise: no configured key, an HTTP
-error, a Twelve Data `status:"error"` response, or too short a series all
-degrade to `None` rather than breaking a run — market data is a nice-to-have,
+`price_snapshot()` powers the price block + 7/30/90-day sparklines on MATERIAL
+items in the brief. It is best-effort and must NEVER raise: no configured key,
+an HTTP error, a Twelve Data `status:"error"` response, or too short a series
+all degrade to `None` rather than breaking a run — market data is a nice-to-have,
 not something a filing's classification should ever depend on (same spirit as
 `src.adapters.edgar`'s tiered PDF pipeline, where one flaky external call never
 takes down the whole fetch).
@@ -49,11 +49,28 @@ def _provider_symbol(ticker: str) -> str:
     return ticker.replace("-", ".")
 
 
+def _window_change(closes: list[float], n: int) -> dict:
+    """Change over the trailing `n`-trading-day window (last close vs. the
+    close ~`n` trading days earlier). If fewer than `n` points exist, the
+    baseline is the earliest available point instead (graceful degradation,
+    never raises — mirrors the series7/30/90 capping below).
+    """
+    last = closes[-1]
+    baseline = closes[-n] if len(closes) >= n else closes[0]
+    change = last - baseline
+    change_pct = (change / baseline * 100.0) if baseline else 0.0
+    return {"change": change, "change_pct": change_pct}
+
+
 def _parse_time_series(payload: object) -> Optional[dict]:
     """Twelve Data `time_series` payload -> the normalised snapshot shape, or None.
 
-    Twelve Data returns `values` newest-first; the snapshot's `series7` is
-    chronological oldest -> newest, capped at 7 points, per the frozen shape.
+    Twelve Data returns `values` newest-first; the snapshot's `series7`/`series30`/
+    `series90` are chronological oldest -> newest, each capped at its own point
+    count, per the frozen shape. `window_7d`/`window_30d`/`window_90d` carry the
+    change/change_pct for each of those windows (last close vs. the close ~N
+    trading days earlier, degrading to the earliest available point when the
+    series is shorter than the window).
     """
     if not isinstance(payload, dict) or payload.get("status") == "error":
         return None
@@ -77,6 +94,11 @@ def _parse_time_series(payload: object) -> Optional[dict]:
             "change_pct": change_pct,
             "currency": "USD",
             "series7": closes[-7:],
+            "series30": closes[-30:],
+            "series90": closes[-90:],
+            "window_7d": _window_change(closes, 7),
+            "window_30d": _window_change(closes, 30),
+            "window_90d": _window_change(closes, 90),
             "asof": parsed[-1][0][:10],
         }
     except (KeyError, TypeError, ValueError):
@@ -97,7 +119,7 @@ def _fetch(ticker: str, config: dict) -> Optional[dict]:
             params={
                 "symbol": _provider_symbol(ticker),
                 "interval": "1day",
-                "outputsize": 8,
+                "outputsize": 130,
                 "apikey": api_key,
             },
             timeout=10,
@@ -115,7 +137,10 @@ def price_snapshot(ticker: str, config: dict) -> Optional[dict]:
 
     Returns `None` on any failure, or:
         {"last": float, "prev_close": float, "change": float, "change_pct": float,
-         "currency": "USD", "series7": [float, ...], "asof": "YYYY-MM-DD"}
+         "currency": "USD", "series7": [float, ...], "series30": [float, ...],
+         "series90": [float, ...], "window_7d": {"change": float, "change_pct": float},
+         "window_30d": {"change": float, "change_pct": float},
+         "window_90d": {"change": float, "change_pct": float}, "asof": "YYYY-MM-DD"}
     """
     if ticker in _cache:
         return _cache[ticker]

@@ -76,6 +76,43 @@ when they differ.
 - The existing markdown brief (`src/brief.py` → `out/briefs/<DATE>.md`) is unchanged and stays
   the plain record.
 
+### 4.1 MATERIAL card layout (`_material_block` in `src/render_email.py`)
+
+Each material item renders as a four-tier card, mail-safe (inline `style=""` only, no
+`<style>`/`@font-face`/`<svg>`):
+
+1. **Identity header** — ticker (large, `FONT_DISPLAY`) / company name / industry on the left;
+   stacked on the right: the **MATERIAL** chip (frozen color contract — `THEME["success"]`
+   green, white text), a **form-type badge** (`_native_form(ann)` + `doc_type_label(...)`, e.g.
+   "8-K · Material event report" — a light-blue tint derived from `THEME["blue"]`, never
+   orange, which is brand-action-only), and "Filed HH:MM UTC · #{rank}".
+2. **Market strip** — last price + daily change (▲/▼, green/danger) + asof on the left; the
+   7D/30D/90D sparklines on the right, each a `<table>`-of-bars (`_sparkline_html`, NOT
+   `<svg>`) with its own period label and %change. `_market_window_cell_html` is the
+   per-window seam Phase 3 will swap for a pre-rendered PNG line chart.
+3. **Analysis body** — "Why it matters" (rationale) then "Evidence" (the verbatim
+   `evidence_quote`, cloud-bg orange-left-border pull-quote).
+4. **Action footer** — Filing link (orange) · news link (blue) · score, in a quiet row.
+
+### 4.2 Price-snapshot dict shape (`src.market.price_snapshot`, consumed by `_price_block_html`)
+
+```json
+{"last": 245.67, "prev_close": 240.10, "change": 5.57, "change_pct": 2.32,
+ "currency": "USD",
+ "series7": [230.0, "... 7 chronological closes, oldest->newest"],
+ "series30": [200.0, "... 30 chronological closes, oldest->newest"],
+ "series90": [180.0, "... 90 chronological closes, oldest->newest"],
+ "window_7d": {"change": 15.67, "change_pct": 6.82},
+ "window_30d": {"change": 45.67, "change_pct": 22.85},
+ "window_90d": {"change": 65.67, "change_pct": 36.48},
+ "asof": "2026-07-14"}
+```
+`change`/`change_pct` at the top level are the daily headline (last vs. prev_close).
+`window_7d`/`30d`/`90d` are last vs. the close ~N trading days earlier (or the earliest
+available point, if the fetched series is shorter than the window). Twelve Data is queried
+with `outputsize: 130` (enough trading days to cover 90). Never raises — degrades to `None`
+on any failure (no key, HTTP error, `status:"error"`, or under 2 points).
+
 ## 5. Milford theme tokens — `assets/theme/theme.css` + `src/theme.py`
 
 Derived from `milford-core-portal-design/` (authoritative; do not invent values). CSS custom

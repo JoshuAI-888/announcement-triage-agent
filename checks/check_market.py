@@ -4,14 +4,16 @@ Offline: `src.market.requests.get` is monkeypatched to a canned Twelve Data
 payload for every scenario — this check must never touch the network, even
 though a real TWELVEDATA_API_KEY is present in this environment's .env.
 
-Covers: normal parsing (last/prev_close/change/series7/asof), the BRK-B ->
-BRK.B provider-symbol translation, `None` on a missing key / HTTP error /
-`status:"error"` / too-short series / a raised transport exception, and the
-in-process per-ticker cache (a second call makes no further HTTP request).
+Covers: normal parsing (last/prev_close/change/series7/series30/series90/asof
++ the window_7d/30d/90d change fields), the BRK-B -> BRK.B provider-symbol
+translation, `None` on a missing key / HTTP error / `status:"error"` /
+too-short series / a raised transport exception, and the in-process
+per-ticker cache (a second call makes no further HTTP request).
 """
 
 from __future__ import annotations
 
+import datetime as dt
 import os
 
 from checks._harness import run
@@ -19,6 +21,21 @@ from src import market as M
 
 CONFIG = {"market": {"provider": "twelvedata", "base_url": "https://api.twelvedata.com",
                      "api_key_env": "CHECK_MARKET_FAKE_KEY"}}
+
+# 130 chronological (oldest -> newest) closes — enough to exercise series90 and
+# every window (outputsize is 130 per the frozen contract, Phase 2).
+_CLOSES_130 = [100.0 + i * 0.37 for i in range(130)]
+_BASE_DATE = dt.date(2026, 1, 1)
+
+
+def _expected_window(closes: list[float], n: int) -> tuple[float, float]:
+    """Mirrors src.market._window_change's definition, independently, so this
+    check catches a regression in the slicing/baseline logic."""
+    last = closes[-1]
+    baseline = closes[-n] if len(closes) >= n else closes[0]
+    change = last - baseline
+    change_pct = (change / baseline * 100.0) if baseline else 0.0
+    return change, change_pct
 
 
 class _Resp:
@@ -48,28 +65,44 @@ def body(check):
 
     def fake_get(url, params=None, timeout=None):
         calls.append((url, dict(params or {})))
-        closes = [98.0, 99.5, 100.0, 100.5, 101.0, 100.8, 101.5, 102.0]  # oldest -> newest, 8 days
-        rows = [{"datetime": f"2026-07-{7 + i:02d}", "close": str(c)} for i, c in enumerate(closes)]
+        closes = _CLOSES_130  # oldest -> newest, 130 trading days
+        rows = [{"datetime": (_BASE_DATE + dt.timedelta(days=i)).isoformat(), "close": str(c)}
+                for i, c in enumerate(closes)]
         rows = rows[::-1]  # Twelve Data returns newest-first
         return _Resp({"meta": {"symbol": params["symbol"]}, "status": "ok", "values": rows})
 
     M.requests.get = fake_get
     snap = M.price_snapshot("AAPL", CONFIG)
     check.require(snap is not None, "a well-formed payload parses to a snapshot")
-    check.equal(snap["last"], 102.0, "last is the newest close")
-    check.equal(snap["prev_close"], 101.5, "prev_close is the second-newest close")
-    check.equal(round(snap["change"], 4), 0.5, "change is last - prev_close")
-    check.equal(round(snap["change_pct"], 6), round(0.5 / 101.5 * 100.0, 6), "change_pct matches change/prev_close")
+    check.equal(snap["last"], _CLOSES_130[-1], "last is the newest close")
+    check.equal(snap["prev_close"], _CLOSES_130[-2], "prev_close is the second-newest close")
+    check.equal(round(snap["change"], 4), round(_CLOSES_130[-1] - _CLOSES_130[-2], 4), "change is last - prev_close")
+    check.equal(round(snap["change_pct"], 6),
+               round((_CLOSES_130[-1] - _CLOSES_130[-2]) / _CLOSES_130[-2] * 100.0, 6),
+               "change_pct matches change/prev_close")
     check.equal(snap["currency"], "USD", "currency is USD")
-    check.equal(snap["asof"], "2026-07-14", "asof is the newest datetime, date-only")
+    check.equal(snap["asof"], (_BASE_DATE + dt.timedelta(days=129)).isoformat(), "asof is the newest datetime, date-only")
+
+    # --- series7/30/90: chronological oldest->newest, capped at their own length ---
     check.equal(len(snap["series7"]), 7, "series7 is capped at 7 points")
-    check.equal(snap["series7"], [99.5, 100.0, 100.5, 101.0, 100.8, 101.5, 102.0],
-               "series7 is chronological oldest->newest, the most recent 7")
+    check.equal(snap["series7"], _CLOSES_130[-7:], "series7 is chronological oldest->newest, the most recent 7")
+    check.equal(len(snap["series30"]), 30, "series30 is capped at 30 points")
+    check.equal(snap["series30"], _CLOSES_130[-30:], "series30 is chronological oldest->newest, the most recent 30")
+    check.equal(len(snap["series90"]), 90, "series90 is capped at 90 points")
+    check.equal(snap["series90"], _CLOSES_130[-90:], "series90 is chronological oldest->newest, the most recent 90")
+
+    # --- window_7d/30d/90d: change/change_pct vs. the close ~N trading days earlier ---
+    for n, key in ((7, "window_7d"), (30, "window_30d"), (90, "window_90d")):
+        check.require(key in snap, f"{key} is present in the snapshot")
+        exp_change, exp_change_pct = _expected_window(_CLOSES_130, n)
+        check.equal(round(snap[key]["change"], 6), round(exp_change, 6), f"{key}.change matches last vs. {n}-day-earlier close")
+        check.equal(round(snap[key]["change_pct"], 6), round(exp_change_pct, 6), f"{key}.change_pct matches change/baseline")
+
     check.equal(len(calls), 1, "exactly one HTTP call was made")
     check.equal(calls[0][0], f"{CONFIG['market']['base_url']}/time_series", "the time_series endpoint is called")
     check.equal(calls[0][1]["symbol"], "AAPL", "AAPL needs no symbol translation")
     check.equal(calls[0][1]["interval"], "1day", "interval=1day per the frozen contract")
-    check.equal(calls[0][1]["outputsize"], 8, "outputsize=8 per the frozen contract")
+    check.equal(calls[0][1]["outputsize"], 130, "outputsize=130 per the frozen contract (Phase 2: covers 90 trading days)")
     check.equal(calls[0][1]["apikey"], "test-key-not-real", "the configured env var's key is used")
 
     # --- cache: a second call for the same ticker makes no further HTTP request ---
