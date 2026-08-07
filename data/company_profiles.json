@@ -104,6 +104,11 @@
     "edge": "Extensive OEM relationships and integrated hardware-software capabilities across the automotive supply chain.",
     "generated_at": "2026-08-07T03:33:59.769794+00:00"
   },
+  "ARES": {
+    "business": "Ares Management is a global alternative asset manager that invests in and manages private equity, credit, real estate, and infrastructure funds for institutional and individual clients.",
+    "edge": "Scale and diversification across multiple alternative asset classes with deep operational expertise and established relationships that enable access to deal flow and capital.",
+    "generated_at": "2026-08-07T11:09:07.789729+00:00"
+  },
   "AXP": {
     "business": "Provides payment processing, credit card services, and travel-related financial products to consumers and businesses globally.",
     "edge": "Strong brand recognition and customer loyalty, particularly among affluent consumers, combined with a closed-loop network model that captures both sides of transactions.",
@@ -984,6 +989,11 @@
     "edge": "Monopoly control over the .com top-level domain, the internet's most valuable and widely-used domain extension, generating recurring revenue from domain registrations and renewals.",
     "generated_at": "2026-08-05T05:45:20.708937+00:00"
   },
+  "VST": {
+    "business": "Vistra is a Texas-based power generation and retail electricity company that operates natural gas, nuclear, and renewable energy facilities while serving retail customers in deregulated U.S. electricity markets.",
+    "edge": "The company benefits from a diversified generation portfolio across multiple fuel types and a large retail customer base that provides stable cash flows across market cycles.",
+    "generated_at": "2026-08-07T11:09:06.116533+00:00"
+  },
   "VTRS": {
     "business": "Manufactures and distributes generic and branded pharmaceuticals globally.",
     "edge": "Extensive portfolio of established generic drugs with significant scale in manufacturing and distribution across multiple markets.",
@@ -1038,6 +1048,11 @@
     "business": "Provides payment processing, point-of-sale systems, and financial services for small businesses and individuals.",
     "edge": "Network effects and integrated ecosystem combining payments infrastructure with software tools that increase switching costs for merchants.",
     "generated_at": "2026-08-07T03:35:30.082120+00:00"
+  },
+  "YUM": {
+    "business": "YUM operates a global portfolio of quick-service restaurant brands including KFC, Taco Bell, and Pizza Hut, primarily through a franchise model.",
+    "edge": "Strong brand recognition across multiple cuisines and geographies, combined with asset-light franchise operations that generate recurring royalty revenue with minimal capital requirements.",
+    "generated_at": "2026-08-07T11:09:04.641831+00:00"
   },
   "ZBH": {
     "business": "Designs, manufactures, and markets orthopedic implants, surgical instruments, and related products for joint reconstruction, spine, trauma, and dental applications.",
