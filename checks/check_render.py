@@ -218,6 +218,34 @@ def body(check):
     check.require("2026-07-28" in backfill_html and "2026-08-02" in backfill_html,
                   "the backfill heading shows the covered window (since..until)")
 
+    # --- Phase 3: hosted PNG charts (assets_base_url) vs. the bar-sparkline fallback ---
+    # (a) assets_base_url="" -> the original bar fallback still appears, still no <svg>.
+    fallback_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                                 brief_date=NOW.date(), run_id="2026-07-14T00-00-02", kind="digest",
+                                 out_dir=tmp, assets_base_url="")
+    fallback_html = fallback_path.read_text(encoding="utf-8")
+    check.require("<svg" not in fallback_html.lower(),
+                  "assets_base_url='' still emits no inline <svg>")
+    check.require("<img" not in fallback_html, "assets_base_url='' renders no <img> chart tags at all")
+    check.require("<table" in fallback_html, "assets_base_url='' still falls back to the bar-table sparkline")
+
+    # (b) assets_base_url set -> a hosted <img> for a priced material item, PNGs on disk.
+    hosted_assets_dir = Path(tempfile.mkdtemp(prefix="chart_assets_"))
+    HOSTED_RUN_ID = "2026-07-14T00-00-03"
+    hosted_path = render_email(ranked, needs_look, stats, enrichment, all_items=all_items,
+                               brief_date=NOW.date(), run_id=HOSTED_RUN_ID, kind="digest", out_dir=tmp,
+                               assets_base_url="https://example.test", assets_dir=hosted_assets_dir)
+    hosted_html = hosted_path.read_text(encoding="utf-8")
+    check.require("<svg" not in hosted_html.lower(), "hosted-chart mode still emits no inline <svg>")
+    check.require('src="https://example.test/out/briefs/assets/' in hosted_html,
+                  "a material item's chart is a hosted <img src=\"https://example.test/out/briefs/assets/...\">")
+    check.require(f'{HOSTED_RUN_ID}-AAPL-' in hosted_html,
+                  "the hosted chart filename embeds the run_id and ticker")
+    png_files = list(hosted_assets_dir.glob("*.png"))
+    check.require(len(png_files) > 0, "PNG chart files were actually written to the temp assets_dir")
+    for p in png_files:
+        check.require(p.read_bytes()[:4] == b"\x89PNG", f"{p.name} starts with the PNG magic bytes")
+
     # --- brief.py (markdown) mirrors the same content, in markdown form ---
     from src.brief import render_brief
 

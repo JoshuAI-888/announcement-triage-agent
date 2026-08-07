@@ -12,9 +12,14 @@ Every guardrail flag and abstention is expanded to plain English via
 `src.flags` before it reaches this module's output — a raw `G#_...` code or the
 literal `insufficient_info` must never appear in the rendered HTML.
 
-The 7/30/90-day price sparklines are built from an HTML `<table>` of
-bottom-aligned `<div>` bars, NOT inline `<svg>` — Gmail and most mail clients
-strip `<svg>`.
+The 7/30/90-day price charts (Phase 3) are pre-rendered PNGs (`src.charts`)
+hosted at a public URL (`assets_base_url`, e.g. the repo's raw.githubusercontent.com
+path — Gmail proxies external images fine, and Gmail/most mail clients strip
+inline `<svg>` and data-URI `<img>` is unreliable across clients) and embedded
+as ordinary `<img src="https://...">` tags. When `assets_base_url` is unset, or
+a given window's chart failed to render, that window falls back to the original
+mail-safe `<table>`-of-bars sparkline (`_sparkline_html`) — never inline `<svg>`
+either way.
 """
 
 from __future__ import annotations
@@ -24,6 +29,7 @@ from datetime import datetime
 from html import escape
 from pathlib import Path
 
+from src import charts
 from src.enrich import Enrichment
 from src.flags import KIND_LABEL, MATERIALITY_LABEL, doc_type_label, explain_flag, explain_flags
 from src.rank import RankedItem
@@ -31,6 +37,7 @@ from src.theme import FONT_BODY, FONT_DISPLAY, THEME
 
 ROOT = Path(__file__).resolve().parent.parent
 BRIEFS_DIR = ROOT / "out" / "briefs"
+ASSETS_DIR = BRIEFS_DIR / "assets"
 
 
 def _filename(run_id: str) -> str:
@@ -100,13 +107,23 @@ def _sparkline_html(series: list[float]) -> str:
     )
 
 
-def _market_window_cell_html(label: str, series: list[float], window: dict | None) -> str:
-    """One market-strip period cell: period label, sparkline, %change.
+def _market_window_cell_html(
+    label: str,
+    series: list[float],
+    window: dict | None,
+    *,
+    img_filename: str | None = None,
+    assets_base_url: str = "",
+    ticker: str = "",
+) -> str:
+    """One market-strip period cell: period label, chart, %change.
 
-    THE SEAM for Phase 3 — this is the single per-window helper a future
-    orchestrator swaps to render a pre-rendered PNG line-chart `<img>` instead
-    of the bar-table; the label/%change plumbing around it, and its three call
-    sites in `_price_block_html`, stay untouched.
+    Phase 3: when `assets_base_url` is set AND this window has a rendered PNG
+    (`img_filename`, from `charts.render_price_charts`), the chart is a hosted
+    `<img>` pointing at the repo's committed `out/briefs/assets/<file>.png`
+    (served via `assets_base_url`, e.g. raw.githubusercontent.com). Otherwise
+    (no `assets_base_url`, or this window's chart failed to render) it falls
+    back to the original mail-safe `<table>`-of-bars sparkline.
     """
     if not series:
         return ""
@@ -118,19 +135,38 @@ def _market_window_cell_html(label: str, series: list[float], window: dict | Non
         sign = "+" if up else "&minus;"
         chg_html = (f'<div style="margin-top:2px; font-size:11px; font-weight:bold; '
                     f'color:{color};">{sign}{abs(chg_pct):.1f}%</div>')
+    if assets_base_url and img_filename:
+        src = f"{assets_base_url.rstrip('/')}/out/briefs/assets/{img_filename}"
+        alt = escape(f"{ticker} {label} price".strip())
+        chart_html = (f'<img src="{escape(src)}" width="130" height="42" alt="{alt}" '
+                      f'style="display:block; margin:0 auto; border:0;" />')
+    else:
+        chart_html = _sparkline_html(series)
     return (
         f'<td style="text-align:center; vertical-align:bottom; padding:0 8px;">'
         f'<div style="font-size:10px; font-weight:bold; letter-spacing:.05em; text-transform:uppercase; '
         f'color:{THEME["muted"]};">{escape(label)}</div>'
-        f'<div style="margin-top:2px;">{_sparkline_html(series)}</div>'
+        f'<div style="margin-top:2px;">{chart_html}</div>'
         f'{chg_html}'
         f'</td>'
     )
 
 
-def _price_block_html(price: dict | None) -> str:
+def _price_block_html(
+    price: dict | None,
+    *,
+    ticker: str = "",
+    run_id: str = "",
+    assets_base_url: str = "",
+    assets_dir: Path | None = None,
+) -> str:
     """Market strip: last price + daily change + asof (left); 7/30/90-day
-    sparklines with their own per-window %change (right). "" if no snapshot.
+    charts with their own per-window %change (right). "" if no snapshot.
+
+    When `assets_base_url` is truthy, renders the three window charts to PNG
+    (`src.charts.render_price_charts`) and threads the resulting filenames into
+    `_market_window_cell_html`, which decides per-window whether the hosted
+    `<img>` or the bar-sparkline fallback is used.
     """
     if not price or price.get("last") is None:
         return ""
@@ -151,12 +187,20 @@ def _price_block_html(price: dict | None) -> str:
         f'{asof_html}'
     )
 
+    chart_map: dict[str, str] = {}
+    if assets_base_url:
+        chart_map = charts.render_price_charts(ticker, price, run_id, assets_dir or ASSETS_DIR)
+
     windows = (
         ("7D", price.get("series7") or [], price.get("window_7d")),
         ("30D", price.get("series30") or [], price.get("window_30d")),
         ("90D", price.get("series90") or [], price.get("window_90d")),
     )
-    chart_cells = "".join(_market_window_cell_html(lbl, series, win) for lbl, series, win in windows if series)
+    chart_cells = "".join(
+        _market_window_cell_html(lbl, series, win, img_filename=chart_map.get(lbl),
+                                 assets_base_url=assets_base_url, ticker=ticker)
+        for lbl, series, win in windows if series
+    )
     charts_html = (
         f'<table role="presentation" cellpadding="0" cellspacing="0" style="border-collapse:collapse;">'
         f'<tr>{chart_cells}</tr></table>'
@@ -306,7 +350,14 @@ def _action_footer_html(filing_url: str, news_html: str, score: float) -> str:
     )
 
 
-def _material_block(items: list[RankedItem], enrichment_by_id: dict[str, Enrichment]) -> str:
+def _material_block(
+    items: list[RankedItem],
+    enrichment_by_id: dict[str, Enrichment],
+    *,
+    run_id: str = "",
+    assets_base_url: str = "",
+    assets_dir: Path | None = None,
+) -> str:
     if not items:
         return _card(f'<p style="margin:0; color:{THEME["muted"]};">No material announcements this run.</p>')
     rows = []
@@ -319,7 +370,8 @@ def _material_block(items: list[RankedItem], enrichment_by_id: dict[str, Enrichm
             news_html = (f' &middot; <a href="{escape(enr.news_url)}" '
                          f'style="color:{THEME["blue"]}; text-decoration:none;">{escape(enr.news_label)}</a>')
         company_html = _company_block_html(ann, enr.company if enr else None)
-        market_html = _price_block_html(enr.price if enr else None)
+        market_html = _price_block_html(enr.price if enr else None, ticker=ann.ticker, run_id=run_id,
+                                        assets_base_url=assets_base_url, assets_dir=assets_dir)
         rows.append(_card(
             _card_header_html(ann, i, c.materiality)
             + f'<p style="margin:8px 0 0 0; font-size:13px; color:{THEME["slate_2"]};">{escape(ann.headline)}</p>'
@@ -461,6 +513,8 @@ def render_email(
     kind: str = "digest",
     window: dict | None = None,
     out_dir: Path | None = None,
+    assets_base_url: str = "",
+    assets_dir: Path | None = None,
 ) -> Path:
     """Render the self-contained, Milford-themed HTML email brief and write it to disk.
 
@@ -476,6 +530,15 @@ def render_email(
     needs-a-look) — it drives the "All filings this run" table. Defaults to
     empty when the caller has nothing to pass (e.g. a check exercising only
     the material/needs-look sections).
+
+    `assets_base_url` (Phase 3) — when truthy, each MATERIAL item's 7D/30D/90D
+    market-strip charts are rendered to PNG (`src.charts`) into `assets_dir`
+    (default `out/briefs/assets/`) and embedded as hosted `<img>` tags pointing
+    at `{assets_base_url}/out/briefs/assets/<file>.png` (e.g. this repo's
+    raw.githubusercontent.com path — see CONTRACTS.md §4). When falsy, or when
+    a given window's PNG failed to render, that window falls back to the
+    original mail-safe bar-table sparkline. Never affects anything else in the
+    brief.
     """
     brief_date = brief_date or date_cls.today()
     out_dir = out_dir or BRIEFS_DIR
@@ -492,7 +555,7 @@ letter-spacing:.08em; text-transform:uppercase;">Milford &middot; SEC Announceme
     <h1 style="font-family:{FONT_DISPLAY}; color:{THEME['slate']}; font-size:24px; margin:0 0 16px 0;">\
 SEC announcement brief{_heading_suffix(kind, window)} &mdash; {escape(_display_date(brief_date))}</h1>
     {_section_header("Material — ranked")}
-    {_material_block(ranked, enrichment_by_id)}
+    {_material_block(ranked, enrichment_by_id, run_id=run_id, assets_base_url=assets_base_url, assets_dir=assets_dir)}
     {_section_header("Needs a look")}
     {_needs_look_block(needs_look)}
     {_section_header("All filings this run")}

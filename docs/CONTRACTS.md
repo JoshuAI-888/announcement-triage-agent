@@ -87,14 +87,43 @@ Each material item renders as a four-tier card, mail-safe (inline `style=""` onl
    "8-K · Material event report" — a light-blue tint derived from `THEME["blue"]`, never
    orange, which is brand-action-only), and "Filed HH:MM UTC · #{rank}".
 2. **Market strip** — last price + daily change (▲/▼, green/danger) + asof on the left; the
-   7D/30D/90D sparklines on the right, each a `<table>`-of-bars (`_sparkline_html`, NOT
-   `<svg>`) with its own period label and %change. `_market_window_cell_html` is the
-   per-window seam Phase 3 will swap for a pre-rendered PNG line chart.
+   7D/30D/90D charts on the right, each with its own period label and %change.
+   `_market_window_cell_html` (per-window) picks, for each window independently, between the
+   Phase 3 hosted-PNG `<img>` and the mail-safe `<table>`-of-bars fallback (`_sparkline_html`,
+   NOT `<svg>`) — see §4.2.
 3. **Analysis body** — "Why it matters" (rationale) then "Evidence" (the verbatim
    `evidence_quote`, cloud-bg orange-left-border pull-quote).
 4. **Action footer** — Filing link (orange) · news link (blue) · score, in a quiet row.
 
-### 4.2 Price-snapshot dict shape (`src.market.price_snapshot`, consumed by `_price_block_html`)
+### 4.2 Market-strip charts — hosted PNG (Phase 3), with bar-sparkline fallback
+
+Gmail (and most mail clients) strip inline `<svg>`, and a data-URI `<img src="data:...">` is
+unreliable across clients/proxies — so the 7D/30D/90D charts are pre-rendered PNGs, committed
+to the repo, and referenced by the email as ordinary hosted `<img src="https://...">` tags
+(Gmail proxies external image URLs without issue).
+
+- **Renderer** — `src/charts.py` (`render_window_chart`, `render_price_charts`), matplotlib
+  with the `Agg` backend (`matplotlib.use("Agg")`, no display needed — safe in CI). Style: a
+  2px green (`#198754`)/red (`#c94b42`) line depending on the window's `change` sign, a
+  subtle ~12%-alpha filled area under the line, a dashed light-grey baseline at the series'
+  first value, a filled dot on the most recent point, no axes/ticks/frame/labels. Best-effort
+  — never raises; a bad series or write failure degrades to `None`/`{}`.
+- **Asset path** — `out/briefs/assets/<run_id>-<safe_ticker>-<window>.png`, one file per
+  MATERIAL item per window (`<window>` is `7D`/`30D`/`90D`; `<safe_ticker>` keeps only
+  alnum characters, replacing everything else with `_`, e.g. `BRK.B` → `BRK_B`).
+- **Public URL** — `render_email`'s `assets_base_url` param (default from
+  `config.yaml`'s `brief.assets_base_url`, itself defaulting to
+  `src.run.DEFAULT_ASSETS_BASE_URL`, this repo's `raw.githubusercontent.com/<org>/<repo>/main`
+  path) is prefixed onto `out/briefs/assets/<file>.png` to build the `<img src="...">`.
+  The daily-brief workflow (`.github/workflows/daily-brief.yml`) commits
+  `out/briefs/assets/*.png` to `main` alongside the other brief artifacts so the raw URL is
+  reachable once the run's commit lands.
+- **Fallback** — when `assets_base_url` is `""` (unset), or a given window's PNG failed to
+  render, that window renders the original mail-safe bar-table sparkline
+  (`_sparkline_html`) instead — inline `<svg>` is never used either way. The fallback is
+  decided per window, not per item, so one failed chart never drops the other two.
+
+### 4.3 Price-snapshot dict shape (`src.market.price_snapshot`, consumed by `_price_block_html`)
 
 ```json
 {"last": 245.67, "prev_close": 240.10, "change": 5.57, "change_pct": 2.32,

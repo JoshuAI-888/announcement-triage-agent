@@ -149,6 +149,14 @@ market:
   base_url: "https://api.twelvedata.com"
   api_key_env: TWELVEDATA_API_KEY
 
+brief:
+  # Phase 3 (CONTRACTS.md §4) — public base URL the hosted 7D/30D/90D chart
+  # PNGs (out/briefs/assets/<run_id>-<ticker>-<window>.png) are served from.
+  # The daily-brief workflow commits those PNGs to `main`, so
+  # raw.githubusercontent.com serves them directly. src/run.py falls back to
+  # this same default if this key is absent, so removing it is safe too.
+  assets_base_url: "https://raw.githubusercontent.com/JoshuAI-888/announcement-triage-agent/main"
+
 ranking:
   materiality_weight:
     material: 1.0

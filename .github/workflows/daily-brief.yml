@@ -146,6 +146,9 @@ jobs:
           # append-only, rebase-friendly treatment as run_log.jsonl).
           # company_profiles.json is the committed per-ticker profile cache — commit it
           # back so a name generated once is never regenerated (and re-paid for) again.
+          # out/briefs/assets/*.png (Phase 3, CONTRACTS §4) are the pre-rendered
+          # 7D/30D/90D chart PNGs the email references by hosted URL — they must be
+          # pushed to main so raw.githubusercontent.com can actually serve them.
           #
           # Add each path INDEPENDENTLY. `git add a b c` is atomic w.r.t. pathspec
           # errors: if ANY argument matches no file (e.g. out/pdf_log.jsonl on a day
@@ -153,7 +156,7 @@ jobs:
           # NOTHING, silently dropping the brief + filings artifact + run_log. A
           # per-path loop lets the paths that exist stage regardless of the ones
           # that don't.
-          for p in out/run_log.jsonl out/pdf_log.jsonl out/briefs/*.email.html out/filings/*.json data/company_profiles.json; do
+          for p in out/run_log.jsonl out/pdf_log.jsonl out/briefs/*.email.html out/briefs/assets/*.png out/filings/*.json data/company_profiles.json; do
             git add "$p" 2>/dev/null || true
           done
           if git diff --cached --quiet; then

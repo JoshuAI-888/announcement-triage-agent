@@ -59,6 +59,12 @@ from src.verify import verify
 
 ROOT = Path(__file__).resolve().parent.parent
 RUN_LOG_PATH = ROOT / "out" / "run_log.jsonl"
+
+# Phase 3 (CONTRACTS §4): public base URL the hosted 7D/30D/90D chart PNGs are
+# served from — `out/briefs/assets/<file>.png` is committed to `main` by the
+# daily-brief workflow, so raw.githubusercontent.com serves it directly.
+# Overridable via config.yaml's `brief.assets_base_url`.
+DEFAULT_ASSETS_BASE_URL = "https://raw.githubusercontent.com/JoshuAI-888/announcement-triage-agent/main"
 FILINGS_DIR = ROOT / "out" / "filings"
 
 RETRYABLE: tuple[type[BaseException], ...] = (ClassifyError, ConnectionError, TimeoutError, OSError)
@@ -438,9 +444,10 @@ def publish(
     stats = result["stats"]
     all_items = result.get("all_items", [])
     enrichment = enrich(result["ranked"], result["needs_look"], config, news_mode=news_mode)
+    assets_base_url = (config.get("brief") or {}).get("assets_base_url", DEFAULT_ASSETS_BASE_URL)
     email_path = render_email(result["ranked"], result["needs_look"], stats, enrichment,
                               all_items=all_items, brief_date=now, run_id=run_id, kind=kind,
-                              window=window, out_dir=briefs_dir)
+                              window=window, out_dir=briefs_dir, assets_base_url=assets_base_url)
     if kind == "digest":
         # Re-render the markdown brief now that enrichment (company/price) is
         # available — run_pipeline already wrote a plain-classification version

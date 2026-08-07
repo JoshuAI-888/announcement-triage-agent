@@ -16,6 +16,8 @@ out/briefs/*
 !out/filings/*.json
 !out/briefs/
 !out/briefs/*.email.html
+!out/briefs/assets/
+!out/briefs/assets/*.png
 # Bulky/local-only generated things stay ignored:
 out/eval_runs/
 out/dashboard/
