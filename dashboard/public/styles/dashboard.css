@@ -93,8 +93,8 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
 .col-filter-btn:hover { background: var(--milford-cloud); color: var(--milford-slate); }
 .col-filter-btn.is-active { color: var(--milford-orange); background: #fff1e7; }
 .col-filter-count { font-size: .58rem; font-weight: 800; }
-.col-filter-pop { min-width: 190px; max-width: 280px; background: white; border: 1px solid #cdd5d8; border-radius: var(--radius-sm);
-  box-shadow: 0 6px 20px rgba(27, 49, 57, .16); padding: 8px; margin-top: 4px; font-weight: 500; }
+.col-filter-pop { min-width: 180px; max-width: 280px; background: white; border: 1px solid #cdd5d8; border-radius: var(--radius-sm);
+  box-shadow: 0 6px 20px rgba(27, 49, 57, .16); padding: 8px; margin-top: 0; font-weight: 500; }
 .col-filter-pop-head { display: flex; align-items: center; justify-content: space-between; font-size: .7rem; font-weight: 800;
   color: var(--milford-slate); padding: 2px 4px 8px; border-bottom: 1px solid #eef1f2; margin-bottom: 6px; text-transform: none; letter-spacing: 0; }
 .col-filter-list { max-height: 240px; overflow-y: auto; display: grid; gap: 2px; }
@@ -317,3 +317,24 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
 .arch-m-node.k-serve { border-left-color: #915fb4; }
 .arch-m-node.k-app { border-left-color: var(--milford-orange); }
 .arch-m-node.k-orchestrate, .arch-m-node.k-govern { border-left-color: var(--milford-slate); }
+
+/* ============================================================
+   Mobile scroll affordances — momentum scrolling + a subtle left/right
+   shadow that appears only when a wide table has more to scroll (the
+   classic layered-gradient technique). Wide filing/run tables and the
+   pannable architecture SVG otherwise give no hint they scroll sideways.
+   ============================================================ */
+.table-wrap {
+  -webkit-overflow-scrolling: touch;
+  background:
+    linear-gradient(to right, #fff 30%, rgba(255, 255, 255, 0)) left center,
+    linear-gradient(to left, #fff 30%, rgba(255, 255, 255, 0)) right center,
+    radial-gradient(farthest-side at 0 50%, rgba(30, 45, 51, .14), rgba(30, 45, 51, 0)) left center,
+    radial-gradient(farthest-side at 100% 50%, rgba(30, 45, 51, .14), rgba(30, 45, 51, 0)) right center;
+  background-repeat: no-repeat;
+  background-size: 36px 100%, 36px 100%, 14px 100%, 14px 100%;
+  background-attachment: local, local, scroll, scroll;
+}
+/* The architecture SVG pans on tablet widths (phones get the accordion);
+   momentum scroll only — no shadows, to avoid a seam on the card gradient. */
+.arch-wrap { -webkit-overflow-scrolling: touch; }

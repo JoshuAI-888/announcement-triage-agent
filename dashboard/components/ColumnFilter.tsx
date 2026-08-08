@@ -19,7 +19,38 @@ export interface ColumnFilterProps {
 
 export function ColumnFilter({ label, options, selected, onChange, align = "left" }: ColumnFilterProps) {
   const [open, setOpen] = useState(false);
+  // The popover is positioned `fixed` (viewport coords) rather than absolute:
+  // it lives inside the table's `overflow:auto` wrapper, which would otherwise
+  // clip it, and fixed lets us clamp it to the viewport so it never spills off
+  // a narrow (phone) screen.
+  const [pos, setPos] = useState<{ top: number; left: number; width: number } | null>(null);
   const wrapRef = useRef<HTMLDivElement>(null);
+  const btnRef = useRef<HTMLButtonElement>(null);
+
+  // Anchor the popover under the trigger button, clamped to the viewport.
+  function computePosition() {
+    const btn = btnRef.current;
+    if (!btn || typeof window === "undefined") return;
+    const r = btn.getBoundingClientRect();
+    const vw = window.innerWidth;
+    const width = Math.min(260, vw - 16);
+    let left = align === "right" ? r.right - width : r.left;
+    left = Math.max(8, Math.min(left, vw - width - 8));
+    setPos({ top: Math.round(r.bottom + 4), left: Math.round(left), width });
+  }
+
+  // A fixed popover would drift if the page scrolls or resizes under it — just
+  // close it in those cases (recomputing on every scroll frame isn't worth it).
+  useEffect(() => {
+    if (!open) return;
+    const close = () => setOpen(false);
+    window.addEventListener("scroll", close, true);
+    window.addEventListener("resize", close);
+    return () => {
+      window.removeEventListener("scroll", close, true);
+      window.removeEventListener("resize", close);
+    };
+  }, [open]);
 
   // Close on outside click.
   useEffect(() => {
@@ -67,12 +98,14 @@ export function ColumnFilter({ label, options, selected, onChange, align = "left
       onMouseDown={(e) => e.stopPropagation()}
     >
       <button
+        ref={btnRef}
         type="button"
         className={`col-filter-btn${selected.size > 0 ? " is-active" : ""}`}
         aria-label={`Filter by ${label}`}
         aria-expanded={open}
         onClick={(e) => {
           e.stopPropagation();
+          if (!open) computePosition();
           setOpen((prev) => !prev);
         }}
         onMouseDown={(e) => e.stopPropagation()}
@@ -83,7 +116,11 @@ export function ColumnFilter({ label, options, selected, onChange, align = "left
       {open && (
         <div
           className="col-filter-pop"
-          style={{ position: "absolute", zIndex: 20, top: "100%", [align]: 0 } as React.CSSProperties}
+          style={
+            pos
+              ? { position: "fixed", top: pos.top, left: pos.left, width: pos.width, zIndex: 60 }
+              : { position: "fixed", zIndex: 60, visibility: "hidden" }
+          }
           role="dialog"
           aria-label={`${label} filter options`}
         >
