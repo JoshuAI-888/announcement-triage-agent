@@ -5,6 +5,13 @@
    this app needs (warning banner, form layout, brief preview frame, mono
    text) live here. */
 
+/* Alias for the system blue (--milford-kiwisaver). The arch diagram + a few
+   ingest-layer accents were written against --milford-blue, which was never
+   defined — leaving those declarations invalid (most visibly the data-flow
+   edges, whose stroke fell back to `none`, so the animated dots travelled an
+   invisible line). Define it once here. */
+:root { --milford-blue: #1c99d6; }
+
 textarea.input { min-height: 96px; padding: 10px 13px; resize: vertical; font-family: var(--font-ui); line-height: 1.5; }
 .field .hint { color: var(--milford-muted); font-size: .68rem; font-weight: 600; }
 .field .char-count { color: var(--milford-muted); font-size: .66rem; text-align: right; }

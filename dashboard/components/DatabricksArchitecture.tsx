@@ -9,7 +9,7 @@
 // renders the same node data for phones — CSS decides which tree is visible.
 // Content + every citation URL come from the research brief; keep them accurate.
 
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef, useState, type CSSProperties } from "react";
 
 type Kind = "ingest" | "store" | "ai" | "eval" | "serve" | "app" | "govern" | "orchestrate";
 
@@ -46,6 +46,24 @@ const KIND_LABEL: Record<Kind, string> = {
 };
 
 const GROUP_ORDER: Kind[] = ["orchestrate", "ingest", "store", "ai", "eval", "serve", "app", "govern"];
+
+// SVG <text> doesn't wrap or shrink to its box, so long titles used to spill
+// outside the rect. Fit a label to its node: first drop the font size (looks
+// natural), and only condense the glyph spacing as a last resort for the
+// narrowest boxes. Deterministic (string length × approx advance) so it's
+// SSR-safe — no DOM measurement. charW is the average glyph advance as a
+// fraction of font-size for the UI font at the given weight.
+const TEXT_PAD = 14; // total horizontal breathing room inside a node
+type TextFit = { style?: CSSProperties; textLength?: number; lengthAdjust?: "spacingAndGlyphs" };
+function fitText(text: string, boxW: number, baseFont: number, charW: number): TextFit {
+  const avail = boxW - TEXT_PAD;
+  const natural = text.length * baseFont * charW;
+  if (natural <= avail) return {}; // fits at its natural size — let CSS drive
+  const fitFont = avail / (text.length * charW); // font size that would just fit
+  const minFont = baseFont - 2.5; // floor before we start condensing glyphs
+  if (fitFont >= minFont) return { style: { fontSize: `${Math.round(fitFont * 10) / 10}px` } };
+  return { style: { fontSize: `${minFont}px` }, textLength: avail, lengthAdjust: "spacingAndGlyphs" };
+}
 
 const NODES: Node[] = [
   {
@@ -318,11 +336,22 @@ export function DatabricksArchitecture() {
                 }}
               >
                 <rect x={n.x} y={n.y} width={n.w} height={n.h} rx={rail ? 6 : 9} />
-                <text x={n.x + n.w / 2} y={n.y + (n.sub ? n.h / 2 - 4 : n.h / 2 + 4)} textAnchor="middle">
-                  {n.title.length > 30 ? n.title : n.title}
+                <text
+                  x={n.x + n.w / 2}
+                  y={n.y + (n.sub ? n.h / 2 - 4 : n.h / 2 + 4)}
+                  textAnchor="middle"
+                  {...fitText(n.title, n.w, rail ? 12 : 12.5, 0.64)}
+                >
+                  {n.title}
                 </text>
                 {n.sub && (
-                  <text className="node-sub" x={n.x + n.w / 2} y={n.y + n.h / 2 + 13} textAnchor="middle">
+                  <text
+                    className="node-sub"
+                    x={n.x + n.w / 2}
+                    y={n.y + n.h / 2 + 13}
+                    textAnchor="middle"
+                    {...fitText(n.sub, n.w, 10, 0.6)}
+                  >
                     {n.sub}
                   </text>
                 )}
