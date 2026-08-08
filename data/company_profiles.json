@@ -64,6 +64,11 @@
     "edge": "Proprietary software, extensive patent portfolio, and established network of orthodontists and dentists create high switching costs and barriers to entry.",
     "generated_at": "2026-08-07T03:33:45.502409+00:00"
   },
+  "ALKS": {
+    "business": "Alkermes is a biopharmaceutical company that develops and commercializes medicines for central nervous system disorders, including schizophrenia, depression, and addiction.",
+    "edge": "The company possesses proprietary long-acting injection and oral formulation technologies that enable extended-release drug delivery, reducing dosing frequency and improving patient compliance.",
+    "generated_at": "2026-08-08T18:06:03.481821+00:00"
+  },
   "ALL": {
     "business": "Allstate is an insurance company that provides auto, home, life, and other insurance products to consumers and businesses primarily in the United States.",
     "edge": "Allstate maintains a large direct distribution network through its exclusive agents and digital channels, combined with significant scale and brand recognition that support competitive pricing and customer retention.",
@@ -113,6 +118,11 @@
     "business": "Amphenol manufactures interconnect products and assemblies including connectors, cables, and related components for aerospace, automotive, communications, and industrial applications.",
     "edge": "Extensive global manufacturing footprint and long-standing relationships with major OEMs across diversified end markets provide scale advantages and customer switching costs.",
     "generated_at": "2026-08-07T03:33:16.848989+00:00"
+  },
+  "APO": {
+    "business": "Apollo Global Management is an alternative asset manager that invests in and manages credit, private equity, real estate, and infrastructure assets for institutional and individual clients.",
+    "edge": "Scale and diversification across multiple alternative asset classes with established relationships and operational expertise in credit and private markets.",
+    "generated_at": "2026-08-08T18:06:04.942460+00:00"
   },
   "APTV": {
     "business": "Designs and manufactures vehicle components and software platforms for autonomous driving, electrification, and vehicle connectivity.",
@@ -473,6 +483,11 @@
     "business": "Operates a global network of data centers that provide colocation, interconnection, and cloud services to enterprises, financial institutions, and technology companies.",
     "edge": "Maintains one of the world's largest platforms of interconnected data centers with significant switching fabric capacity that creates network effects and switching costs for customers.",
     "generated_at": "2026-08-07T03:32:59.858055+00:00"
+  },
+  "ETN": {
+    "business": "Manufactures and distributes electrical components, hydraulics, aerospace parts, and vehicle powertrains for industrial, commercial, and transportation markets.",
+    "edge": "Diversified product portfolio across multiple end-markets with established distribution networks and engineering expertise that create switching costs for customers.",
+    "generated_at": "2026-08-08T18:06:06.223830+00:00"
   },
   "ETR": {
     "business": "Entergy operates as an integrated electric and gas utility company providing energy generation, transmission, and distribution services to millions of customers across the south-central United States.",
@@ -1318,6 +1333,11 @@
     "business": "VICI Properties is a real estate investment trust (REIT) that owns and leases gaming, hospitality, and entertainment properties primarily to major casino operators.",
     "edge": "The company benefits from long-term triple-net lease agreements with established casino operators that provide stable, predictable cash flows with built-in rent escalations.",
     "generated_at": "2026-08-07T03:32:58.527631+00:00"
+  },
+  "VMC": {
+    "business": "Produces and sells aggregates (crushed stone, sand, gravel) and related construction materials primarily for infrastructure and building projects in North America.",
+    "edge": "Largest aggregates producer in the United States with extensive quarry network, vertical integration, and established distribution infrastructure that creates cost and logistical advantages.",
+    "generated_at": "2026-08-08T18:06:07.861410+00:00"
   },
   "VRSN": {
     "business": "Operates the .com and .net domain registries and provides internet infrastructure services including DNS and security solutions.",
