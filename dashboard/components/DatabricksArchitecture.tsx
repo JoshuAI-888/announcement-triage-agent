@@ -1,13 +1,15 @@
 "use client";
 
 // Interactive reference-architecture diagram for the "On Databricks" page.
-// Hover (or keyboard-focus) any component to see what it is, its function, and a
-// cited Databricks reference. A continuous data-flow animation shows a filing
-// travelling ingest -> classify -> eval -> serve -> app; it honours
-// prefers-reduced-motion (falls back to static edges). Pure SVG/CSS — no libs.
+// Hover (or keyboard-focus), or tap/click, any component to see what it is, its
+// function, and a cited Databricks reference. A continuous data-flow animation
+// shows a filing travelling ingest -> classify -> eval -> serve -> app; it
+// honours prefers-reduced-motion (falls back to static edges). Pure SVG/CSS —
+// no libs. Below the SVG grid, a stacked tappable accordion (arch-mobile)
+// renders the same node data for phones — CSS decides which tree is visible.
 // Content + every citation URL come from the research brief; keep them accurate.
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Kind = "ingest" | "store" | "ai" | "eval" | "serve" | "app" | "govern" | "orchestrate";
 
@@ -42,6 +44,8 @@ const KIND_LABEL: Record<Kind, string> = {
   govern: "Governance",
   orchestrate: "Orchestration",
 };
+
+const GROUP_ORDER: Kind[] = ["orchestrate", "ingest", "store", "ai", "eval", "serve", "app", "govern"];
 
 const NODES: Node[] = [
   {
@@ -237,6 +241,7 @@ const EDGES: Edge[] = [
 export function DatabricksArchitecture() {
   const [active, setActive] = useState<string | null>(null);
   const [reduced, setReduced] = useState(false);
+  const panelRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const mq = window.matchMedia("(prefers-reduced-motion: reduce)");
@@ -246,12 +251,28 @@ export function DatabricksArchitecture() {
     return () => mq.removeEventListener("change", on);
   }, []);
 
+  const toggle = (id: string) => setActive((cur) => (cur === id ? null : id));
+
+  const handleNodeClick = (id: string) => {
+    toggle(id);
+    if (typeof window !== "undefined" && window.innerWidth <= 940 && panelRef.current) {
+      panelRef.current.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    }
+  };
+
   const node = active ? NODES.find((n) => n.id === active) ?? null : null;
 
   return (
-    <div className="arch-grid">
-      <div className="arch-wrap">
-        <svg className="arch-svg" viewBox="0 0 960 588" role="group" aria-label="Databricks reference architecture diagram">
+    <>
+      <div className="arch-grid">
+        <div className="arch-wrap">
+          <svg
+          className="arch-svg"
+          viewBox="0 0 960 588"
+          role="group"
+          aria-label="Databricks reference architecture diagram"
+          onClick={() => setActive(null)}
+        >
           <defs>
             <marker id="arch-arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
               <path d="M0,0 L10,5 L0,10 z" fill="#9aa6ac" />
@@ -291,6 +312,10 @@ export function DatabricksArchitecture() {
                 aria-label={`${n.title}. ${KIND_LABEL[n.kind]}. ${n.what}`}
                 onMouseEnter={() => setActive(n.id)}
                 onFocus={() => setActive(n.id)}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  handleNodeClick(n.id);
+                }}
               >
                 <rect x={n.x} y={n.y} width={n.w} height={n.h} rx={rail ? 6 : 9} />
                 <text x={n.x + n.w / 2} y={n.y + (n.sub ? n.h / 2 - 4 : n.h / 2 + 4)} textAnchor="middle">
@@ -311,7 +336,7 @@ export function DatabricksArchitecture() {
         </div>
       </div>
 
-      <aside className="arch-panel" aria-live="polite">
+      <aside className="arch-panel" aria-live="polite" ref={panelRef}>
         {node ? (
           <>
             <span className={`arch-chip k-${node.kind}`}>{KIND_LABEL[node.kind]}</span>
@@ -340,5 +365,54 @@ export function DatabricksArchitecture() {
         )}
       </aside>
     </div>
+
+    <div className="arch-mobile">
+      <p className="arch-m-intro small">
+        Tap a component to see what it is, its role in this design, and a cited reference.
+        Layers follow the flow: ingest → classify → eval → serve.
+      </p>
+      {GROUP_ORDER.map((kind) => {
+        const group = NODES.filter((n) => n.kind === kind);
+        if (group.length === 0) return null;
+        return (
+          <div key={kind} className="arch-m-group">
+            <span className={`arch-chip k-${kind}`}>{KIND_LABEL[kind]}</span>
+            <div className="arch-m-list">
+              {group.map((n) => {
+                const open = active === n.id;
+                return (
+                  <div key={n.id} className={`arch-m-node k-${n.kind}${open ? " open" : ""}`}>
+                    <button
+                      type="button"
+                      className="arch-m-node-head"
+                      aria-expanded={open}
+                      onClick={() => toggle(n.id)}
+                    >
+                      <span className="arch-m-title">
+                        {n.title}
+                        {n.sub && <span className="arch-m-sub"> · {n.sub}</span>}
+                      </span>
+                      <span className="arch-m-caret" aria-hidden="true">{open ? "▲" : "▼"}</span>
+                    </button>
+                    {open && (
+                      <div className="arch-m-body">
+                        <p className="arch-lbl">What it is</p>
+                        <p className="arch-txt">{n.what}</p>
+                        <p className="arch-lbl">Its function here</p>
+                        <p className="arch-txt">{n.fn}</p>
+                        <a className="arch-ref" href={n.href} target="_blank" rel="noreferrer">
+                          {n.refLabel} &#8599;
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+    </>
   );
 }

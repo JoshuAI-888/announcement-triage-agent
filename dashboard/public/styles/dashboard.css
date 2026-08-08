@@ -275,3 +275,45 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
 .db-source-list { columns: 2; column-gap: 26px; font-size: .76rem; }
 @media (max-width: 700px) { .db-source-list { columns: 1; } }
 .db-source-list li { break-inside: avoid; margin-bottom: 6px; }
+
+/* ============================================================
+   "On Databricks" architecture diagram — mobile accordion.
+   Below 720px the SVG diagram (.arch-grid) is swapped for a
+   tap-to-expand list (.arch-mobile) grouped by layer, reusing
+   .arch-chip / .arch-lbl / .arch-txt / .arch-ref from the panel
+   above. Also un-sticks the detail panel once the grid goes
+   single-column so it doesn't float awkwardly on small screens.
+   ============================================================ */
+
+.arch-mobile { display: none; }
+@media (max-width: 720px) {
+  .arch-grid { display: none; }
+  .arch-mobile { display: block; }
+}
+@media (max-width: 940px) { .arch-panel { position: static; } }
+
+.arch-m-intro { color: var(--milford-muted); margin: 0 0 14px; }
+.arch-m-group { margin-bottom: 16px; }
+.arch-m-group > .arch-chip { margin-bottom: 8px; }
+.arch-m-list { display: grid; gap: 8px; }
+
+.arch-m-node { background: #fff; border: 1px solid #dce2e4; border-radius: var(--radius-sm);
+  border-left: 3px solid #c9d2d6; overflow: hidden; }
+.arch-m-node.open { box-shadow: 0 1px 3px rgba(27, 49, 57, .08); }
+
+.arch-m-node-head { width: 100%; display: flex; align-items: center; justify-content: space-between; gap: 10px;
+  min-height: 48px; padding: 10px 14px; background: transparent; border: 0; cursor: pointer;
+  text-align: left; font: inherit; }
+.arch-m-title { min-width: 0; font-size: .82rem; font-weight: 800; color: var(--milford-slate); }
+.arch-m-sub { font-weight: 600; color: var(--milford-muted); }
+.arch-m-caret { flex: 0 0 auto; color: var(--milford-muted); font-size: .7rem; }
+.arch-m-body { padding: 2px 14px 14px; }
+
+/* per-layer left-accent, matching .arch-chip.k-* colours */
+.arch-m-node.k-ingest { border-left-color: var(--milford-blue); }
+.arch-m-node.k-store { border-left-color: #1b3139; }
+.arch-m-node.k-ai { border-left-color: #ff3621; }
+.arch-m-node.k-eval { border-left-color: var(--milford-success); }
+.arch-m-node.k-serve { border-left-color: #915fb4; }
+.arch-m-node.k-app { border-left-color: var(--milford-orange); }
+.arch-m-node.k-orchestrate, .arch-m-node.k-govern { border-left-color: var(--milford-slate); }
