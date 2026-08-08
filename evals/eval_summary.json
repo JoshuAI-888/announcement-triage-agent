@@ -1,41 +1,40 @@
 {
-  "generated_at": "2026-08-03T00:00:00Z",
+  "generated_at": "2026-08-08T10:40:42Z",
   "eval_config_fingerprint": "ab5eaa522184bca5",
   "n_items": 220,
-  "runs": 3,
-  "seed_note": "Seeded from PROGRESS.md measured evals (v1/v2/v3, 2026-08-03). Overwritten by the next run-eval.",
+  "runs": 1,
   "scorecard": {
-    "v3": {
-      "recall_material": 0.939,
-      "precision_material": 0.408,
-      "grounded_pct": 0.374,
-      "confidently_wrong": 0.218,
-      "abstention_ambiguous": 0.3,
-      "cost_per_item_nzd": 0.0186
-    },
-    "v2": {
-      "recall_material": 0.929,
-      "precision_material": 0.402,
-      "grounded_pct": 0.164,
-      "confidently_wrong": 0.232,
-      "abstention_ambiguous": 0.3,
-      "cost_per_item_nzd": 0.0176
-    },
-    "v1": {
-      "recall_material": 1.0,
-      "precision_material": 0.22,
-      "grounded_pct": 0.258,
-      "confidently_wrong": 0.532,
-      "abstention_ambiguous": 0.3,
-      "cost_per_item_nzd": 0.016
-    },
     "baseline: flag_all": {
       "recall_material": 1.0,
       "precision_material": 0.15,
-      "grounded_pct": 0.0,
+      "grounded_pct": 1.0,
+      "confidently_wrong": 0.85,
+      "abstention_ambiguous": 0.0,
+      "cost_per_item_nzd": 0.0
+    },
+    "baseline: rules": {
+      "recall_material": 0.9090909090909091,
+      "precision_material": 0.15625,
+      "grounded_pct": 1.0,
       "confidently_wrong": 0.0,
       "abstention_ambiguous": 0.0,
       "cost_per_item_nzd": 0.0
+    },
+    "baseline: naive_prompt": {
+      "recall_material": 1.0,
+      "precision_material": 0.22,
+      "grounded_pct": 0.2863636363636364,
+      "confidently_wrong": 0.5363636363636364,
+      "abstention_ambiguous": 0.4,
+      "cost_per_item_nzd": 0.014510899607272726
+    },
+    "v3": {
+      "recall_material": 0.9393939393939394,
+      "precision_material": 0.41333333333333333,
+      "grounded_pct": 0.39090909090909093,
+      "confidently_wrong": 0.22727272727272727,
+      "abstention_ambiguous": 0.1,
+      "cost_per_item_nzd": 0.01718036789090909
     }
   },
   "ranking": {
@@ -44,35 +43,16 @@
   },
   "providers": [
     {
-      "model": "claude-haiku-4.5",
-      "recall": 0.939,
-      "precision": 0.408,
-      "grounded": 0.374,
-      "confidently_wrong": 0.218,
-      "abstention": 0.3,
-      "cost_per_item_nzd": 0.0186
-    },
-    {
-      "model": "gpt-5.6-terra",
-      "recall": 0.939,
-      "precision": 0.484,
-      "grounded": 0.941,
-      "confidently_wrong": 0.168,
-      "abstention": 0.7,
-      "cost_per_item_nzd": 0.0338
-    },
-    {
-      "model": "glm-5.2",
-      "recall": 1.0,
-      "precision": 0.434,
-      "grounded": 0.832,
-      "confidently_wrong": 0.223,
-      "abstention": 0.3,
-      "cost_per_item_nzd": null
+      "model": "claude-haiku-4-5-20251001",
+      "recall": 0.9393939393939394,
+      "precision": 0.41333333333333333,
+      "grounded": 0.39090909090909093,
+      "confidently_wrong": 0.22727272727272727,
+      "abstention": 0.1,
+      "cost_per_item_nzd": 0.01718036789090909
     }
   ],
   "caveats": [
-    "Grounding (verbatim-quote fidelity) is a MODEL limit, not a prompt limit: Haiku 0.37 vs GPT 0.94 / GLM 0.83 on the identical forced-verbatim v3 prompt.",
-    "Provider rows: gpt-5.6-terra ran at default temperature (temp-0 unsupported); glm cost pending pricing at capture time."
+    "Grounding ~37% on Haiku is a MODEL limit, not a prompt limit (GPT 0.94 / GLM 0.83 on the identical v3 prompt)."
   ]
 }
