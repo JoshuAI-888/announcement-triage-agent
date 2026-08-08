@@ -1,0 +1,19 @@
+[SAMPLE / SEED TRANSCRIPT — synthetic data to demonstrate the OCR audit view; not a real filing]
+
+APPLE INC.
+FORM 10-Q — QUARTERLY REPORT
+Condensed Consolidated Statements of Operations (Unaudited)
+
+Net sales for the quarter comprised Products and Services. Total net sales were
+recognised across the company's reportable segments: Americas, Europe, Greater
+China, Japan, and Rest of Asia Pacific.
+
+This exhibit carried an embedded text layer, so the text below was extracted
+directly with pypdf — no OCR was required. One page of the four (an image-only
+signature page) yielded no text, which is why page completeness reads 3 of 4.
+
+A small number of characters did not map cleanly during extraction and appear as
+the replacement marker in the raw text; see the "Unrecognised glyphs" figure in
+the detail panel.
+
+(End of sample transcript.)

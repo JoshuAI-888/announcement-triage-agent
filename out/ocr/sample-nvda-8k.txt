@@ -1,0 +1,20 @@
+[SAMPLE / SEED TRANSCRIPT — synthetic data to demonstrate the OCR audit view; not a real filing]
+
+NVIDIA CORPORATION
+FORM 8-K — CURRENT REPORT
+Item 2.02 Results of Operations and Financial Condition
+
+Santa Clara, Calif. — NVIDIA today announced financial results for the quarter,
+with record revenue driven by Data Center demand. The exhibit filed herewith was
+submitted as a scanned PDF with no embedded text layer; the text below was
+recovered via native-PDF OCR.
+
+Revenue for the quarter was reported at record levels. GAAP earnings per diluted
+share and non-GAAP earnings per diluted share both increased year over year. The
+company also declared a quarterly cash dividend payable to shareholders of record
+as of the date set forth in the exhibit.
+
+Forward-looking statements in this report are subject to risks and uncertainties.
+Actual results may differ materially from those expressed or implied.
+
+(End of sample transcript — three pages transcribed, no unrecognised characters.)
