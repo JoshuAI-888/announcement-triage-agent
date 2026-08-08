@@ -345,3 +345,65 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
 /* The architecture SVG pans on tablet widths (phones get the accordion);
    momentum scroll only — no shadows, to avoid a seam on the card gradient. */
 .arch-wrap { -webkit-overflow-scrolling: touch; }
+
+/* ============================================================
+   PDF / OCR audit log (pdf-log page + components/PdfLogTable.tsx)
+   ============================================================ */
+/* Summary strip: compact roll-ups above the table. */
+.ocr-summary {
+  display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 16px;
+}
+.ocr-summary-item {
+  display: flex; flex-direction: column; gap: 2px;
+  padding: 10px 16px; min-width: 92px;
+  background: var(--milford-cloud); border-radius: var(--radius);
+}
+.ocr-summary-value { font-family: var(--font-display); font-size: 1.35rem; color: var(--milford-slate); }
+.ocr-summary-label { font-size: .62rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase; color: var(--milford-muted); }
+
+/* Clickable decision row + its expand caret. */
+.ocr-row { cursor: pointer; }
+.ocr-row:hover { background: var(--milford-cloud); }
+.ocr-caret-col { width: 26px; }
+.ocr-caret { display: inline-block; color: var(--milford-muted); transition: transform .12s ease; font-size: .7rem; }
+.ocr-caret.open { transform: rotate(90deg); }
+.ocr-ticker { display: block; font-size: .76rem; }
+.ocr-company { display: block; color: var(--milford-muted); font-size: .66rem; max-width: 220px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ocr-doc a { color: var(--milford-blue); text-decoration: none; }
+.ocr-doc a:hover { text-decoration: underline; }
+.ocr-muted { color: var(--milford-muted); }
+.ocr-ok { color: var(--milford-success); font-weight: 700; }
+.ocr-warn { color: #a94b08; font-weight: 700; }
+
+/* Expanded detail panel. */
+.ocr-detail-row > .ocr-detail-cell { background: var(--milford-cloud); padding: 0; }
+.ocr-detail { padding: 16px 20px 20px; display: grid; gap: 14px; }
+.ocr-detail-note { margin: 0; color: var(--milford-slate); font-size: .76rem; }
+.ocr-trail { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.ocr-trail-step {
+  position: relative; padding: 4px 10px; border-radius: 999px;
+  background: #fff; border: 1px solid #dce2e4; color: var(--milford-slate);
+  font-size: .66rem; font-weight: 700;
+}
+.ocr-trail-step:not(:last-child)::after { content: "→"; position: absolute; right: -13px; color: var(--milford-muted); font-weight: 700; }
+.ocr-kv { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px 20px; margin: 0; }
+.ocr-kv > div { display: flex; flex-direction: column; gap: 2px; }
+.ocr-kv dt { font-size: .62rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--milford-muted); }
+.ocr-kv dd { margin: 0; font-size: .78rem; color: var(--milford-slate); }
+.ocr-pdf-link { margin: 0; }
+.ocr-pdf-link a { color: var(--milford-blue); font-weight: 700; font-size: .74rem; text-decoration: none; }
+.ocr-pdf-link a:hover { text-decoration: underline; }
+.ocr-transcript-wrap { display: grid; gap: 6px; }
+.ocr-transcript-head { font-size: .62rem; font-weight: 800; letter-spacing: .05em; text-transform: uppercase; color: var(--milford-muted); }
+.ocr-transcript {
+  margin: 0; max-height: 340px; overflow: auto;
+  background: #fff; border: 1px solid #dce2e4; border-radius: var(--radius);
+  padding: 12px 14px; font-family: ui-monospace, SFMono-Regular, Menlo, Consolas, monospace;
+  font-size: .72rem; line-height: 1.5; color: var(--milford-slate);
+  white-space: pre-wrap; word-break: break-word;
+}
+.ocr-transcript-empty { margin: 0; font-size: .74rem; }
+@media (max-width: 760px) {
+  .ocr-company { max-width: 130px; }
+  .ocr-kv { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}

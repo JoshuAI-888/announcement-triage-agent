@@ -1,45 +1,42 @@
 import { getPdfLog } from "@/lib/dataSource";
-import { fmtBytes, fmtDateTime, fmtNzd } from "@/lib/format";
-import type { PdfLogDecision } from "@/lib/types";
+import { fmtNzd } from "@/lib/format";
+import { PdfLogTable } from "@/components/PdfLogTable";
 
 export const dynamic = "force-dynamic";
 
-const DECISION_LABEL: Record<PdfLogDecision, string> = {
-  skipped_form: "skipped (form)",
-  pypdf_text: "pypdf text",
-  claude_ocr: "Claude OCR",
-  placeholder_too_big: "placeholder (too big)",
-  placeholder_ocr_disabled: "placeholder (OCR off)",
-  placeholder_no_text: "placeholder (no text)",
-  error: "error",
-};
-
-function badgeClass(decision: PdfLogDecision): string {
-  switch (decision) {
-    case "pypdf_text":
-    case "claude_ocr":
-      return "badge green";
-    case "skipped_form":
-      return "badge";
-    default:
-      // placeholder_too_big, placeholder_ocr_disabled, placeholder_no_text, error
-      return "badge orange";
-  }
-}
-
 export default async function PdfLogPage() {
   const rows = await getPdfLog(200);
+
+  // Audit summary — cheap roll-ups over the visible window.
+  const ocrRows = rows.filter((r) => r.decision === "claude_ocr");
+  const extractedRows = rows.filter((r) => r.decision === "pypdf_text" || r.decision === "claude_ocr");
+  const errorRows = rows.filter((r) => r.decision === "error");
+  const placeholderRows = rows.filter((r) => r.decision.startsWith("placeholder"));
+  const totalOcrCost = ocrRows.reduce((sum, r) => sum + (r.cost_nzd ?? 0), 0);
+  const scored = extractedRows.map((r) => r.quality?.score).filter((s): s is number => typeof s === "number");
+  const avgQuality = scored.length ? Math.round(scored.reduce((a, b) => a + b, 0) / scored.length) : null;
+
+  const summary: { label: string; value: string }[] = [
+    { label: "Events", value: String(rows.length) },
+    { label: "Text extracted", value: String(extractedRows.length) },
+    { label: "Claude OCR", value: String(ocrRows.length) },
+    { label: "Errors", value: String(errorRows.length) },
+    { label: "Placeholders", value: String(placeholderRows.length) },
+    { label: "Avg quality", value: avgQuality == null ? "—" : `${avgQuality}/100` },
+    { label: "OCR cost", value: totalOcrCost > 0 ? fmtNzd(totalOcrCost) : "—" },
+  ];
 
   return (
     <section>
       <div className="page-head">
         <div>
           <p className="eyebrow">Operations</p>
-          <h1>PDF / OCR decision log</h1>
+          <h1>PDF / OCR audit log</h1>
           <p>
             Every decision made while fetching a filing&rsquo;s primary document &mdash; text extracted directly,
             handed to Claude for OCR, skipped, or replaced with a placeholder &mdash; from out/pdf_log.jsonl, newest
-            first (last {rows.length} events).
+            first (last {rows.length} events). Click a row for the full audit trail: page completeness, tier/fallback
+            path, token usage, quality heuristics, the source PDF, and the extracted transcript.
           </p>
         </div>
       </div>
@@ -49,42 +46,17 @@ export default async function PdfLogPage() {
           <p>No PDF handling events recorded yet.</p>
         </div>
       ) : (
-        <div className="table-wrap">
-          <table>
-            <thead>
-              <tr>
-                <th>Date / time (UTC)</th>
-                <th>Ticker</th>
-                <th>Form</th>
-                <th>Document</th>
-                <th>Decision</th>
-                <th className="align-right">Size</th>
-                <th className="align-right">Chars out</th>
-                <th className="align-right">Cost</th>
-              </tr>
-            </thead>
-            <tbody>
-              {rows.map((r, i) => (
-                <tr key={`${r.ts}-${i}`}>
-                  <td className="mono small">{fmtDateTime(r.ts)}</td>
-                  <td>{r.ticker}</td>
-                  <td className="mono small">{r.form}</td>
-                  <td className="mono small" title={r.primary_document}>
-                    {r.primary_document}
-                  </td>
-                  <td>
-                    <span className={badgeClass(r.decision)} title={r.detail}>
-                      {DECISION_LABEL[r.decision] ?? r.decision}
-                    </span>
-                  </td>
-                  <td className="align-right tabular">{fmtBytes(r.bytes)}</td>
-                  <td className="align-right tabular">{r.chars_out.toLocaleString()}</td>
-                  <td className="align-right tabular">{fmtNzd(r.cost_nzd)}</td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
+        <>
+          <div className="ocr-summary">
+            {summary.map((s) => (
+              <div key={s.label} className="ocr-summary-item">
+                <span className="ocr-summary-value">{s.value}</span>
+                <span className="ocr-summary-label">{s.label}</span>
+              </div>
+            ))}
+          </div>
+          <PdfLogTable rows={rows} />
+        </>
       )}
     </section>
   );

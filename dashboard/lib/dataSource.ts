@@ -264,6 +264,20 @@ export async function getPdfLog(limit = 200): Promise<PdfLogRow[]> {
   return rows.slice(0, limit);
 }
 
+// A persisted PDF/OCR transcript (out/ocr/<announcement_id>.txt), lazy-loaded
+// by the audit page when a row is expanded. Path is validated hard: only
+// files directly under out/ocr/ with a plain .txt name are readable, so a
+// crafted `text_path` can never traverse out of the artifact directory.
+const OCR_TEXT_PATH_RE = /^out\/ocr\/[A-Za-z0-9._-]+\.txt$/;
+
+export async function getOcrText(textPath: string): Promise<string | null> {
+  if (!OCR_TEXT_PATH_RE.test(textPath)) return null;
+  const raw = LOCAL_DEV_MODE
+    ? await local.readRepoFile(textPath)
+    : (await gh.getFile(textPath))?.content ?? null;
+  return raw;
+}
+
 // --- out/filings/<date>.json / <date>T<HH-MM>.json ---
 
 const FILINGS_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2}(-\d{2})?)?\.json$/;

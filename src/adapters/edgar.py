@@ -69,6 +69,16 @@ _MAX_PDF_BYTES = 15 * 1024 * 1024
 # provider is openai/glm.
 _OCR_MODEL = "claude-haiku-4-5-20251001"
 
+# Decisions that produced *real* extracted text (as opposed to a synthesised
+# placeholder body). Only these get their transcript persisted to disk and a
+# quality score computed — a placeholder body is our own boilerplate, so
+# scoring it or saving it as a "transcript" would be misleading.
+_REAL_TEXT_DECISIONS = {"pypdf_text", "claude_ocr"}
+# Subdirectory (next to pdf_log.jsonl) holding one plain-text transcript per
+# document, named <announcement_id>.txt. The audit UI links to these and
+# lazy-loads them on demand rather than inlining every transcript in the log.
+_OCR_TEXT_DIRNAME = "ocr"
+
 
 class EdgarAdapter:
     exchange_code = "EDGAR"
@@ -314,6 +324,11 @@ class EdgarAdapter:
         model_id: Optional[str] = None,
         cost_nzd: Optional[float] = None,
         detail: str = "",
+        page_count: Optional[int] = None,
+        pages_with_text: Optional[int] = None,
+        input_tokens: Optional[int] = None,
+        output_tokens: Optional[int] = None,
+        tier_trail: Optional[list[str]] = None,
     ) -> None:
         """Append one JSON row recording a PDF-tier routing decision.
 
@@ -321,20 +336,43 @@ class EdgarAdapter:
         parent, permissions) must not take down the fetch pipeline. Called for
         every PDF decision (skip/extract/OCR/placeholder), never for the
         normal HTML text path.
+
+        For the two decisions that yield real extracted text (`pypdf_text`,
+        `claude_ocr`) the transcript is persisted next to the log as
+        `<log-dir>/ocr/<announcement_id>.txt` and a heuristic quality score is
+        computed; the row records the relative artifact path (`text_path`) and
+        the `quality` object. Placeholder/skip rows carry `text_path=null` and
+        `quality=null` — their body is our own boilerplate, not a transcript.
         """
         if self.pdf_log_path is None:
             return
+
+        is_real_text = decision in _REAL_TEXT_DECISIONS
+        text_path = self._write_ocr_text(raw.get("announcement_id"), body_text) if is_real_text else None
+        quality = self._ocr_quality(body_text, page_count, pages_with_text) if is_real_text else None
+
         row = {
             "ts": datetime.now(timezone.utc).isoformat(),
             "announcement_id": raw.get("announcement_id"),
             "ticker": raw.get("ticker"),
+            "company_name": raw.get("company_name"),
+            "cik": raw.get("cik"),
             "form": raw.get("form"),
             "primary_document": raw.get("primary_document"),
+            "accession_number": raw.get("accession_number"),
+            "source_url": raw.get("source_url"),
             "bytes": len(pdf_bytes) if pdf_bytes is not None else None,
             "decision": decision,
             "chars_out": len(body_text),
+            "page_count": page_count,
+            "pages_with_text": pages_with_text,
             "model_id": model_id,
+            "input_tokens": input_tokens,
+            "output_tokens": output_tokens,
             "cost_nzd": cost_nzd,
+            "tier_trail": tier_trail or [],
+            "text_path": text_path,
+            "quality": quality,
             "detail": detail,
         }
         try:
@@ -344,29 +382,122 @@ class EdgarAdapter:
         except OSError:
             pass
 
+    def _write_ocr_text(self, announcement_id: Optional[str], body_text: str) -> Optional[str]:
+        """Persist a transcript to `<log-dir>/ocr/<announcement_id>.txt`.
+
+        Returns the repo-relative path recorded in the log row, or None if it
+        couldn't be written (no id, no log path, or a filesystem error).
+        Best-effort — a write failure must never break the fetch pipeline, so
+        the caller falls back to a null `text_path` and the audit UI simply
+        shows "transcript unavailable" for that row.
+        """
+        if self.pdf_log_path is None or not announcement_id:
+            return None
+        # Guard the filename against path traversal — announcement_id is a
+        # content hash in practice, but never trust it to be filesystem-safe.
+        safe_id = "".join(ch for ch in str(announcement_id) if ch.isalnum() or ch in "-_")
+        if not safe_id:
+            return None
+        ocr_dir = self.pdf_log_path.parent / _OCR_TEXT_DIRNAME
+        try:
+            ocr_dir.mkdir(parents=True, exist_ok=True)
+            (ocr_dir / f"{safe_id}.txt").write_text(body_text, encoding="utf-8")
+        except OSError:
+            return None
+        # Record a stable, repo-relative path the portal can resolve the same
+        # way it resolves the log itself (out/ocr/<id>.txt).
+        return f"out/{_OCR_TEXT_DIRNAME}/{safe_id}.txt"
+
+    @staticmethod
+    def _ocr_quality(
+        body_text: str, page_count: Optional[int], pages_with_text: Optional[int]
+    ) -> dict:
+        """Cheap, ground-truth-free quality heuristics for an extracted transcript.
+
+        Live filings have no reference transcript to diff against, so this scores
+        *legibility signals* computable from the text alone: how much of it is
+        printable, how alphabetic it reads (garbled OCR skews non-alpha), how many
+        Unicode replacement characters (U+FFFD, the "unrecognised glyph" marker)
+        crept in, and — when page stats are available — how many pages actually
+        yielded text. The composite 0–100 `score` and `label` are advisory, not a
+        correctness guarantee; the raw signals are included so an operator can
+        judge for themselves.
+        """
+        chars = len(body_text)
+        non_ws = sum(1 for ch in body_text if not ch.isspace())
+        printable = sum(1 for ch in body_text if ch.isprintable() or ch in "\n\t")
+        alpha = sum(1 for ch in body_text if ch.isalpha())
+        replacement_chars = body_text.count("�")
+
+        printable_ratio = printable / chars if chars else 1.0
+        alpha_ratio = alpha / non_ws if non_ws else 0.0
+        pages_covered_ratio: Optional[float] = None
+        chars_per_page: Optional[float] = None
+        if page_count:
+            chars_per_page = round(non_ws / page_count, 1)
+            if pages_with_text is not None:
+                pages_covered_ratio = round(pages_with_text / page_count, 3)
+
+        # Composite score: start clean, dock for each legibility red flag.
+        score = 100.0
+        score -= max(0.0, 0.99 - printable_ratio) * 300  # sub-99% printable
+        score -= min(30.0, replacement_chars * 2.0)  # unrecognised glyphs, capped
+        if pages_covered_ratio is not None:
+            score -= (1.0 - pages_covered_ratio) * 40  # pages that yielded nothing
+        if alpha_ratio < 0.5:
+            score -= (0.5 - alpha_ratio) * 60  # reads more like noise than prose
+        score = max(0, min(100, round(score)))
+        label = "good" if score >= 80 else "fair" if score >= 55 else "poor"
+
+        return {
+            "score": score,
+            "label": label,
+            "chars": chars,
+            "non_whitespace_chars": non_ws,
+            "printable_ratio": round(printable_ratio, 4),
+            "alpha_ratio": round(alpha_ratio, 4),
+            "replacement_chars": replacement_chars,
+            "chars_per_page": chars_per_page,
+            "pages_covered_ratio": pages_covered_ratio,
+        }
+
     # --- PDF text extraction --------------------------------------------------
 
     @staticmethod
-    def _extract_pdf_text(pdf_bytes: bytes) -> str:
-        """Best-effort text layer extraction via pypdf.
+    def _extract_pdf_text_with_stats(pdf_bytes: bytes) -> tuple[str, int, int]:
+        """Best-effort text-layer extraction via pypdf, with page completeness stats.
 
-        Never raises: a corrupt, encrypted or unreadable PDF yields empty
-        text so the caller falls through to OCR (or a placeholder) instead of
-        crashing the fetch pipeline.
+        Returns `(text, page_count, pages_with_text)` where `page_count` is the
+        total number of pages in the PDF and `pages_with_text` is how many of
+        them yielded any non-whitespace text — the clearest "did we get
+        everything" signal for the audit log. Never raises: a corrupt,
+        encrypted or unreadable PDF yields `("", 0, 0)` so the caller falls
+        through to OCR (or a placeholder) instead of crashing the pipeline.
         """
         try:
             reader = PdfReader(io.BytesIO(pdf_bytes))
-            parts = []
+            parts: list[str] = []
+            pages_with_text = 0
             for page in reader.pages:
                 try:
-                    parts.append(page.extract_text() or "")
+                    page_text = page.extract_text() or ""
                 except Exception:
-                    continue
-            return "\n".join(parts)
+                    page_text = ""
+                if page_text.strip():
+                    pages_with_text += 1
+                parts.append(page_text)
+            return "\n".join(parts), len(reader.pages), pages_with_text
         except Exception:
-            return ""
+            return "", 0, 0
 
-    def _claude_ocr(self, pdf_bytes: bytes, raw: dict) -> tuple[str, str, Optional[float]]:
+    @staticmethod
+    def _extract_pdf_text(pdf_bytes: bytes) -> str:
+        """Text-only convenience wrapper over `_extract_pdf_text_with_stats`."""
+        return EdgarAdapter._extract_pdf_text_with_stats(pdf_bytes)[0]
+
+    def _claude_ocr(
+        self, pdf_bytes: bytes, raw: dict
+    ) -> tuple[str, str, Optional[float], Optional[dict]]:
         """OCR a scanned/image PDF via the Claude API directly.
 
         PINNED to Claude — uses the `anthropic` SDK and `ANTHROPIC_API_KEY`
@@ -374,20 +505,22 @@ class EdgarAdapter:
         openai/glm; OCR must still work, since ANTHROPIC_API_KEY is always
         present regardless of which provider classifies the daily brief).
 
-        Best-effort and defensive: any failure (SDK not installed, no API
-        key, network/API error) returns ("", "", None) so the caller falls
-        back to a placeholder body. This method must NEVER raise — it runs
-        inside the adapter's normal document-fetch path, which many other
-        filings depend on completing.
+        Returns `(text, model_id, cost_nzd, usage)` where `usage` is
+        `{"input_tokens": int, "output_tokens": int}` (or None when the SDK
+        gives no usage). Best-effort and defensive: any failure (SDK not
+        installed, no API key, network/API error) returns `("", "", None,
+        None)` so the caller falls back to a placeholder body. This method must
+        NEVER raise — it runs inside the adapter's normal document-fetch path,
+        which many other filings depend on completing.
         """
         try:
             from anthropic import Anthropic
         except ImportError:
-            return "", "", None
+            return "", "", None, None
 
         api_key = os.environ.get("ANTHROPIC_API_KEY")
         if not api_key:
-            return "", "", None
+            return "", "", None, None
 
         try:
             client = Anthropic(api_key=api_key)
@@ -425,8 +558,14 @@ class EdgarAdapter:
             text = normalise_whitespace("\n".join(text_blocks))
 
             cost_nzd: Optional[float] = None
+            usage_out: Optional[dict] = None
             try:
                 usage = response.usage
+                if usage is not None:
+                    usage_out = {
+                        "input_tokens": getattr(usage, "input_tokens", None),
+                        "output_tokens": getattr(usage, "output_tokens", None),
+                    }
                 in_rate = self._ocr_pricing.get("input")
                 out_rate = self._ocr_pricing.get("output")
                 if usage is not None and self._fx_usd_nzd and in_rate is not None and out_rate is not None:
@@ -438,9 +577,9 @@ class EdgarAdapter:
             except Exception:
                 cost_nzd = None  # best-effort — a missing/odd usage shape must not crash OCR
 
-            return text, _OCR_MODEL, cost_nzd
+            return text, _OCR_MODEL, cost_nzd, usage_out
         except Exception:
-            return "", "", None
+            return "", "", None, None
 
     # --- tiered PDF pipeline ---------------------------------------------------
 
@@ -458,66 +597,92 @@ class EdgarAdapter:
 
         Every branch logs a decision row via `_log_pdf_decision` — this is
         the only place PDF decisions are logged; the normal HTML path logs
-        nothing.
+        nothing. Each row also records the `tier_trail`: the ordered list of
+        stages the document passed through before this decision, so a
+        placeholder/error is traceable back through exactly what was tried.
         """
         form = (raw.get("form") or "").strip().upper()
+        trail: list[str] = ["form_check"]
 
         if form in _SKIP_EXTRACTION_FORMS:
             text = self._placeholder_body(raw, "routine-form PDF primary document not ingested")
             self._log_pdf_decision(
-                raw, decision="skipped_form", body_text=text,
+                raw, decision="skipped_form", body_text=text, tier_trail=trail,
                 detail=f"form {form} is in the routine/redundant skip-extraction set",
             )
             return text
 
         pdf_bytes = self._get_bytes(raw["source_url"])
+        trail.append("download")
 
         if len(pdf_bytes) > _MAX_PDF_BYTES:
+            trail.append("size_check")
             text = self._placeholder_body(raw, "oversized PDF primary document not ingested")
             self._log_pdf_decision(
-                raw, decision="placeholder_too_big", body_text=text, pdf_bytes=pdf_bytes,
+                raw, decision="placeholder_too_big", body_text=text, pdf_bytes=pdf_bytes, tier_trail=trail,
                 detail=f"{len(pdf_bytes)} bytes exceeds the {_MAX_PDF_BYTES}-byte cap",
             )
             return text
 
-        pypdf_text = normalise_whitespace(self._extract_pdf_text(pdf_bytes))
+        raw_text, page_count, pages_with_text = self._extract_pdf_text_with_stats(pdf_bytes)
+        pypdf_text = normalise_whitespace(raw_text)
         non_ws_chars = sum(1 for ch in pypdf_text if not ch.isspace())
+        trail.append("pypdf")
         if non_ws_chars >= 200:
             self._log_pdf_decision(
-                raw, decision="pypdf_text", body_text=pypdf_text, pdf_bytes=pdf_bytes,
-                detail=f"pypdf extracted {non_ws_chars} non-whitespace chars",
+                raw, decision="pypdf_text", body_text=pypdf_text, pdf_bytes=pdf_bytes, tier_trail=trail,
+                page_count=page_count, pages_with_text=pages_with_text,
+                detail=f"pypdf extracted {non_ws_chars} non-whitespace chars "
+                       f"from {pages_with_text}/{page_count} page(s)",
             )
             return pypdf_text
 
         if not self.ocr_enabled:
+            trail.append("ocr_disabled")
             text = self._placeholder_body(raw, "scanned PDF primary document not ingested")
             self._log_pdf_decision(
-                raw, decision="placeholder_ocr_disabled", body_text=text, pdf_bytes=pdf_bytes,
+                raw, decision="placeholder_ocr_disabled", body_text=text, pdf_bytes=pdf_bytes, tier_trail=trail,
+                page_count=page_count, pages_with_text=pages_with_text,
                 detail=f"pypdf found only {non_ws_chars} non-whitespace chars; ocr_enabled=False",
             )
             return text
 
+        trail.append("claude_ocr")
         try:
-            ocr_text, model_id, cost_nzd = self._claude_ocr(pdf_bytes, raw)
+            # Defensive unpack: the real method returns a 4-tuple (text, model,
+            # cost, usage); older test doubles may return a 3-tuple with no
+            # usage. Tolerate both so monkeypatched OCR never breaks the row.
+            ocr_result = self._claude_ocr(pdf_bytes, raw)
+            ocr_text = ocr_result[0]
+            model_id = ocr_result[1]
+            cost_nzd = ocr_result[2]
+            usage = ocr_result[3] if len(ocr_result) > 3 else None
         except Exception as exc:  # _claude_ocr is already defensive; belt-and-suspenders
             text = self._placeholder_body(raw, "scanned PDF primary document not ingested")
             self._log_pdf_decision(
-                raw, decision="error", body_text=text, pdf_bytes=pdf_bytes,
+                raw, decision="error", body_text=text, pdf_bytes=pdf_bytes, tier_trail=trail,
+                page_count=page_count, pages_with_text=pages_with_text,
                 detail=f"Claude OCR raised: {exc}",
             )
             return text
 
+        input_tokens = usage.get("input_tokens") if isinstance(usage, dict) else None
+        output_tokens = usage.get("output_tokens") if isinstance(usage, dict) else None
+
         if ocr_text:
             self._log_pdf_decision(
-                raw, decision="claude_ocr", body_text=ocr_text, pdf_bytes=pdf_bytes,
+                raw, decision="claude_ocr", body_text=ocr_text, pdf_bytes=pdf_bytes, tier_trail=trail,
                 model_id=model_id, cost_nzd=cost_nzd,
+                input_tokens=input_tokens, output_tokens=output_tokens,
+                page_count=page_count, pages_with_text=pages_with_text,
                 detail="pypdf found no text layer; Claude native-PDF OCR used",
             )
             return ocr_text
 
         text = self._placeholder_body(raw, "scanned PDF primary document not ingested")
         self._log_pdf_decision(
-            raw, decision="placeholder_no_text", body_text=text, pdf_bytes=pdf_bytes,
+            raw, decision="placeholder_no_text", body_text=text, pdf_bytes=pdf_bytes, tier_trail=trail,
+            page_count=page_count, pages_with_text=pages_with_text,
             detail="pypdf found no text layer and Claude OCR returned no text",
         )
         return text

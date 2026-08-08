@@ -150,6 +150,21 @@ export type PdfLogDecision =
   | "placeholder_no_text"
   | "error";
 
+// Cheap, ground-truth-free OCR/extraction quality heuristics computed at
+// extraction time (src/adapters/edgar.py::_ocr_quality). Present only on rows
+// whose decision produced real extracted text (pypdf_text / claude_ocr).
+export interface OcrQuality {
+  score: number; // 0–100 composite
+  label: "good" | "fair" | "poor";
+  chars: number;
+  non_whitespace_chars: number;
+  printable_ratio: number;
+  alpha_ratio: number;
+  replacement_chars: number; // count of U+FFFD "unrecognised glyph" markers
+  chars_per_page: number | null;
+  pages_covered_ratio: number | null; // pages_with_text / page_count
+}
+
 export interface PdfLogRow {
   ts: string;
   announcement_id: string | null;
@@ -162,6 +177,19 @@ export interface PdfLogRow {
   model_id: string | null;
   cost_nzd: number | null;
   detail: string;
+  // --- audit enrichment (all optional: older rows written before this shipped
+  // won't carry them, so every consumer must tolerate undefined) ---
+  company_name?: string | null;
+  cik?: string | null;
+  accession_number?: string | null;
+  source_url?: string | null; // canonical EDGAR Archives URL of the primary document
+  page_count?: number | null;
+  pages_with_text?: number | null;
+  input_tokens?: number | null;
+  output_tokens?: number | null;
+  tier_trail?: string[]; // ordered stages tried before the final decision
+  text_path?: string | null; // repo-relative path to the persisted transcript (out/ocr/<id>.txt)
+  quality?: OcrQuality | null;
 }
 
 // GET /api/system-prompt response shape.

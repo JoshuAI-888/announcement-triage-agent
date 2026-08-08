@@ -31,8 +31,11 @@ from pathlib import Path
 from checks._harness import Check, run
 
 LOG_ROW_KEYS = {
-    "ts", "announcement_id", "ticker", "form", "primary_document", "bytes",
-    "decision", "chars_out", "model_id", "cost_nzd", "detail",
+    "ts", "announcement_id", "ticker", "company_name", "cik", "form",
+    "primary_document", "accession_number", "source_url", "bytes",
+    "decision", "chars_out", "page_count", "pages_with_text", "model_id",
+    "input_tokens", "output_tokens", "cost_nzd", "tier_trail", "text_path",
+    "quality", "detail",
 }
 VALID_DECISIONS = {
     "skipped_form", "pypdf_text", "claude_ocr", "placeholder_too_big",
@@ -226,6 +229,25 @@ def check_pypdf_text(c: Check) -> None:
         c.equal(rows[0]["model_id"], None, "pypdf_text path never touches a model, model_id is null")
         c.equal(rows[0]["cost_nzd"], None, "pypdf_text path costs nothing, cost_nzd is null")
 
+        # Audit enrichment (page completeness, transcript artifact, quality, tier trail).
+        c.require(isinstance(rows[0]["page_count"], int) and rows[0]["page_count"] >= 1,
+                  "pypdf_text records the total PDF page count")
+        c.equal(rows[0]["pages_with_text"], rows[0]["page_count"],
+                "single-page text PDF: every page yielded text")
+        c.equal(rows[0]["company_name"], "TXTCO Inc.", "log row carries the company name")
+        c.equal(rows[0]["source_url"], raw["source_url"], "log row carries the source PDF URL")
+        c.equal(rows[0]["tier_trail"], ["form_check", "download", "pypdf"],
+                "pypdf_text tier trail is form_check → download → pypdf")
+        c.require(isinstance(rows[0]["text_path"], str) and rows[0]["text_path"].startswith("out/ocr/"),
+                  "pypdf_text persists a transcript artifact and records its path")
+        transcript = log_path.parent / "ocr" / rows[0]["text_path"].split("/")[-1]
+        c.require(transcript.is_file() and "test SEC filing document" in transcript.read_text(encoding="utf-8"),
+                  "the persisted transcript file holds the extracted text")
+        q = rows[0]["quality"]
+        c.require(isinstance(q, dict) and q["label"] in {"good", "fair", "poor"},
+                  "pypdf_text row carries a quality object with a label")
+        c.require(0 <= q["score"] <= 100, "quality score is within 0–100")
+
 
 def check_placeholder_too_big(c: Check) -> None:
     """A PDF over the size cap: placeholder without ever attempting extraction."""
@@ -289,6 +311,35 @@ def check_claude_ocr_success(c: Check) -> None:
         c.equal(rows[0]["model_id"], "claude-haiku-4-5-20251001", "log row carries the OCR model id")
         c.equal(rows[0]["cost_nzd"], 0.0042, "log row carries the OCR cost in NZD")
         c.equal(rows[0]["chars_out"], len(ocr_text), "log row's chars_out matches the returned text")
+
+
+def check_claude_ocr_tokens(c: Check) -> None:
+    """OCR that reports token usage: the log row records input/output tokens + a transcript."""
+    with tempfile.TemporaryDirectory() as tmp:
+        log_path = Path(tmp) / "pdf_log.jsonl"
+        adapter = _make_adapter(log_path, ocr_enabled=True)
+        empty_bytes = _make_empty_pdf_bytes()
+        adapter._get_bytes = lambda url: empty_bytes
+        ocr_text = "Transcribed via mock OCR with usage: quarterly results, scanned exhibit."
+        # 4-tuple form: (text, model_id, cost_nzd, usage) — the real method's shape.
+        adapter._claude_ocr = lambda pdf_bytes, raw: (
+            ocr_text, "claude-haiku-4-5-20251001", 0.0042, {"input_tokens": 1234, "output_tokens": 87}
+        )
+
+        raw = _make_raw(form="8-K", document="scanned.pdf", ticker="TOKCO")
+        text = adapter.fetch_document_text(raw)
+
+        c.equal(text, ocr_text, "claude_ocr path returns the OCR'd text verbatim")
+        rows = _read_log_rows(log_path)
+        c.equal(rows[0]["decision"], "claude_ocr", "logs decision=claude_ocr")
+        c.equal(rows[0]["input_tokens"], 1234, "log row records the OCR input-token count")
+        c.equal(rows[0]["output_tokens"], 87, "log row records the OCR output-token count")
+        c.equal(rows[0]["tier_trail"], ["form_check", "download", "pypdf", "claude_ocr"],
+                "OCR tier trail traces form_check → download → pypdf → claude_ocr")
+        c.require(isinstance(rows[0]["text_path"], str) and rows[0]["text_path"].startswith("out/ocr/"),
+                  "claude_ocr persists a transcript artifact")
+        transcript = log_path.parent / "ocr" / rows[0]["text_path"].split("/")[-1]
+        c.require(transcript.is_file(), "the persisted OCR transcript file exists on disk")
 
 
 def check_claude_ocr_empty(c: Check) -> None:
@@ -366,8 +417,10 @@ def check_log_rows_well_formed(c: Check) -> None:
             c.require(row["bytes"] is None or isinstance(row["bytes"], int), f"{row['ticker']}: bytes is int|null")
             c.require(row["cost_nzd"] is None or isinstance(row["cost_nzd"], (int, float)), f"{row['ticker']}: cost_nzd is float|null")
             c.require(row["model_id"] is None or isinstance(row["model_id"], str), f"{row['ticker']}: model_id is str|null")
-        c.note("out/pdf_log.jsonl schema: ts, announcement_id, ticker, form, primary_document, "
-               "bytes, decision, chars_out, model_id, cost_nzd, detail — one JSON object per line")
+        c.note("out/pdf_log.jsonl schema: ts, announcement_id, ticker, company_name, cik, form, "
+               "primary_document, accession_number, source_url, bytes, decision, chars_out, "
+               "page_count, pages_with_text, model_id, input_tokens, output_tokens, cost_nzd, "
+               "tier_trail, text_path, quality, detail — one JSON object per line")
 
 
 def check_pdf_log_path_none_never_crashes(c: Check) -> None:
@@ -393,6 +446,7 @@ def body(c: Check) -> None:
     check_placeholder_too_big(c)
     check_ocr_disabled(c)
     check_claude_ocr_success(c)
+    check_claude_ocr_tokens(c)
     check_claude_ocr_empty(c)
     check_claude_ocr_error(c)
     check_log_rows_well_formed(c)
