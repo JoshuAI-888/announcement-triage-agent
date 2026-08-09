@@ -33,6 +33,10 @@ export async function readRepoFile(relPath: string): Promise<string | null> {
   return readIfExists(path.join(REPO_ROOT_LOCAL, relPath));
 }
 
+export async function writeRepoFile(relPath: string, content: string): Promise<void> {
+  await fs.writeFile(path.join(REPO_ROOT_LOCAL, relPath), content, "utf8");
+}
+
 export async function listRepoDir(relPath: string): Promise<string[]> {
   try {
     return await fs.readdir(path.join(REPO_ROOT_LOCAL, relPath));

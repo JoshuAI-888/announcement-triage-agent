@@ -9,9 +9,10 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
   return (
     <html lang="en">
       <head>
-        <link rel="stylesheet" href="/styles/milford-system.css" />
-        <link rel="stylesheet" href="/styles/portal.css" />
-        <link rel="stylesheet" href="/styles/dashboard.css" />
+        {/* ?v=N cache-busts un-hashed public CSS; bump N when a stylesheet changes. */}
+        <link rel="stylesheet" href="/styles/milford-system.css?v=2" />
+        <link rel="stylesheet" href="/styles/portal.css?v=2" />
+        <link rel="stylesheet" href="/styles/dashboard.css?v=2" />
       </head>
       <body>{children}</body>
     </html>

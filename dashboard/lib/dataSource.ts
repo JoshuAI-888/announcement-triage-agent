@@ -278,6 +278,45 @@ export async function getOcrText(textPath: string): Promise<string | null> {
   return raw;
 }
 
+export type DeletePdfLogResult =
+  | { ok: true; removed: number; mocked: boolean }
+  | { ok: false; status: number; error: string };
+
+export async function deletePdfLogRow(ts: string): Promise<DeletePdfLogResult> {
+  if (!ts) return { ok: false, status: 400, error: "missing ts" };
+
+  const filterLines = (raw: string): { kept: string; removed: number } => {
+    const lines = raw.split("\n");
+    let removed = 0;
+    const kept = lines.filter((line) => {
+      if (!line.trim()) return false; // drop blank/trailing lines
+      try {
+        const row = JSON.parse(line) as { ts?: string };
+        if (row.ts === ts) { removed++; return false; }
+      } catch { /* keep unparseable lines untouched */ }
+      return true;
+    });
+    return { kept: kept.length ? kept.join("\n") + "\n" : "", removed };
+  };
+
+  if (LOCAL_DEV_MODE) {
+    const raw = await local.readRepoFile(PDF_LOG_PATH);
+    if (raw == null) return { ok: false, status: 404, error: "pdf_log.jsonl not found" };
+    const { kept, removed } = filterLines(raw);
+    if (removed === 0) return { ok: false, status: 404, error: "no row matched that ts" };
+    await local.writeRepoFile(PDF_LOG_PATH, kept);
+    local.mockCommitLog(PDF_LOG_PATH, `dashboard: delete pdf_log row ${ts}`);
+    return { ok: true, removed, mocked: true };
+  }
+
+  const file = await gh.getFile(PDF_LOG_PATH);
+  if (!file) return { ok: false, status: 404, error: "pdf_log.jsonl not found on main" };
+  const { kept, removed } = filterLines(file.content);
+  if (removed === 0) return { ok: false, status: 404, error: "no row matched that ts" };
+  await gh.commitFile(PDF_LOG_PATH, kept, `dashboard: delete pdf_log row ${ts}`, file.sha);
+  return { ok: true, removed, mocked: false };
+}
+
 // --- out/filings/<date>.json / <date>T<HH-MM>.json ---
 
 const FILINGS_NAME_RE = /^\d{4}-\d{2}-\d{2}(T\d{2}-\d{2}(-\d{2})?)?\.json$/;

@@ -59,9 +59,33 @@ type TranscriptState =
   | { status: "loaded"; text: string }
   | { status: "error"; message: string };
 
-export function PdfLogTable({ rows }: { rows: PdfLogRow[] }) {
+export function PdfLogTable({ rows: initialRows }: { rows: PdfLogRow[] }) {
+  const [rows, setRows] = useState(initialRows);
   const [openId, setOpenId] = useState<string | null>(null);
   const [transcripts, setTranscripts] = useState<Record<string, TranscriptState>>({});
+  const [deleting, setDeleting] = useState<string | null>(null);
+
+  const handleDelete = useCallback(async (ts: string) => {
+    if (!window.confirm("Delete this row from the audit log? This removes it from out/pdf_log.jsonl.")) return;
+    setDeleting(ts);
+    try {
+      const res = await fetch("/api/pdf-log", {
+        method: "DELETE",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ ts }),
+      });
+      if (!res.ok) {
+        const msg = (await res.json().catch(() => ({}))) as { message?: string };
+        window.alert(`Delete failed: ${msg.message ?? res.status}`);
+        return;
+      }
+      setRows((prev) => prev.filter((r) => r.ts !== ts));
+    } catch (e) {
+      window.alert(`Delete failed: ${(e as Error).message}`);
+    } finally {
+      setDeleting(null);
+    }
+  }, []);
 
   const loadTranscript = useCallback(
     async (textPath: string) => {
@@ -112,6 +136,7 @@ export function PdfLogTable({ rows }: { rows: PdfLogRow[] }) {
             <th className="align-right">Pages</th>
             <th className="align-right">Chars</th>
             <th className="align-right">Cost</th>
+            <th className="ocr-actions-col" aria-label="Delete" />
           </tr>
         </thead>
         <tbody>
@@ -131,6 +156,8 @@ export function PdfLogTable({ rows }: { rows: PdfLogRow[] }) {
                 pagesCell={pagesCell}
                 transcript={r.text_path ? transcripts[r.text_path] ?? { status: "idle" } : null}
                 onToggle={() => toggle(rowKey, r)}
+                onDelete={() => handleDelete(r.ts)}
+                isDeleting={deleting === r.ts}
               />
             );
           })}
@@ -148,6 +175,8 @@ function FragmentRow({
   pagesCell,
   transcript,
   onToggle,
+  onDelete,
+  isDeleting,
 }: {
   r: PdfLogRow;
   rowKey: string;
@@ -156,6 +185,8 @@ function FragmentRow({
   pagesCell: string;
   transcript: TranscriptState | null;
   onToggle: () => void;
+  onDelete: () => void;
+  isDeleting: boolean;
 }) {
   const complete =
     r.page_count != null && r.page_count > 0
@@ -213,10 +244,24 @@ function FragmentRow({
         </td>
         <td className="align-right tabular">{r.chars_out.toLocaleString()}</td>
         <td className="align-right tabular">{fmtNzd(r.cost_nzd)}</td>
+        <td className="ocr-actions-col">
+          <button
+            type="button"
+            className="ocr-del-btn"
+            title="Delete this row"
+            aria-label="Delete row"
+            disabled={isDeleting}
+            onClick={(e) => { e.stopPropagation(); onDelete(); }}
+          >
+            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden focusable="false">
+              <path fill="currentColor" d="M6 2h4a1 1 0 0 1 1 1v1h3v2h-1v8a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6H3V4h3V3a1 1 0 0 1 1-1zm0 4v8h4V6H6zm1-2h2V3H7v1z"/>
+            </svg>
+          </button>
+        </td>
       </tr>
       {isOpen && (
         <tr className="ocr-detail-row">
-          <td className="ocr-detail-cell" colSpan={10}>
+          <td className="ocr-detail-cell" colSpan={11}>
             <DetailPanel r={r} quality={quality} complete={complete} transcript={transcript} />
           </td>
         </tr>

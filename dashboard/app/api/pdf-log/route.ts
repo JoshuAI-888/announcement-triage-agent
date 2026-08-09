@@ -4,7 +4,7 @@
 // versions routes — never a hardcoded fetch. Malformed lines are skipped;
 // a missing file returns an empty list (200), not a 500.
 import { NextResponse } from "next/server";
-import { getPdfLog } from "@/lib/dataSource";
+import { deletePdfLogRow, getPdfLog } from "@/lib/dataSource";
 
 export async function GET() {
   try {
@@ -12,5 +12,17 @@ export async function GET() {
     return NextResponse.json({ rows });
   } catch (err) {
     return NextResponse.json({ error: "read_failed", message: (err as Error).message }, { status: 500 });
+  }
+}
+
+export async function DELETE(req: Request) {
+  try {
+    const body = (await req.json().catch(() => ({}))) as { ts?: string };
+    if (!body.ts) return NextResponse.json({ error: "bad_request", message: "ts required" }, { status: 400 });
+    const res = await deletePdfLogRow(body.ts);
+    if (!res.ok) return NextResponse.json({ error: "delete_failed", message: res.error }, { status: res.status });
+    return NextResponse.json({ ok: true, removed: res.removed, mocked: res.mocked });
+  } catch (err) {
+    return NextResponse.json({ error: "delete_failed", message: (err as Error).message }, { status: 500 });
   }
 }

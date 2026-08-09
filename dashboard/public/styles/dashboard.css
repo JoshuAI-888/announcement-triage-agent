@@ -365,6 +365,15 @@ th.sortable .sort-arrow .sort-rank { font-size: .58rem; margin-left: 1px; opacit
 .ocr-row { cursor: pointer; }
 .ocr-row:hover { background: var(--milford-cloud); }
 .ocr-caret-col { width: 26px; }
+.ocr-actions-col { width: 34px; text-align: center; }
+.ocr-del-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 26px; height: 26px; padding: 0;
+  border: none; border-radius: var(--radius); background: transparent;
+  color: var(--milford-muted); cursor: pointer;
+}
+.ocr-del-btn:hover { background: var(--milford-cloud); color: var(--milford-red, #c0392b); }
+.ocr-del-btn:disabled { opacity: .4; cursor: default; }
 .ocr-caret { display: inline-block; color: var(--milford-muted); transition: transform .12s ease; font-size: .7rem; }
 .ocr-caret.open { transform: rotate(90deg); }
 .ocr-ticker { display: block; font-size: .76rem; }
