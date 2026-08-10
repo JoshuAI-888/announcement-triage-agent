@@ -129,10 +129,20 @@
     "edge": "Extensive OEM relationships and integrated hardware-software capabilities across the automotive supply chain.",
     "generated_at": "2026-08-07T03:33:59.769794+00:00"
   },
+  "ARE": {
+    "business": "A real estate investment trust (REIT) that owns and operates life science and technology office properties, primarily in major innovation hubs.",
+    "edge": "Concentrated portfolio of premium properties in high-demand markets with long-term tenant relationships in the biotech and tech sectors.",
+    "generated_at": "2026-08-10T19:06:22.496126+00:00"
+  },
   "ARES": {
     "business": "Ares Management is a global alternative asset manager that invests in and manages private equity, credit, real estate, and infrastructure funds for institutional and individual clients.",
     "edge": "Scale and diversification across multiple alternative asset classes with deep operational expertise and established relationships that enable access to deal flow and capital.",
     "generated_at": "2026-08-07T11:09:07.789729+00:00"
+  },
+  "ATO": {
+    "business": "Distributes natural gas to residential, commercial, and industrial customers across eight states in the United States.",
+    "edge": "Regulated utility business model with long-term contracts and stable cash flows from essential infrastructure serving millions of customers.",
+    "generated_at": "2026-08-10T19:06:33.280550+00:00"
   },
   "AVY": {
     "business": "Manufactures and sells pressure-sensitive adhesive materials, labeling solutions, and software platforms for packaging, logistics, and retail applications.",
@@ -198,6 +208,11 @@
     "business": "Provides custody, asset servicing, clearing, and investment management services primarily to institutional clients globally.",
     "edge": "Dominant market position in institutional asset custody and settlement with high switching costs and deep client relationships.",
     "generated_at": "2026-08-05T18:16:28.116404+00:00"
+  },
+  "BRK-B": {
+    "business": "A diversified holding company that owns and operates businesses across insurance, utilities, railroads, manufacturing, and retail, while maintaining a large investment portfolio.",
+    "edge": "Exceptional capital allocation discipline, access to cheap funding through insurance float, and a decades-long track record of identifying undervalued assets and management talent.",
+    "generated_at": "2026-08-10T19:06:30.764806+00:00"
   },
   "BRO": {
     "business": "Insurance brokerage and risk management services firm that places commercial, personal, and specialty insurance for clients.",
@@ -433,6 +448,11 @@
     "business": "Operates a portfolio of casual dining restaurant brands including Olive Garden, LongHorn Steakhouse, Cheddar's Scratch Kitchen, and others across North America.",
     "edge": "Scale advantages in purchasing, supply chain management, and real estate portfolio that support operational efficiency across its diverse brand portfolio.",
     "generated_at": "2026-08-07T19:08:49.455945+00:00"
+  },
+  "DUK": {
+    "business": "Generates, transmits, and distributes electricity and natural gas to millions of customers across the Carolinas, Florida, and the Midwest.",
+    "edge": "Regulated utility model with long-term contracts and established infrastructure that creates stable cash flows and high barriers to entry.",
+    "generated_at": "2026-08-10T19:06:29.352972+00:00"
   },
   "DVN": {
     "business": "Devon Energy is an independent oil and natural gas exploration and production company that develops and operates upstream energy assets primarily in the United States.",
@@ -689,6 +709,11 @@
     "edge": "Low-cost commission structure and advanced technology platform that attracts active traders and institutional clients seeking efficient execution and direct market access.",
     "generated_at": "2026-08-07T03:33:14.471486+00:00"
   },
+  "IBM": {
+    "business": "Provides enterprise IT infrastructure, cloud computing services, software, and consulting solutions to organizations worldwide.",
+    "edge": "Extensive portfolio of hybrid cloud and AI capabilities combined with deep enterprise customer relationships and mission-critical system integration expertise.",
+    "generated_at": "2026-08-10T19:06:34.521664+00:00"
+  },
   "ICE": {
     "business": "Operates global exchanges and clearing houses for financial derivatives, commodities, equities, and fixed income products, along with data and analytics services.",
     "edge": "Network effects from high trading volumes and liquidity across interconnected markets, combined with switching costs embedded in established market infrastructure and data dependencies.",
@@ -703,6 +728,11 @@
     "business": "Incyte develops and commercializes small-molecule drugs primarily focused on oncology, inflammatory diseases, and other therapeutic areas.",
     "edge": "Proprietary drug pipeline with marketed products like Jakafi and Pemazyre, supported by established relationships with major pharmaceutical partners for development and commercialization.",
     "generated_at": "2026-08-07T21:37:43.377275+00:00"
+  },
+  "INTC": {
+    "business": "Designs and manufactures semiconductor processors and related computing components for data centers, personal computers, and other electronic devices.",
+    "edge": "Decades of accumulated expertise in chip design and manufacturing processes, along with significant capital investment in fabrication facilities that create barriers to competition.",
+    "generated_at": "2026-08-10T19:06:25.968813+00:00"
   },
   "IP": {
     "business": "Manufactures and distributes containerboard, packaging products, and pulp for use in corrugated boxes, folding cartons, and other paper-based packaging solutions globally.",
@@ -843,6 +873,11 @@
     "business": "Designs and manufactures microcontrollers, analog semiconductors, and mixed-signal integrated circuits for embedded systems applications.",
     "edge": "Broad portfolio of microcontroller products with extensive software tools and ecosystem that create switching costs and developer loyalty.",
     "generated_at": "2026-08-07T03:31:53.445635+00:00"
+  },
+  "MCK": {
+    "business": "Distributes pharmaceuticals, medical supplies, and healthcare information technology solutions to pharmacies, hospitals, and healthcare providers.",
+    "edge": "Massive scale and integrated logistics network that creates cost advantages and switching costs for customers across North America and internationally.",
+    "generated_at": "2026-08-10T19:06:35.842030+00:00"
   },
   "MDT": {
     "business": "Medtronic designs, manufactures, and sells medical devices and therapies across cardiac, neurological, surgical, and chronic disease management categories.",
@@ -1018,6 +1053,11 @@
     "business": "Principal Financial Group is a diversified financial services company that provides retirement, investment, and insurance products to individuals and institutions.",
     "edge": "The company maintains a broad distribution network across multiple channels (direct, workplace, and advisor-based) that creates scale advantages and customer stickiness in competitive financial services markets.",
     "generated_at": "2026-08-07T21:37:53.811171+00:00"
+  },
+  "PG": {
+    "business": "Manufactures and sells consumer packaged goods including cleaning products, personal care items, health care products, and pet care brands globally.",
+    "edge": "Extensive portfolio of established brands with strong consumer loyalty and recognition, combined with significant scale advantages in distribution and manufacturing.",
+    "generated_at": "2026-08-10T19:06:37.210751+00:00"
   },
   "PH": {
     "business": "Manufactures and distributes motion and control technologies including hydraulics, pneumatics, filtration, and fluid handling systems for industrial, aerospace, and mobile markets.",
@@ -1219,6 +1259,11 @@
     "edge": "Strong brand reputation and integrated product portfolios that create switching costs and cross-selling opportunities in hospital and surgical settings.",
     "generated_at": "2026-08-05T05:45:19.135054+00:00"
   },
+  "SYY": {
+    "business": "Sysco is a global foodservice distributor that supplies restaurants, healthcare facilities, educational institutions, and other food service operators with food products, supplies, and equipment.",
+    "edge": "Sysco maintains competitive advantages through its extensive distribution network, scale economies, established customer relationships, and integrated technology platform that creates switching costs.",
+    "generated_at": "2026-08-10T19:06:38.578284+00:00"
+  },
   "T": {
     "business": "Provides wireless telecommunications, wireline phone service, broadband internet, and pay-TV services primarily across the United States.",
     "edge": "Extensive nationwide infrastructure including wireless spectrum licenses, fiber-optic networks, and established customer relationships built over decades of operation.",
@@ -1233,6 +1278,11 @@
     "business": "Manufactures and supplies aerospace components, systems, and aftermarket parts for commercial and military aircraft.",
     "edge": "Highly fragmented supplier base with strong aftermarket presence and sticky customer relationships that support pricing power and recurring revenue.",
     "generated_at": "2026-08-07T21:38:01.387982+00:00"
+  },
+  "TDY": {
+    "business": "Designs and manufactures electronic test and measurement instruments, aerospace and defense systems, and engineered products for industrial applications.",
+    "edge": "Vertically integrated portfolio of specialized technologies across complementary markets with high switching costs and long-term customer relationships.",
+    "generated_at": "2026-08-10T19:06:21.125630+00:00"
   },
   "TECH": {
     "business": "Develops and manufactures life sciences tools, reagents, and instruments for research, diagnostics, and therapeutic development.",
@@ -1284,6 +1334,11 @@
     "edge": "Extensive network of over 2,000 stores concentrated in rural markets with limited competition, combined with a loyal customer base dependent on regular supplies for agricultural and land management needs.",
     "generated_at": "2026-08-07T03:33:06.238275+00:00"
   },
+  "TSN": {
+    "business": "Tyson Foods is a multinational protein production company that processes and sells beef, chicken, pork, and prepared foods to retail and foodservice customers.",
+    "edge": "The company operates one of the world's largest vertically integrated supply chains with significant scale in animal processing, distribution networks, and brand portfolio across multiple protein categories.",
+    "generated_at": "2026-08-10T19:06:24.607451+00:00"
+  },
   "TT": {
     "business": "Manufactures and services heating, ventilation, air conditioning, and refrigeration systems for commercial and residential applications.",
     "edge": "Established brand portfolio, extensive distribution network, and integrated service capabilities across HVAC and refrigeration markets.",
@@ -1323,6 +1378,11 @@
     "business": "Provides health insurance, healthcare services, and pharmacy benefit management through its UnitedHealthcare and Optum divisions.",
     "edge": "Vertically integrated model combining insurance, healthcare delivery, and pharmacy operations creates operational efficiencies and data advantages competitors lack.",
     "generated_at": "2026-08-05T18:17:12.489850+00:00"
+  },
+  "UPS": {
+    "business": "Operates a global package delivery and logistics network providing shipping, freight, and supply chain services.",
+    "edge": "Extensive integrated infrastructure of aircraft, vehicles, and facilities combined with established relationships across major markets creates high barriers to entry.",
+    "generated_at": "2026-08-10T19:06:27.743975+00:00"
   },
   "USB": {
     "business": "US Bancorp is a diversified financial services company providing banking, investment, and payment services to consumers and businesses across the United States.",
