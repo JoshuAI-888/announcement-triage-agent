@@ -159,10 +159,20 @@
     "edge": "Regulated utility business model with long-term contracts and stable cash flows from essential infrastructure serving millions of customers.",
     "generated_at": "2026-08-10T19:06:33.280550+00:00"
   },
+  "AVB": {
+    "business": "Develops, owns, and operates apartment communities across the United States, primarily targeting renters in high-demand markets.",
+    "edge": "Large-scale portfolio of premium properties in supply-constrained coastal and urban markets with strong pricing power and operational efficiency.",
+    "generated_at": "2026-08-13T18:04:55.218890+00:00"
+  },
   "AVY": {
     "business": "Manufactures and sells pressure-sensitive adhesive materials, labeling solutions, and software platforms for packaging, logistics, and retail applications.",
     "edge": "Extensive global distribution network, proprietary adhesive technology, and integrated software ecosystem that create switching costs for customers.",
     "generated_at": "2026-08-07T19:08:35.272470+00:00"
+  },
+  "AWK": {
+    "business": "Provides water supply, wastewater treatment, and related utility services to millions of customers across the United States.",
+    "edge": "Operates as the largest publicly traded water utility in the U.S. with an extensive regulated asset base and established infrastructure across multiple states, creating high barriers to entry.",
+    "generated_at": "2026-08-13T18:05:02.136788+00:00"
   },
   "AXON": {
     "business": "Develops and sells cloud-based software, hardware, and digital evidence management systems for law enforcement and public safety agencies.",
@@ -178,6 +188,11 @@
     "business": "AutoZone is a retailer of aftermarket automotive parts and accessories, operating stores across North America where customers can purchase items for vehicle maintenance and repair.",
     "edge": "The company maintains an extensive network of physical locations with same-day availability of parts, supported by a centralized distribution system and strong supplier relationships that create switching costs for both retail and commercial customers.",
     "generated_at": "2026-08-07T21:37:31.168946+00:00"
+  },
+  "BA": {
+    "business": "Designs, manufactures, and sells commercial aircraft, defense systems, and aerospace products globally.",
+    "edge": "Established market position as one of two major commercial aircraft manufacturers with significant barriers to entry from certification requirements and customer switching costs.",
+    "generated_at": "2026-08-13T18:05:03.338374+00:00"
   },
   "BAC": {
     "business": "Provides retail and commercial banking, investment banking, wealth management, and trading services globally.",
@@ -279,6 +294,11 @@
     "edge": "Largest options exchange operator with dominant market share in U.S. equity options trading and an extensive suite of proprietary indices and volatility products.",
     "generated_at": "2026-08-12T18:05:32.653153+00:00"
   },
+  "CBRE": {
+    "business": "CBRE is a global commercial real estate services and investment firm providing leasing, sales, property management, valuation, and advisory services.",
+    "edge": "Its extensive global platform and integrated service offerings create significant scale advantages and client switching costs across multiple real estate service lines.",
+    "generated_at": "2026-08-13T18:05:04.905855+00:00"
+  },
   "CCI": {
     "business": "Owns and operates a large portfolio of cell towers, fiber optic networks, and small cell infrastructure that it leases to wireless carriers and other tenants.",
     "edge": "Extensive real estate footprint with long-term tenant contracts and high customer switching costs, generating stable recurring revenue.",
@@ -369,6 +389,11 @@
     "edge": "Extensive proprietary credit risk modeling and data analytics capabilities developed over decades of credit card operations.",
     "generated_at": "2026-08-07T21:37:34.511206+00:00"
   },
+  "COHR": {
+    "business": "Manufactures and sells lasers, photonics products, and related optical systems for industrial, scientific, and commercial applications.",
+    "edge": "Vertically integrated design and manufacturing capabilities combined with a broad portfolio of laser technologies spanning multiple wavelengths and power ranges.",
+    "generated_at": "2026-08-13T18:04:57.719772+00:00"
+  },
   "COP": {
     "business": "ConocoPhillips is an integrated energy company engaged in crude oil and natural gas exploration, production, refining, and marketing globally.",
     "edge": "The company maintains a diversified portfolio of low-cost production assets across multiple geographic regions, providing resilience through commodity price cycles and operational scale advantages.",
@@ -414,10 +439,20 @@
     "edge": "Extensive proprietary database of commercial property listings and market data accumulated over decades, creating switching costs and network effects for subscribers.",
     "generated_at": "2026-08-05T18:16:35.090966+00:00"
   },
+  "CTAS": {
+    "business": "Provides uniform rental and facility services, document management, fire protection equipment, and workplace safety products to businesses across North America.",
+    "edge": "Extensive distribution network, long-term customer contracts with high switching costs, and integrated service offerings that create customer stickiness.",
+    "generated_at": "2026-08-13T18:05:06.236772+00:00"
+  },
   "CTVA": {
     "business": "Corteva is a global agricultural company that produces and sells seeds, crop protection chemicals, and related products for farmers.",
     "edge": "The company benefits from its large portfolio of seed and chemical brands, extensive distribution networks, and integrated research and development capabilities across multiple crop types.",
     "generated_at": "2026-08-07T03:32:52.508826+00:00"
+  },
+  "CVNA": {
+    "business": "An online used car retailer that sells vehicles directly to consumers with home delivery and a return policy.",
+    "edge": "Proprietary logistics network and automated vending towers that reduce inventory costs and enable rapid fulfillment compared to traditional dealerships.",
+    "generated_at": "2026-08-13T18:05:07.529006+00:00"
   },
   "CVS": {
     "business": "Operates a pharmacy retail chain, pharmacy benefit manager, and health insurance services integrated across the United States.",
@@ -504,6 +539,11 @@
     "edge": "Scale advantages in purchasing, supply chain management, and real estate portfolio that support operational efficiency across its diverse brand portfolio.",
     "generated_at": "2026-08-07T19:08:49.455945+00:00"
   },
+  "DTE": {
+    "business": "Provides electricity and natural gas utility services to customers in Michigan and other regions through regulated utility operations and energy businesses.",
+    "edge": "Established infrastructure networks and regulatory-approved rate structures that create barriers to entry and provide stable, predictable cash flows.",
+    "generated_at": "2026-08-13T18:05:09.232232+00:00"
+  },
   "DUK": {
     "business": "Generates, transmits, and distributes electricity and natural gas to millions of customers across the Carolinas, Florida, and the Midwest.",
     "edge": "Regulated utility model with long-term contracts and established infrastructure that creates stable cash flows and high barriers to entry.",
@@ -568,6 +608,11 @@
     "business": "Operates a global network of data centers that provide colocation, interconnection, and cloud services to enterprises, financial institutions, and technology companies.",
     "edge": "Maintains one of the world's largest platforms of interconnected data centers with significant switching fabric capacity that creates network effects and switching costs for customers.",
     "generated_at": "2026-08-07T03:32:59.858055+00:00"
+  },
+  "EQR": {
+    "business": "Owns and operates apartment communities across the United States, generating revenue primarily through residential rental income.",
+    "edge": "Large-scale portfolio of properties in high-demand metropolitan markets with significant barriers to new supply due to zoning and development constraints.",
+    "generated_at": "2026-08-13T18:04:56.500396+00:00"
   },
   "ETN": {
     "business": "Manufactures and distributes electrical components, hydraulics, aerospace parts, and vehicle powertrains for industrial, commercial, and transportation markets.",
@@ -699,6 +744,11 @@
     "edge": "Large installed base of millions of customers with high switching costs and cross-selling opportunities across its integrated platform of services.",
     "generated_at": "2026-08-07T21:37:40.748329+00:00"
   },
+  "GE": {
+    "business": "Diversified industrial conglomerate manufacturing power generation equipment, aviation engines, healthcare imaging systems, and renewable energy products.",
+    "edge": "Established global distribution networks, extensive patent portfolios, and long-term service contracts that create recurring revenue streams.",
+    "generated_at": "2026-08-13T18:05:10.621352+00:00"
+  },
   "GEHC": {
     "business": "Manufactures and sells medical imaging equipment, healthcare IT software, and diagnostic monitoring systems globally.",
     "edge": "Extensive installed base of imaging systems and integrated software platforms that create switching costs and recurring revenue streams.",
@@ -758,6 +808,11 @@
     "business": "Global investment banking, trading, and asset management firm providing financial services to corporations, institutions, and high-net-worth individuals.",
     "edge": "Established brand reputation, extensive client relationships, and significant scale in capital markets that create barriers to entry and competitive advantages in deal flow and execution.",
     "generated_at": "2026-08-05T18:16:42.756264+00:00"
+  },
+  "HBAN": {
+    "business": "Regional bank providing retail and commercial banking, wealth management, and treasury services primarily across the Midwest and Mid-Atlantic United States.",
+    "edge": "Extensive branch network and deposit base across its operating regions, combined with digital banking capabilities that support customer retention and cross-selling opportunities.",
+    "generated_at": "2026-08-13T18:05:11.997291+00:00"
   },
   "HD": {
     "business": "Operates a chain of home improvement retail stores selling building materials, tools, appliances, and related products for DIY and professional customers.",
@@ -838,6 +893,11 @@
     "business": "Operates global exchanges and clearing houses for financial derivatives, commodities, equities, and fixed income products, along with data and analytics services.",
     "edge": "Network effects from high trading volumes and liquidity across interconnected markets, combined with switching costs embedded in established market infrastructure and data dependencies.",
     "generated_at": "2026-08-05T18:16:47.641768+00:00"
+  },
+  "IEX": {
+    "business": "Manufactures fluid and metering dispensing equipment, including pumps, meters, and related components for various industrial and commercial applications.",
+    "edge": "Proprietary technology in precision fluid handling and a diversified customer base across multiple end markets that reduces dependence on any single sector.",
+    "generated_at": "2026-08-13T18:05:13.340765+00:00"
   },
   "IFF": {
     "business": "Manufactures and supplies flavoring ingredients, fragrance compounds, and specialty chemicals for use in food, beverage, personal care, and household products.",
@@ -964,6 +1024,11 @@
     "edge": "Extensive network of patient service centers and established relationships with healthcare systems that create high switching costs and operational scale advantages.",
     "generated_at": "2026-08-05T18:16:55.171610+00:00"
   },
+  "LHX": {
+    "business": "Designs and manufactures defense, space, and intelligence technology systems including communications, electronic warfare, and surveillance equipment.",
+    "edge": "Vertically integrated capabilities across multiple defense domains with long-term government contracts and high barriers to entry in classified systems.",
+    "generated_at": "2026-08-13T18:05:14.645952+00:00"
+  },
   "LITE": {
     "business": "Manufactures optical and photonic products for telecommunications, data center, and consumer applications.",
     "edge": "Vertically integrated manufacturing capabilities and proprietary laser and optical component technologies that serve high-barrier-to-entry markets.",
@@ -978,6 +1043,11 @@
     "business": "Designs, manufactures, and provides services for aerospace, defense, and security systems including aircraft, missiles, space vehicles, and related technologies.",
     "edge": "Substantial barriers to entry through long-term government contracts, advanced engineering capabilities, and integrated supply chain control in highly regulated defense markets.",
     "generated_at": "2026-08-12T18:05:45.158348+00:00"
+  },
+  "LNT": {
+    "business": "Alliant Energy is a regulated utility company that generates, transmits, and distributes electricity and natural gas to customers in Iowa and Wisconsin.",
+    "edge": "Its primary competitive advantage derives from regulated utility status with predictable rate-base returns and essential infrastructure serving a stable customer base across its service territories.",
+    "generated_at": "2026-08-13T18:05:15.923611+00:00"
   },
   "LRCX": {
     "business": "Manufactures semiconductor processing equipment used in chip fabrication, particularly for etching and deposition processes.",
@@ -1028,6 +1098,11 @@
     "business": "Distributes pharmaceuticals, medical supplies, and healthcare information technology solutions to pharmacies, hospitals, and healthcare providers.",
     "edge": "Massive scale and integrated logistics network that creates cost advantages and switching costs for customers across North America and internationally.",
     "generated_at": "2026-08-10T19:06:35.842030+00:00"
+  },
+  "MCO": {
+    "business": "Provides credit ratings, research, and analytics for financial markets and debt instruments globally.",
+    "edge": "Dominant market position in credit rating oligopoly with high switching costs and regulatory barriers to entry.",
+    "generated_at": "2026-08-13T18:04:59.574681+00:00"
   },
   "MDT": {
     "business": "Medtronic designs, manufactures, and sells medical devices and therapies across cardiac, neurological, surgical, and chronic disease management categories.",
@@ -1239,6 +1314,11 @@
     "edge": "Broad integrated platform spanning multiple security domains that creates switching costs and cross-selling opportunities for enterprise customers.",
     "generated_at": "2026-08-05T05:45:13.608934+00:00"
   },
+  "PCG": {
+    "business": "Generates and distributes electricity and natural gas to millions of customers across northern and central California.",
+    "edge": "Monopoly utility franchise with regulated rates and essential infrastructure that creates high barriers to entry.",
+    "generated_at": "2026-08-13T18:05:17.063297+00:00"
+  },
   "PEG": {
     "business": "Operates as a diversified energy company providing electricity, natural gas, and related services primarily to customers in New Jersey and Pennsylvania.",
     "edge": "Vertically integrated utility infrastructure with established regulatory frameworks and long-term rate structures that create stable, predictable cash flows.",
@@ -1273,6 +1353,11 @@
     "business": "Manufactures and distributes motion and control technologies including hydraulics, pneumatics, filtration, and fluid handling systems for industrial, aerospace, and mobile markets.",
     "edge": "Broad portfolio of complementary products and established distribution network that create switching costs and cross-selling opportunities across diverse customer bases.",
     "generated_at": "2026-08-07T03:32:14.612924+00:00"
+  },
+  "PHM": {
+    "business": "Designs, builds, and sells residential homes across the United States through multiple brand portfolios serving various price points and market segments.",
+    "edge": "Established brand recognition, large land portfolio, and scale advantages in construction operations and supplier relationships that support cost efficiency.",
+    "generated_at": "2026-08-13T18:05:00.897304+00:00"
   },
   "PKG": {
     "business": "Manufactures containerboard and corrugated packaging products for shipping and protective packaging applications.",
@@ -1494,6 +1579,11 @@
     "edge": "Extensive portfolio of analog and mixed-signal integrated circuits with established relationships across major wireless and infrastructure customers.",
     "generated_at": "2026-08-07T03:33:15.574628+00:00"
   },
+  "SYF": {
+    "business": "Provides credit cards, payment solutions, and consumer financing services, primarily through partnerships with major retailers and brands.",
+    "edge": "Extensive network of co-branded credit card partnerships with leading retailers that drive customer acquisition and loyalty while generating recurring revenue from interest and fees.",
+    "generated_at": "2026-08-13T18:05:18.328163+00:00"
+  },
   "SYK": {
     "business": "Manufactures and sells medical devices and equipment for orthopedic surgery, neurotechnology, spine, trauma, and surgical instruments.",
     "edge": "Strong brand reputation and integrated product portfolios that create switching costs and cross-selling opportunities in hospital and surgical settings.",
@@ -1558,6 +1648,11 @@
     "business": "Owns and manages large land holdings in West Texas, primarily generating revenue through oil and gas royalties, easements, and land sales.",
     "edge": "Substantial acreage in the Permian Basin with long-term mineral rights that benefit from energy production without direct drilling costs or operational risk.",
     "generated_at": "2026-08-07T03:35:15.103738+00:00"
+  },
+  "TPR": {
+    "business": "Tapestry designs, manufactures, and distributes luxury handbags, accessories, and apparel through brands including Coach, Kate Spade, and Stuart Weitzman.",
+    "edge": "Strong brand portfolio with established heritage and pricing power in the accessible luxury segment, combined with vertical integration and direct-to-consumer distribution capabilities.",
+    "generated_at": "2026-08-13T18:04:53.880041+00:00"
   },
   "TRGP": {
     "business": "Targa Resources Corp. operates midstream energy infrastructure, including natural gas processing, fractionation, and crude oil logistics services across North America.",
