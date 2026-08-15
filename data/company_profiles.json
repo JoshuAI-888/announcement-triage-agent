@@ -139,6 +139,11 @@
     "edge": "Scale and diversification across multiple alternative asset classes with established relationships and operational expertise in credit and private markets.",
     "generated_at": "2026-08-08T18:06:04.942460+00:00"
   },
+  "APP": {
+    "business": "AppLovin develops a mobile marketing platform and software development kit (SDK) that helps app developers monetize through advertising and user acquisition.",
+    "edge": "Proprietary machine learning algorithms that optimize ad targeting and app install campaigns at scale across a large network of mobile apps.",
+    "generated_at": "2026-08-15T18:38:45.706991+00:00"
+  },
   "APTV": {
     "business": "Designs and manufactures vehicle components and software platforms for autonomous driving, electrification, and vehicle connectivity.",
     "edge": "Extensive OEM relationships and integrated hardware-software capabilities across the automotive supply chain.",
@@ -614,6 +619,11 @@
     "edge": "Large-scale portfolio of properties in high-demand metropolitan markets with significant barriers to new supply due to zoning and development constraints.",
     "generated_at": "2026-08-13T18:04:56.500396+00:00"
   },
+  "EQT": {
+    "business": "EQT is a natural gas production and midstream infrastructure company operating primarily in the Appalachian Basin.",
+    "edge": "Largest natural gas producer in the United States with low-cost production and an integrated midstream network that captures additional value across the supply chain.",
+    "generated_at": "2026-08-15T18:38:47.310991+00:00"
+  },
   "ETN": {
     "business": "Manufactures and distributes electrical components, hydraulics, aerospace parts, and vehicle powertrains for industrial, commercial, and transportation markets.",
     "edge": "Diversified product portfolio across multiple end-markets with established distribution networks and engineering expertise that create switching costs for customers.",
@@ -984,6 +994,11 @@
     "edge": "Owns widely recognized beverage brands with established distribution networks and a dominant position in the single-serve coffee pod market through its Keurig brewing system ecosystem.",
     "generated_at": "2026-08-07T03:32:29.496991+00:00"
   },
+  "KEY": {
+    "business": "KeyCorp is a regional bank holding company that provides retail and commercial banking services, including lending, deposit products, and wealth management.",
+    "edge": "Extensive branch network and established customer relationships across the Midwest and Northeast United States provide scale advantages in deposit gathering and regional market penetration.",
+    "generated_at": "2026-08-15T18:38:43.747362+00:00"
+  },
   "KHC": {
     "business": "Manufactures and markets food and beverage products including condiments, sauces, meals, snacks, and beverages globally.",
     "edge": "Extensive portfolio of iconic brands with strong consumer recognition and established distribution networks across retail channels.",
@@ -1018,6 +1033,11 @@
     "business": "Provides engineering, IT, and scientific services primarily to U.S. government defense, intelligence, and civilian agencies.",
     "edge": "Long-standing relationships with federal customers, security clearances across its workforce, and integrated capabilities across defense and intelligence domains create high switching costs.",
     "generated_at": "2026-08-07T03:34:45.580690+00:00"
+  },
+  "LEN": {
+    "business": "Lennar Corporation is a homebuilder that constructs and sells single-family homes, townhomes, and condominiums across the United States, along with providing mortgage and title services.",
+    "edge": "The company operates one of the largest geographic footprints among U.S. homebuilders, which provides scale advantages in land acquisition, construction efficiency, and market diversification.",
+    "generated_at": "2026-08-15T18:38:48.804507+00:00"
   },
   "LH": {
     "business": "Provides clinical laboratory testing, drug testing, and diagnostic information services to healthcare providers, employers, and patients.",
@@ -1313,6 +1333,11 @@
     "business": "Develops and sells cybersecurity software and cloud-based platforms for network protection, threat detection, and security operations.",
     "edge": "Broad integrated platform spanning multiple security domains that creates switching costs and cross-selling opportunities for enterprise customers.",
     "generated_at": "2026-08-05T05:45:13.608934+00:00"
+  },
+  "PATH": {
+    "business": "UiPath develops robotic process automation (RPA) software that automates repetitive business processes and workflows across enterprise organizations.",
+    "edge": "Market leadership position in RPA with an extensive partner ecosystem and platform that integrates with legacy and modern enterprise systems.",
+    "generated_at": "2026-08-15T18:38:50.067145+00:00"
   },
   "PCG": {
     "business": "Generates and distributes electricity and natural gas to millions of customers across northern and central California.",
@@ -1704,6 +1729,11 @@
     "edge": "Diversified portfolio across aerospace and defense with established relationships in government contracting and integrated manufacturing capabilities.",
     "generated_at": "2026-08-07T03:35:19.085351+00:00"
   },
+  "UAL": {
+    "business": "Operates a major U.S. airline providing passenger air transportation and related services across domestic and international routes.",
+    "edge": "Extensive route network and hub infrastructure, particularly at major airports, combined with established frequent-flyer loyalty program and scale advantages in operations.",
+    "generated_at": "2026-08-15T18:38:52.092554+00:00"
+  },
   "UBER": {
     "business": "Operates digital platforms connecting riders with drivers for transportation and connecting customers with restaurants for food delivery.",
     "edge": "Network effects from large user bases on both supply and demand sides, combined with brand recognition and operational scale across global markets.",
@@ -1744,6 +1774,11 @@
     "edge": "Largest aggregates producer in the United States with extensive quarry network, vertical integration, and established distribution infrastructure that creates cost and logistical advantages.",
     "generated_at": "2026-08-08T18:06:07.861410+00:00"
   },
+  "VRSK": {
+    "business": "Provides data analytics, risk assessment, and decision-support software solutions to insurance, energy, and other industries.",
+    "edge": "Proprietary datasets and specialized analytics platforms that create switching costs and are difficult for competitors to replicate at scale.",
+    "generated_at": "2026-08-15T18:38:53.205866+00:00"
+  },
   "VRSN": {
     "business": "Operates the .com and .net domain registries and provides internet infrastructure services including DNS and security solutions.",
     "edge": "Monopoly control over the .com top-level domain, the internet's most valuable and widely-used domain extension, generating recurring revenue from domain registrations and renewals.",
@@ -1753,6 +1788,11 @@
     "business": "Vistra is a Texas-based power generation and retail electricity company that operates natural gas, nuclear, and renewable energy facilities while serving retail customers in deregulated U.S. electricity markets.",
     "edge": "The company benefits from a diversified generation portfolio across multiple fuel types and a large retail customer base that provides stable cash flows across market cycles.",
     "generated_at": "2026-08-07T11:09:06.116533+00:00"
+  },
+  "VTR": {
+    "business": "A real estate investment trust (REIT) that owns and operates medical office buildings, senior housing, and other healthcare properties across the United States.",
+    "edge": "Large diversified portfolio of healthcare real estate with long-term tenant relationships and stable, recurring rental income from essential healthcare services.",
+    "generated_at": "2026-08-15T18:38:54.431879+00:00"
   },
   "VTRS": {
     "business": "Manufactures and distributes generic and branded pharmaceuticals globally.",
@@ -1843,6 +1883,11 @@
     "business": "Operates luxury casino resorts and hotels primarily in Las Vegas, Macau, and Boston, generating revenue from gaming, hotel accommodations, dining, and entertainment.",
     "edge": "Brand reputation for high-end hospitality and premium customer experience, combined with prime real estate locations in major gaming markets.",
     "generated_at": "2026-08-07T03:33:08.607954+00:00"
+  },
+  "XYL": {
+    "business": "Manufactures and sells water and wastewater treatment equipment, pumps, and analytics software for utilities and industrial customers globally.",
+    "edge": "Established distribution networks, installed base of equipment generating recurring service revenue, and integrated software platforms that create switching costs.",
+    "generated_at": "2026-08-15T18:38:55.790249+00:00"
   },
   "XYZ": {
     "business": "Provides payment processing, point-of-sale systems, and financial services for small businesses and individuals.",
