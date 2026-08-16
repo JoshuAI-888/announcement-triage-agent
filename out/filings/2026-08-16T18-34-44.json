@@ -1,0 +1,21 @@
+{
+  "date": "2026-08-16",
+  "generated_at": "2026-08-16T18:34:44Z",
+  "run_id": "2026-08-16T18-34-44",
+  "kind": "digest",
+  "window": {
+    "as_of": null,
+    "lookback_days": 1,
+    "since": "2026-08-15T18:34:44Z",
+    "until": null
+  },
+  "counts": {
+    "total_received": 0,
+    "material": 0,
+    "immaterial": 0,
+    "needs_more_info": 0,
+    "dropped_offwatchlist": 0,
+    "dead_lettered": 0
+  },
+  "filings": []
+}
