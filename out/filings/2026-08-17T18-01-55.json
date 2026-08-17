@@ -1,0 +1,3812 @@
+{
+  "date": "2026-08-17",
+  "generated_at": "2026-08-17T18:01:55Z",
+  "run_id": "2026-08-17T18-01-55",
+  "kind": "digest",
+  "window": {
+    "as_of": null,
+    "lookback_days": 1,
+    "since": "2026-08-16T18:01:55Z",
+    "until": null
+  },
+  "counts": {
+    "total_received": 174,
+    "material": 8,
+    "immaterial": 82,
+    "needs_more_info": 84,
+    "dropped_offwatchlist": 0,
+    "dead_lettered": 0
+  },
+  "filings": [
+    {
+      "announcement_id": "849b6feff92a539b7c0bc51c55fafa496f5a3f1baed29567259198e00abca9c9",
+      "ticker": "ABNB",
+      "company_name": "Airbnb, Inc.",
+      "industry": "Services-To Dwellings & Other Buildings",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer/director; immaterial by default unless trade magnitude signals control or float change, which this text does not show.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1559720/000195917326006052/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T09:44:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "3e9c9044ad0cfc96d6210c5c795115c787fb31209f9251bf0d4cb634e6ebae95",
+      "ticker": "AFL",
+      "company_name": "AFLAC INC",
+      "industry": "Accident & Health Insurance",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A Form 4 insider sale of 13,000 shares by a substantial holder is immaterial by default; the magnitude does not signal a control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/4977/000110465926097593/xslF345X06/tm2619407-3_4seq1.xml",
+      "published_at": "2026-08-17T09:00:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ee30a12b9f714d4fbfc19703d6d4ab88db22c28ac86025b71f86e78dde6a8505",
+      "ticker": "AVB",
+      "company_name": "AVALONBAY COMMUNITIES INC",
+      "industry": "Real Estate Investment Trusts",
+      "native_form": "25-NSE",
+      "doc_type": "admin",
+      "doc_type_label": "Administrative filing",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.98,
+      "rationale": "Removal from NYSE listing is material; it affects trading, index inclusion, and the investment case fundamentally.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/915912/000087666126000689/xslF25X02/primary_doc.xml",
+      "published_at": "2026-08-17T10:53:32Z",
+      "score": 0.6488067617735951
+    },
+    {
+      "announcement_id": "00c1cb1deee28a45a76e899f7981974253cfe83109faad600ba8ad8458ac148d",
+      "ticker": "AWK",
+      "company_name": "American Water Works Company, Inc.",
+      "industry": "Water Supply",
+      "native_form": "425",
+      "doc_type": "admin",
+      "doc_type_label": "Administrative filing",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.95,
+      "rationale": "Expiration of the HSR waiting period removes a material closing condition for the merger, materially advancing the transaction toward completion by end of Q1 2027.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1410636/000119312526353249/d163454d425.htm",
+      "published_at": "2026-08-17T08:06:53Z",
+      "score": 0.5357189338968344
+    },
+    {
+      "announcement_id": "296e1b4386de520ffedfcb252881dc1e22c593409211c3b99bef9e718a3be40c",
+      "ticker": "AXP",
+      "company_name": "AMERICAN EXPRESS CO",
+      "industry": "Finance Services",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.85,
+      "rationale": "Monthly delinquency and write-off statistics are material credit-quality metrics that analysts monitor closely for early signals of portfolio deterioration.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/4962/000000496226000345/axp-20260817.htm",
+      "published_at": "2026-08-17T12:00:28Z",
+      "score": 0.6001956696949511
+    },
+    {
+      "announcement_id": "e2216524e6d81f861e1241e255a79e7606c0f7668624e73c60e082156eeaf3fd",
+      "ticker": "BAC",
+      "company_name": "BANK OF AMERICA CORP /DE/",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $2.275M retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred under a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/70858/000191870426023886/form424b2.htm",
+      "published_at": "2026-08-17T12:58:26Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b2b8a515728e994a0c50638557de142636e40ea8a18b6ded7d9aceddb2faf609",
+      "ticker": "BAC",
+      "company_name": "BANK OF AMERICA CORP /DE/",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $1.736M retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred under continuous programmes.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/70858/000191870426023868/form424b2.htm",
+      "published_at": "2026-08-17T11:29:13Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8b1802d8e68f9428b0a57b805603a51222ecfec36383e8a4322e93ba99d85862",
+      "ticker": "BAC",
+      "company_name": "BANK OF AMERICA CORP /DE/",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note (MTN) is immaterial by form type: de minimis, issued continuously by the hundred under an effective registration statement.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/70858/000121390026090633/ea0302399-01_424b2.htm",
+      "published_at": "2026-08-17T13:20:33Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "f44cd3f2501462cb25eca57a595fae3c22abe519a36c9bfdb3443b9ca6a00e49",
+      "ticker": "BG",
+      "company_name": "Bunge Global SA",
+      "industry": "Fats & Oils",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "A 424B3 pricing supplement for senior notes is a standard debt issuance filing. The form type and structure indicate this is a routine capital raise with terms to be completed; the incomplete pricing ",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1996862/000110465926097591/tm2621214-1_424b3.htm",
+      "published_at": "2026-08-17T08:57:24Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ae75a732082193f63724b0a4f767e3644415ce63cbe03578b59d42d576c983a1",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023882/form424b2.htm",
+      "published_at": "2026-08-17T12:26:33Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "c64f0b969fa07a7e651bd956428dc82ed95dc6be94e7e31833358a5534eae1cd",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously under a continuous programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023879/form424b2.htm",
+      "published_at": "2026-08-17T12:08:30Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "a5ab2bc2b33036dd78a15dbec0f124ac708acf06c20989664e2512db4b377901",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement for a $341,000 total offering is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023877/form424b2.htm",
+      "published_at": "2026-08-17T12:06:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6fffe31d7abf265fc5eb5f7696586c149450e8cfe1f8a43ea7410f10ecad6d0c",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred under a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023875/form424b2.htm",
+      "published_at": "2026-08-17T11:45:11Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9d3c68e72d7fe9e3e1475e542c58f01a8945fbf674eb5dd149e2159fe44dbc9d",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $400,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023871/form424b2.htm",
+      "published_at": "2026-08-17T11:35:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "33d03e1b97471ec80e5e96cc60631b0172acb6878ac246749a5f64393556bedf",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023866/form424b2.htm",
+      "published_at": "2026-08-17T11:27:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d0acf843f80c46fabdb6a1482112ddf0b1a60641a4ea3e79a4d594f18510c4d3",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (424B2) for a continuous medium-term-note programme is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023865/form424b2.htm",
+      "published_at": "2026-08-17T11:27:04Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "7cbd9472cf323fa4266d096250fb2836c82aae1db03a75da0a61081b4b169ae8",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023864/form424b2.htm",
+      "published_at": "2026-08-17T11:26:11Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ca6a18c2baa34988a77a84326d230245bb98df4b1e036875dc61ddd61460d1d1",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023854/form424b2.htm",
+      "published_at": "2026-08-17T10:40:28Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "788d07bfbd490b4a06dd4a7eb334d8c441b5a2f3362ae5ef3ad03f4fa53717d9",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $1.866 million retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023853/form424b2.htm",
+      "published_at": "2026-08-17T10:38:01Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b46692126e2b7421f75a075d98dc405915973838df9004ef3e4b742509fd75bd",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A pricing supplement for retail structured notes is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023852/form424b2.htm",
+      "published_at": "2026-08-17T10:37:49Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "c61e7bb7ca96d43bd09ea88a8ce08671cb3c3242fd33824fa0b2bcea008f40d5",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023850/form424b2.htm",
+      "published_at": "2026-08-17T10:35:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ebd6c95a5a8dfb77169c18f28b3fa45d3cbd553665e08c66d271209fc8f74cb7",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $3.476M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023849/form424b2.htm",
+      "published_at": "2026-08-17T10:34:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "770c25b7cf4e4fc25c59f42b403caf0ea04930d6870b573e8700b9b9c5b35c32",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $103,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023848/form424b2.htm",
+      "published_at": "2026-08-17T10:34:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "340eb3a30a521567a528152e5f0c1470886f7e3493a8199e94180c5a0e373d6b",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $2.635 million retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023847/form424b2.htm",
+      "published_at": "2026-08-17T10:32:49Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2b0db27973b41850ec101b52758e3721b91a91cc6fa668da826368f9a697733c",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $740,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023846/form424b2.htm",
+      "published_at": "2026-08-17T10:32:26Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6c881dbbd4acea975e398a94c5375443d0bb8d3d78d878f61eae9fb1e930a6f0",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $546,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023845/form424b2.htm",
+      "published_at": "2026-08-17T10:32:18Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6c45902254a94afe6bd1b50526be02c383c60e8dfeed2afc1074c3892a1a7d7e",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $5,000,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023844/form424b2.htm",
+      "published_at": "2026-08-17T10:30:15Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "33f5bd4c88d15cb14b63fa1f813e1e3c8161fdd427615aec022d3705ce1e2bca",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $661,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023843/form424b2.htm",
+      "published_at": "2026-08-17T10:27:19Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "fa3017ab12b8f5e375fd6da74d70bf16edc7239e01e60f689550e78cae24f6ea",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.96,
+      "rationale": "A $250,000 retail structured-note pricing supplement amendment revising underwriting fee is de minimis and immaterial by form type.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000095010326012468/dp251889_424b3-us26p2350d.htm",
+      "published_at": "2026-08-17T13:47:11Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0f23791f5ca3c0634e9f8806301e48ec52f3af9c0f3f869eefc4904f54099133",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000095010326012459/dp251878_424b2-us26p5973d.htm",
+      "published_at": "2026-08-17T10:23:02Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4986bac66c8530b8d5ebe1e04710283493cbef02caafcec97862fde4d08d74fd",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured-note offering is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023834/form424b2.htm",
+      "published_at": "2026-08-17T08:58:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "e21f67ac4720ca5735804489acb8aa0924babec15d243bd28c5342c7314f34a3",
+      "ticker": "C",
+      "company_name": "CITIGROUP INC",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/831001/000191870426023833/form424b2.htm",
+      "published_at": "2026-08-17T06:01:55Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8e5e2b6927680d71dee7ab9ebb761916de4988a2e0f713e360a9bfc1a0e63db3",
+      "ticker": "CHD",
+      "company_name": "CHURCH & DWIGHT CO INC /DE/",
+      "industry": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Insider Form 4 filing for phantom stock acquisition under deferred compensation plan; magnitude and form type indicate immaterial by default.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/313927/000031392726000300/xslF345X06/form4.xml",
+      "published_at": "2026-08-17T12:25:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9126713e34a4d298391b4b3e866ae98c510c183f5772b16086f1adf405db53ab",
+      "ticker": "CHD",
+      "company_name": "CHURCH & DWIGHT CO INC /DE/",
+      "industry": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Insider form 4 showing phantom stock acquisition under deferred compensation plan; magnitude and form type indicate immaterial by default.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/313927/000031392726000298/xslF345X06/form4.xml",
+      "published_at": "2026-08-17T12:21:53Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "287a106b3c7fa7b14316e6f01243f522c16e82f75432c69f6ef391e1e77391d6",
+      "ticker": "CHD",
+      "company_name": "CHURCH & DWIGHT CO INC /DE/",
+      "industry": "Soap, Detergents, Cleang Preparations, Perfumes, Cosmetics",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A Form 4 filing of phantom stock units (5.398 shares) under a deferred compensation plan is immaterial; the magnitude is de minimis and does not signal a material insider trade.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/313927/000031392726000296/xslF345X06/form4.xml",
+      "published_at": "2026-08-17T12:18:21Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d6644625e38fc4c1b4d080f8515c6455eab40a62ee264d341fc676133516b116",
+      "ticker": "CNC",
+      "company_name": "CENTENE CORP",
+      "industry": "Hospital & Medical Service Plans",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.92,
+      "rationale": "CFO departure and succession with named replacement is a material governance change. Concurrent reaffirmation of 2026 EPS guidance >$4.80 signals management confidence through transition.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1071739/000107173926000165/cnc-20260812.htm",
+      "published_at": "2026-08-17T06:05:42Z",
+      "score": 0.4616733477950255
+    },
+    {
+      "announcement_id": "f817caddcffbb60907553b28b843225d1311dcb55830be9c638f64476626dbe7",
+      "ticker": "EVRG",
+      "company_name": "Evergy, Inc.",
+      "industry": "Electric & Other Services Combined",
+      "native_form": "424B5",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B5)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.92,
+      "rationale": "A debt issuance by a major utility is material; the prospectus indicates a significant capital raise, though specific dollar amount is redacted in this preliminary form.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1711269/000119312526353300/d19416d424b5.htm",
+      "published_at": "2026-08-17T08:45:02Z",
+      "score": 0.5382098314753743
+    },
+    {
+      "announcement_id": "ad7f5c0155ed0c8df412756244e28a3c20a81fb1cd3e39ff52c4d1b9b46c2841",
+      "ticker": "FAST",
+      "company_name": "FASTENAL CO",
+      "industry": "Retail-Building Materials, Hardware, Garden Supply",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider trade by EVP; trades of ~1,364 and ~7,894 shares are routine and do not signal unusual magnitude or control change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/815556/000204350626000005/xslF345X06/wk-form4_1786979943.xml",
+      "published_at": "2026-08-17T11:19:05Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0c2af00d44b3cda8fa4ca9912e67ceeae9a6231754dd7379e9a8d949991eca46",
+      "ticker": "FAST",
+      "company_name": "FASTENAL CO",
+      "industry": "Retail-Building Materials, Hardware, Garden Supply",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A director's acquisition of 400 shares at $0 (likely a gift or grant) is immaterial by default; the magnitude does not signal a material trade.",
+      "flags": [
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/815556/000145470826000010/xslF345X06/wk-form4_1786979774.xml",
+      "published_at": "2026-08-17T11:16:16Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "14226fa52e0aaa821e92487bb5c470c63fb1ec66703d685b3346d5279c3d00b7",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353755/sgcal001_prelim.htm",
+      "published_at": "2026-08-17T13:57:38Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4da7f6dd533a109386e83f82da4580232ba7a2757cf227b3a4a3904a97a1bb1a",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353752/elln0001_prelim.htm",
+      "published_at": "2026-08-17T13:56:09Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6e2df64741746f1cf8163d5c1f3dc4b5e85dce46c56dbc997e8242bcdd6bbd8b",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353749/metaln01_prelim.htm",
+      "published_at": "2026-08-17T13:55:38Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "bad01959029f2d1635197f5745b1112a0d0e01774dfce01b7b8430c85d7c2dd1",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary 424B2 pricing supplement for retail structured notes is immaterial by form type: de minimis, issued continuously, and individually insignificant.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353746/nflxln01_prelim.htm",
+      "published_at": "2026-08-17T13:54:06Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "aad3394714d4a18ae87df985f9d33094da9e51b0f6ce6a28c974386bc87cf397",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type—individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353739/wogligx1_prelim.htm",
+      "published_at": "2026-08-17T13:48:39Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "883d904b15efd70cbf784fba05744302f9728822ca58f7b54f5ce16e2aa70d68",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353737/sx5emk94_auto_prelim.htm",
+      "published_at": "2026-08-17T13:47:38Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "669ce31a4829827210c5baa0dc30ab9f1dcd62c651d437f0fde06e9e1acda2cc",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for medium-term notes is immaterial by form type: retail structured debt issued continuously under an established programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353733/38151vc97_prelim.htm",
+      "published_at": "2026-08-17T13:45:02Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5004dfdd04e1a538ced9687ed3e86343efc29f97789a7ff2a35931972dfff530",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $3,000,000 retail structured note pricing supplement (424B2) is de minimis and immaterial by form type under the rubric.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353723/gs-20260817.htm",
+      "published_at": "2026-08-17T13:39:00Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "98a26fdb1439b023e9cd23ed13c26d028d1fadd19cbd4cc80b1da25c1a2f64fa",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (424B2) is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353708/appdi001_final.htm",
+      "published_at": "2026-08-17T13:27:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "da7a17e3d791ee1bc119b3868e9dd9a3ab653891f6564072e52b7ae2c9769f53",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $1,000,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353699/gs-20260817.htm",
+      "published_at": "2026-08-17T13:19:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0b6209d9834ae5c7b4f42503752da5169abaa9945c5a2b4841b78176da52f6e5",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000095010326012466/dp251874_424b2-spar0075.htm",
+      "published_at": "2026-08-17T13:18:55Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2868dd067e058745818c903cd4c38245be11c1deb99daf81a8f531fb398b8e76",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for fixed-rate notes is immaterial by form type: a routine debt issuance under a continuous MTN programme, de minimis individually.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353694/fixco279_auto_prelim.htm",
+      "published_at": "2026-08-17T13:16:13Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6a1b8520c42ad7578f579b7cd6f8b61a3201f92a77f722d7a60b56825586785f",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353693/wonrs808_prelim.htm",
+      "published_at": "2026-08-17T13:15:19Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5273e3639eef723fb03573d34b4fdc64ba288e9f636b0ab2ac714f826768dab1",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353682/bskca396_prelim.htm",
+      "published_at": "2026-08-17T13:06:19Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "54e5efe5906b1f74b66a8b7077d782e462a41110b5f365089f72d0dbcb8d646d",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353678/tslaln01_prelim.htm",
+      "published_at": "2026-08-17T13:04:19Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "1b9baaa446477e802ae79dda8c2359753e2e6a694f7e0a00bfc9a05d4dcfb216",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $2.566 million retail structured-note pricing supplement (424B2) is de minimis and immaterial by form type under the recurring edge case.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353671/gs-20260817.htm",
+      "published_at": "2026-08-17T13:00:35Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4c62aeb7b1b4bdb395124b1922e4798b9935e144c4c3317ab602eb5c1f717ad3",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353667/qcompp01_prelim.htm",
+      "published_at": "2026-08-17T12:56:01Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4ca6dbdcaaee43a2c799a8c05279dd67cb1000e5aded87c7c3a21015518e6225",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $8,000,000 retail structured note pricing supplement (424B2) is de minimis and immaterial by form type under the recurring edge case for continuous MTN programmes.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353662/gs-20260817.htm",
+      "published_at": "2026-08-17T12:52:22Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "fa6e699a26ffcfd06f36e81498c324e4dafa9257b56fd62b0ad3e3001f3ee443",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353660/appn0020_prelim.htm",
+      "published_at": "2026-08-17T12:52:09Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2d5c51773a1a7f4fdadc2de3c3cb2500194a897aa89d06ec411c798ebeeda3f8",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a fixed-rate debt note is immaterial by form type; individually de minimis retail debt issuance under a continuous MTN program.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353657/38151vca4_prelim.htm",
+      "published_at": "2026-08-17T12:48:46Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9cfc2e9d3e786c8244450d50cc64fa452e4d7bd02fb2c6543a4b5da535921ef8",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $1,000,000 retail debt pricing supplement is de minimis and immaterial by form type under the 424B2 rubric.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353649/gs-20260817.htm",
+      "published_at": "2026-08-17T12:39:58Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ef4c64ad633fe162033bee52c4ccd6a83e7182723c0c0d12249e2af14f151697",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $15.2M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353643/gs-20260817.htm",
+      "published_at": "2026-08-17T12:33:43Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "59846a53dbeefc4d34383c10396f9e633f4bcc351dc3947d8463645839b7947c",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for medium-term notes is immaterial by form type: retail debt issued continuously under an established programme, de minimis individually.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353635/38151vc89_prelim.htm",
+      "published_at": "2026-08-17T12:29:01Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d604eecfce8e6163bdf6f5ecbb370c86b9426bb1c35ee0ddcfb31dadb9583042",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $6.155M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353605/gs-20260817.htm",
+      "published_at": "2026-08-17T12:08:56Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d1b4914e5a69dbb3eef9cedef509030960d6e12649d44d6103ab45677085748d",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $4.1M retail structured note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353583/gs-20260817.htm",
+      "published_at": "2026-08-17T11:57:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "a11ab8d28149f1566a7bc3c1797503a0bfb739e386cbe8d21d1edc94faf47a29",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $3,000,000 retail structured-note pricing supplement (424B2) is de minimis and immaterial by form type under the recurring edge case for continuous MTN programmes.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353498/gs-20260817.htm",
+      "published_at": "2026-08-17T11:05:50Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0e72ebc9506a66e24454778ec6324ffc6fc6c1b68a3a87216ba6089d568c821b",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $5.7M retail structured note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000119312526353474/gs-20260817.htm",
+      "published_at": "2026-08-17T10:41:22Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "36c7998d3972249d041a3d654dace053498e001c226a50fc52a685c67c763d94",
+      "ticker": "GS",
+      "company_name": "GOLDMAN SACHS GROUP INC",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type—individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/886982/000095010326012458/dp251813_424b2-sparsn07.htm",
+      "published_at": "2026-08-17T10:20:50Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9a1d67c933de1fa158ac3499c371f2b0ccd8debe7ee3e094f0dfb3611cac7f66",
+      "ticker": "JNJ",
+      "company_name": "JOHNSON & JOHNSON",
+      "industry": "Pharmaceutical Preparations",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of 15,000 shares (~$3.95M) by an officer. While the magnitude is notable, a single officer's stock option exercise and sale does not signal a control or float change material to ",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/200406/000195917326006082/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T12:51:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0e3b2e97abeb8212dc7711839d549ccf2c7d63fbef84bf21c1afbe51bad581da",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (424B2) is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090647/ea0302391-01_424b2.htm",
+      "published_at": "2026-08-17T13:55:40Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "57d3e412c52bea0add4587aafb9a632b9c3beb55e5a235bf0fb77ae8b989f961",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $23.9M retail structured-note pricing supplement is de minimis and immaterial by form type under the rubric's recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090646/ea0302228-01_424b2.htm",
+      "published_at": "2026-08-17T13:54:58Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9cc86d64c46cc26d0fee85ba23d00f262b70bad780b05bb127efb9bb516d501c",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090644/ea0302366-01_424b2.htm",
+      "published_at": "2026-08-17T13:52:33Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "3291d8fa2e500dca3ae616ccc7d07e20b0863bdde49139c0fb730eba63a36513",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023896/form424b2.htm",
+      "published_at": "2026-08-17T13:40:00Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2bef8dfd6cb87781fdb7fb7eb408e41563fcf69f6cb5f843d7a9aeb4760f853c",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $1.738M retail structured-note pricing supplement is de minimis and immaterial by form type (424B2), issued continuously under a continuous programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023895/form424b2.htm",
+      "published_at": "2026-08-17T13:38:09Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "32c7d4e52ad94701b3ca0285b72072e36cf296d61484a9e137fd0e4d28c33e89",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023894/form424b2.htm",
+      "published_at": "2026-08-17T13:32:25Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "71ec3b778cb9e642b08efcf7c6d29885a9c462c5c30f8e7ce16efae3e9f26d13",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023893/form424b2.htm",
+      "published_at": "2026-08-17T13:30:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2352ee434f89d84beea60697aef46e46ddabbffa68211cac3345e7b84e1d98a8",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090640/ea0302372-01_424b2.htm",
+      "published_at": "2026-08-17T13:26:16Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "542c017211929f40f835bf045614a3217c31ec785ae9e65ac0bad1537e6385af",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023892/form424b2.htm",
+      "published_at": "2026-08-17T13:24:54Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "bd95e1d87e51477eb2c091b50eb2fb9735679f53e8ab0fbd9e102f773f27b846",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $10.4M retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously under a continuous programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090628/ea0302315-01_424b2.htm",
+      "published_at": "2026-08-17T12:57:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "418d3aa3f16cac1fc034b04a576f73d166ab0a73f1274bd13565ff83ed937173",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $3.85M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090627/ea0302314-01_424b2.htm",
+      "published_at": "2026-08-17T12:52:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5c73706e9a161b20cd0ee9076095f4745f03c79b26cd6ff6c859077bdec13552",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023876/form424b2.htm",
+      "published_at": "2026-08-17T11:45:50Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5d7ee77ea7c3f295ff14baa816d1635281cc3915d88fb277e11658f12dfcf372",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023874/form424b2.htm",
+      "published_at": "2026-08-17T11:44:07Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "14710b087ef9114488f80dc1bbb992e52c8de46d4f93f49d6bdb907fdd21c8e3",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $3.156M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023873/form424b2.htm",
+      "published_at": "2026-08-17T11:38:45Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "df94a6251ad90557ffb34b1d5bf6bb4de5fe983278741e039fb2ce548ea669d6",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type: de minimis issuance from a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023872/form424b2.htm",
+      "published_at": "2026-08-17T11:35:25Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "22d8ee9d8f3b013d2e8394abd180a61fa6a063d05bee40bc8f7bbf3d5aa464b9",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023870/form424b2.htm",
+      "published_at": "2026-08-17T11:34:24Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4498bd9e636eb68b05e67c9daaf1449fe6847eded606eeaaa7c95e97709a34fd",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type; individually de minimis and issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023869/form424b2.htm",
+      "published_at": "2026-08-17T11:32:08Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "7c8efc999464c89cbf243563d4e945588c2bf52e0c7519c69f58a9a0ff255280",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023863/form424b2.htm",
+      "published_at": "2026-08-17T11:23:33Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6e12053a4f49c1d0e2360eb67b9ada7c898a54d304f0fcf71539370130e488c6",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023862/form424b2.htm",
+      "published_at": "2026-08-17T11:21:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "616c006ed67c0439cdbe4c1d3cb89c684a2df3edbe7c579c98d1b6077842db36",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023861/form424b2.htm",
+      "published_at": "2026-08-17T11:17:39Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "7a6f34453c5a9b4260dfde22870d6830c050caf44375b639a93ff8bd9f2a78c7",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $992,000 retail structured-note pricing supplement (424B2) is de minimis and immaterial by form type; individually issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023860/form424b2.htm",
+      "published_at": "2026-08-17T11:16:22Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5593d9193ffc39b6816cbf5e2f030d1234cf164284f0652b771d9c8336c18a7a",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $326,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023858/form424b2.htm",
+      "published_at": "2026-08-17T11:06:48Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "1b4509fd017e425a56e4c7f538826b373071a9670565f90925b314d5bd103251",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $350,000 retail structured-note pricing supplement is de minimis and immaterial by form type (424B2).",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023857/form424b2.htm",
+      "published_at": "2026-08-17T11:06:02Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "f220caf81c03a3f8a84c3597d7a5612adf8cb9c779741464097f46e8bbd00505",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $1.19M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090576/ea0302277-01_424b2.htm",
+      "published_at": "2026-08-17T10:50:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2fc524ff4242dbe872a2751bb631c89e7109929eb029ce106a8f790e420eef5d",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $500,000 retail structured-note pricing supplement is de minimis and immaterial by form type (424B2).",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023851/form424b2.htm",
+      "published_at": "2026-08-17T10:36:52Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "afe747777de3344a7101ce056bfb9c97f26051efd42a81f7cc3f548d9bfe3d4f",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for retail structured notes is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023842/form424b2.htm",
+      "published_at": "2026-08-17T10:06:58Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "7187fe27038cabefd236b28f3b2214268f0f97ea442a394a03458cf2cef32ffa",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $983,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023841/form424b2.htm",
+      "published_at": "2026-08-17T10:03:11Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d0d1598ec5b4d2efdda8f4c5fc62130d9744a6b6da16126e7412393673f4a3c1",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $666,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023838/form424b2.htm",
+      "published_at": "2026-08-17T09:56:16Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8cb53f2629c219bc4d2031eb06aad084a40efe6d208cdc8bcb8969987b5496cd",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "FWP",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Free writing prospectus (FWP)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (FWP/424B2 form) is de minimis and immaterial by form type, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090552/ea0302306-01_fwp.htm",
+      "published_at": "2026-08-17T09:54:33Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "038ca074c35569cac276110dee6a675000a4bb6095d6f3488993ee20806c230b",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "FWP",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Free writing prospectus (FWP)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090541/ea0302291-01_fwp.htm",
+      "published_at": "2026-08-17T09:42:00Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "25bd0655f993819d31467f01c32916640f601b5dc4a26f92bd2808a871891f60",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $2.9M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023837/form424b2.htm",
+      "published_at": "2026-08-17T09:27:04Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ae6964f4d5ef318e5004ce73b91bc0bdcc528ff8f2071248462ec570c382e147",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $6.2M retail structured-note pricing supplement is de minimis and immaterial by form type (424B2).",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023836/form424b2.htm",
+      "published_at": "2026-08-17T09:24:45Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "86f3a3d3c8a6a1fdf86894c35427b5bf0541844dc29d5c3a93161a3c9db2c5ce",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $780,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000191870426023835/form424b2.htm",
+      "published_at": "2026-08-17T09:22:13Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "99e7a5a097c8e18271fa695b205d0cdc35b3988c2282c46e8a7b72137a6cc144",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "FWP",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Free writing prospectus (FWP)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (FWP) is immaterial by form type: de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090465/ea0302234-01_fwp.htm",
+      "published_at": "2026-08-17T06:44:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "35d5a1d76a649cbc04e3a3a08b46e88f4a75c1cc725b78e8eeec44e2db57cc47",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090463/ea0302233-01_424b2.htm",
+      "published_at": "2026-08-17T06:42:16Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6d20137a618847ea86f2701372cd98a0f811e676c7448af7093d4704e4258ee3",
+      "ticker": "JPM",
+      "company_name": "JPMORGAN CHASE & CO",
+      "industry": "National Commercial Banks",
+      "native_form": "FWP",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Free writing prospectus (FWP)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (FWP/424B2 form) is de minimis and immaterial by form type, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/19617/000121390026090459/ea0302174-01_fwp.htm",
+      "published_at": "2026-08-17T06:38:37Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "dbf7035ebd1c1a184cf4f1d7184466bcd62fac2ec00cbfc217902082fae278f1",
+      "ticker": "LH",
+      "company_name": "LABCORP HOLDINGS INC.",
+      "industry": "Services-Medical Laboratories",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.92,
+      "rationale": "An Investor Day announcement is procedural and administrative; it does not disclose material financial results, guidance, or operational changes.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/920148/000092014826000185/lh-20260817.htm",
+      "published_at": "2026-08-17T08:03:09Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "f4b765c2edb196ac3e42b04d5a63cd4155cb4cdf2a90c36c329ee9a7190c65be",
+      "ticker": "LHX",
+      "company_name": "L3HARRIS TECHNOLOGIES, INC. /DE/",
+      "industry": "Search, Detection, Navigation, Guidance, Aeronautical Sys",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.98,
+      "rationale": "CEO departure and replacement with new CEO appointment and board restructuring materially changes company leadership and governance, affecting investor confidence and strategy execution.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/202058/000020205826000066/hrs-20260816.htm",
+      "published_at": "2026-08-17T07:30:40Z",
+      "score": 0.5337002162680647
+    },
+    {
+      "announcement_id": "82cd0751f155ebb748759d414391d3beb8c755c0db4bb7ea7872ed4d98d7781c",
+      "ticker": "MOS",
+      "company_name": "MOSAIC CO",
+      "industry": "Agricultural Chemicals",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "insufficient_info",
+      "materiality_label": "Needs more info",
+      "tier": "needs_look",
+      "confidence": 0.65,
+      "rationale": "The 8-K references a press release on debt tender-offer results but does not state the amounts tendered, accepted, or pricing impact, which would determine materiality.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1285785/000119312526353193/d172855d8k.htm",
+      "published_at": "2026-08-17T06:38:21Z",
+      "score": 0.13463909952076047
+    },
+    {
+      "announcement_id": "826d6da30f8002403dd7181f400a41b47c17075f5eda97ef7c20f8cfd26ccd6a",
+      "ticker": "MPC",
+      "company_name": "Marathon Petroleum Corp",
+      "industry": "Petroleum Refining",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; immaterial by default unless trade magnitude signals unusual activity. 17,196 shares (~$6.2M) is routine for an officer-level exercise and sale.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1510295/000195917326006060/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:52:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "69a4a0b6d9af2b14d59e958b640c780a57e39d14ef9d8c888b655c9a6de0d6a5",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $2,000,000 retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred under a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040221/ms18052_424b2-26921.htm",
+      "published_at": "2026-08-17T14:01:09Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9a09eaf12ab04d7176d8d4ef15b96dd1cbcc16246f1ce9815c3fc6e2359e302e",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $410,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040220/ms18051_424b2-26920.htm",
+      "published_at": "2026-08-17T14:00:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5bf118041347976a3ed392be332f81451c74da533cc2c48aff75ea47ce6bf411",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $1.266 million retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040219/ms17760_424b2-26926.htm",
+      "published_at": "2026-08-17T13:59:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8a4e4bc5b24de4789cecc554a16851ee4840f7083c81217dd06009a7694cf5fc",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $1.475M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040218/ms18004_424b2-26924.htm",
+      "published_at": "2026-08-17T13:59:07Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "81544c89f8fdc6100a8804b16e73bde90b834221cc21318169aa0a6d574dfbb6",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A $500,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040217/ms18055_424b2-26923.htm",
+      "published_at": "2026-08-17T13:57:37Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "fc9e8c28b3d94ea235517ee774795facbffb5bbcc56ccfb72104be98e4ef9276",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040215/ms18107_424b2-26905.htm",
+      "published_at": "2026-08-17T13:38:59Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ef37e9cec0ef14d17f43df25fc1d63597debfca9f1546612efbdc84188938198",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement for market-linked notes is de minimis and immaterial by form type; issued continuously as part of a medium-term-note programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040212/ms18106_424b2-26901.htm",
+      "published_at": "2026-08-17T13:36:38Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5f3178bfea1e8a31811f040c93690813dc9cc145f80f19db8dbc92b3a9617730",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $1.2M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040207/ms17988_424b2-26918.htm",
+      "published_at": "2026-08-17T13:20:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "623fd666d6ba9514442cf2b58ba675ad32ea6ea31a8dcdc33c3e68b7f636dd3e",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $250,000 retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040206/ms17894_424b2-26834.htm",
+      "published_at": "2026-08-17T13:19:48Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "53e029ccd272a6342d0b79114852fc37bc7e341f9691d08de86b89cba215d8b4",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $881,000 retail structured-note pricing supplement is de minimis and immaterial by form type; 424B2 pricing supplements for continuous MTN programmes are individually immaterial.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040205/ms17841_424b2-26815.htm",
+      "published_at": "2026-08-17T13:19:01Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b349ac1f82f2477feaf1ced6773c5ff055bbdd6d33dfa9a5275fdc1bc286f5fb",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $1.997M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040204/ms18053_424b2-26810.htm",
+      "published_at": "2026-08-17T13:17:31Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6225244357c5ae5fde1afb672f314d7370e3c00af57a5f016f3dc23f2103fc73",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "FWP",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Free writing prospectus (FWP)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040194/ms18034_fwp-26510.htm",
+      "published_at": "2026-08-17T12:52:36Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "a96bab06008963d61e0bc223c84651e8d6e78d482cf4235c94d1d32719fc2170",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously as part of a medium-term-note programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040193/ms18034_424b2-26509.htm",
+      "published_at": "2026-08-17T12:49:51Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "63061356f4c21cb09dbffe006ae026203335a6e137e60001aabf005e458fa140",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040191/ms18080_424b2-26720.htm",
+      "published_at": "2026-08-17T12:48:26Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b49f89d28fb239780355808e693fc7d59377698592631a1958c365dd58bd28ec",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred as part of a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040185/ms18101_424b2-26930.htm",
+      "published_at": "2026-08-17T12:36:46Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "c8df46fdb1bba4fc707a9e3d6214b2950a96fc70b1f0ad3b4bbd267ef962f59f",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is de minimis and immaterial by form type; issued continuously by the hundred as part of a medium-term-note programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040184/ms18104_424b2-26916.htm",
+      "published_at": "2026-08-17T12:36:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d03db0a103e36aa54d8e71e7d26b8eb5cb1bf162e859971eba96678d09a1fa89",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred as part of a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040183/ms18099_424b2-26894.htm",
+      "published_at": "2026-08-17T12:35:54Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "0df82ea1ada46f4f34e6ac6b859caaa16df2afe28a80fe9ff6f93af28204ef83",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (424B2) is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040182/ms18097_424b2-26906.htm",
+      "published_at": "2026-08-17T12:35:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "d78f99285a336b89cb0437a760272ff84be328c57f6451595c7c4bb50694b43d",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement (424B2) is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040181/ms18103_424b2-26892.htm",
+      "published_at": "2026-08-17T12:34:52Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8887ce529cf590c567f9f0eb1a2ebb8534f6707ead9085ea69305144ee9456ef",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously as part of a medium-term-note programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040180/ms18096_424b2-26908.htm",
+      "published_at": "2026-08-17T12:34:36Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "59b6824000cdc2a1bbf646bf8b1138b844c5d8ccd36ae8ee423379812f11d031",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred as part of a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040179/ms18102_424b2-26898.htm",
+      "published_at": "2026-08-17T12:34:15Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "58fe1d43fb81ee00fa1018dc8b41e982ae528b1447998b20d815b10071f4b822",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type; issued continuously by the hundred as part of a continuous programme.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040178/ms18098_424b2-26912.htm",
+      "published_at": "2026-08-17T12:34:04Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ba41c7132d1314ad60f42f2464c40e35d7cedee1dba7091622fbd8f762f18062",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type: de minimis, issued continuously, and individually insignificant.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040177/ms18100_424b2-26896.htm",
+      "published_at": "2026-08-17T12:33:37Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ca3ca19ccdc67678bf2cf7eef6430de63a26ddcafa5006a44d6274c36e45e5d5",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040176/ms18105_424b2-26889.htm",
+      "published_at": "2026-08-17T12:32:54Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "e6debf75ca8f559f0fc7b5350e7ad9bd4bcd6182af6c1a7db7ed77183bddee2b",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A 424B2 pricing supplement for a retail structured note is immaterial by form type: individually de minimis, issued continuously by the hundred.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040175/ms18095_424b2-26902.htm",
+      "published_at": "2026-08-17T12:32:03Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b8315fe765308f6cceccba6f1ac5bf4bc2ae6da6bea243fa4586eb2d2ab6ac9b",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred as part of ongoing programmes.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000183988226040165/ms18090_424b2-26899.htm",
+      "published_at": "2026-08-17T12:06:58Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "a17a17c0e3bb5e6555e9578986aae3c597a966d71425790eedf0158d51968424",
+      "ticker": "MS",
+      "company_name": "MORGAN STANLEY",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "N-PX",
+      "doc_type": "admin",
+      "doc_type_label": "Administrative filing",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "N-PX is a routine annual proxy-voting disclosure filing by an institutional manager; administrative and procedural with no bearing on the investment case.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/895421/000114036126033299/xslN-PX_X01/primary_doc.xml",
+      "published_at": "2026-08-17T09:53:21Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b77e1da5672fa3137d4836912713d52b0ad3d80c8ec82e47d224487a7c7489aa",
+      "ticker": "NVDA",
+      "company_name": "NVIDIA CORP",
+      "industry": "Semiconductors & Related Devices",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.92,
+      "rationale": "A $105 billion contingent financial commitment for AI infrastructure with OpenAI as tenant materially changes NVIDIA's financial obligations and risk profile.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1045810/000104581026000069/nvda-20260817.htm",
+      "published_at": "2026-08-17T08:41:33Z",
+      "score": 0.5364080104739497
+    },
+    {
+      "announcement_id": "4fab9dcc99eda1b6fae6e44838cb2d7f5aca38b53df516250dc49ac3826e6227",
+      "ticker": "NWS",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; immaterial by default unless trade magnitude signals control or float change, which ~$510k does not.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006085/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T13:10:28Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8032d9913f1b7a42182a59112fec519f10d564c15fa217837dc6c25671de47b4",
+      "ticker": "NWS",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; immaterial by default absent magnitude showing control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006070/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T11:46:12Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "e6b82970163ceb58accc572d7c07549a92afe15114288571afde6271e7ae08f2",
+      "ticker": "NWS",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of ~21,500 shares (~$624k) by an officer; immaterial by default absent unusual magnitude or control signal.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006059/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:47:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "818086616871cf4798b7231420291698179b604f19dd524ebc7cbcd31a578d58",
+      "ticker": "NWS",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.92,
+      "rationale": "Routine disclosure of stock repurchase program activity to ASX; administrative filing restating previously authorized program with no new authorization or material transaction detail.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000156470826000181/nws-20260814.htm",
+      "published_at": "2026-08-17T07:31:17Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "1a4467faf6c84eb726580062149850ffa1b462415d2052ff9e0aaf720e6529ca",
+      "ticker": "NWSA",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; ~$510k aggregate value is routine and does not signal unusual magnitude or control change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006085/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T13:10:28Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "8a118e0701f9496a8519f5c0dcc58ab430702c8561111aa2240cb799f56b7716",
+      "ticker": "NWSA",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of ~51k shares (~$1.48M) by an officer; immaterial by default absent evidence of unusual magnitude or control-signal size.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006070/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T11:46:12Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "eaa25d5d4b8cd0b864a12c125fc8ea2e18d2557306932f392efaf96d61b1fcb2",
+      "ticker": "NWSA",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.92,
+      "rationale": "Form 144 insider sale of ~21,500 shares (~$624k) by an officer; immaterial by default absent unusual magnitude or control signal.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000195917326006059/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:47:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ce9ccb8b28aba45e19432eb62b42a07cc3f8ba243864b9e4688c9bbe124ec1b0",
+      "ticker": "NWSA",
+      "company_name": "NEWS CORP",
+      "industry": "Newspapers: Publishing or  Publishing & Printing",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.92,
+      "rationale": "Routine disclosure of stock repurchase program activity to ASX; administrative filing restating previously authorized program with no new repurchase amounts or material changes.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1564708/000156470826000181/nws-20260814.htm",
+      "published_at": "2026-08-17T07:31:17Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9ca43ae5d614a84b1f5786ac83d9f52965a24b09a98f23f6c3c195d28fbb8423",
+      "ticker": "PH",
+      "company_name": "Parker-Hannifin Corp",
+      "industry": "Miscellaneous Fabricated Metal Products",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; immaterial by default absent magnitude signaling control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/76334/000196530126000124/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:00:44Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "067ebe4477823a8f7c8ee54848c76bd4fc8596bbed3760e4c87a8a7eea9cc809",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider trade of 0.1471 phantom stock units is de minimis and immaterial by default under the rubric.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000266/xslF345X06/wk-form4_1786978508.xml",
+      "published_at": "2026-08-17T10:55:10Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b3cfc72014141eb86a24b2358e7ee048259671f21690f38bed4d69f8c6a10e1f",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider trade in phantom stock units (deferred compensation plan interest), immaterial by default absent magnitude signaling control or float change.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000265/xslF345X06/wk-form4_1786978469.xml",
+      "published_at": "2026-08-17T10:54:32Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "37d0155e6bb0238021326130172bf3c0576ca4901dcf11aebf80bf2ef885f4b1",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider trade of 0.8615 phantom stock units is de minimis and immaterial by default; no magnitude signals control or float change.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000264/xslF345X06/wk-form4_1786978418.xml",
+      "published_at": "2026-08-17T10:53:41Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "5e3a56a8ce302cb80be1c788eceec79c8dfbd5ad5c296548b816f0801a5905af",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider filing for phantom stock unit acquisition of ~15 units; immaterial by default absent magnitude signaling control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000263/xslF345X06/wk-form4_1786978383.xml",
+      "published_at": "2026-08-17T10:53:06Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "58686af39652ecd4f179ed96a8e64441a0e47efbe7587479e48b50b075d9f50e",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Form 4 filing for Sr. VP showing acquisition of 16.33 phantom stock units in deferred compensation plan; magnitude and form type indicate immaterial insider transaction.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000262/xslF345X06/wk-form4_1786978351.xml",
+      "published_at": "2026-08-17T10:52:34Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "297999123c1afac7f19eacbcff49a975491e571092df9f5e38dc9e3da80f283f",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "A Form 4 filing of phantom stock units (0.8364 shares) acquired by a Sr VP is immaterial by default; the magnitude is de minimis and does not signal a material trade.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000261/xslF345X06/wk-form4_1786978309.xml",
+      "published_at": "2026-08-17T10:51:52Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "9aef6b88bdc753aacdc6a71170c957705f4dc8bec4c229a6b162f25105374108",
+      "ticker": "PPG",
+      "company_name": "PPG INDUSTRIES INC",
+      "industry": "Paints, Varnishes, Lacquers, Enamels & Allied Prods",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.95,
+      "rationale": "Form 4 insider trade of 0.4852 phantom stock units is de minimis and immaterial by default under the rubric.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/79879/000007987926000260/xslF345X06/wk-form4_1786978282.xml",
+      "published_at": "2026-08-17T10:51:25Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "6117746195889eb85cb8ae6bbd758de462d21c8334be125e0af9e3f3d54630d6",
+      "ticker": "PPL",
+      "company_name": "PPL Corp",
+      "industry": "Electric Services",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "material",
+      "materiality_label": "Material",
+      "tier": "material",
+      "confidence": 0.88,
+      "rationale": "A regulatory order granting incremental revenue increases of ~$7 million annually to material subsidiaries affects earnings and cash flow, and warrants pre-open review.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/922224/000092222426000046/ppl-20260814.htm",
+      "published_at": "2026-08-17T08:16:30Z",
+      "score": 0.5008604787830842
+    },
+    {
+      "announcement_id": "992b66a251f23af1b3c47eb63e9af95f876d25a3d4fa233f0a022bc2ec8f2706",
+      "ticker": "SCHW",
+      "company_name": "SCHWAB CHARLES CORP",
+      "industry": "Security Brokers, Dealers & Flotation Companies",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of 1,000 shares (~$111k) by an officer is immaterial by default; magnitude does not signal control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/316709/000194984626000516/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:04:48Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b81c508d5adff8d506d20a6546c518f9af3f0233ed443ac1f123baa60f699911",
+      "ticker": "SHW",
+      "company_name": "SHERWIN WILLIAMS CO",
+      "industry": "Retail-Building Materials, Hardware, Garden Supply",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale by officer; while the dollar amount (~$4.76M) is substantial, Form 144 filings are immaterial by default absent unusual circumstances signaling control or float changes.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/89800/000195917326006089/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T13:59:48Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "68cc2aaf7bdec022fbcd1129ea70e821aaa5d9f597fba6fc90c6d95e25bb0a5b",
+      "ticker": "SYK",
+      "company_name": "STRYKER CORP",
+      "industry": "Surgical & Medical Instruments & Apparatus",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.92,
+      "rationale": "Form 144 insider sales are immaterial by default unless the trade magnitude signals a control or float change; this sale, while large in dollar terms, does not indicate such a shift.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/310764/000124291426000009/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:13:22Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "ef0267d29bf6d9aa13b76cc43ec947f8be5bab77829ed8ae69023533df41e47c",
+      "ticker": "TER",
+      "company_name": "TERADYNE, INC",
+      "industry": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A director's sale of 1,200 shares (~$510k) is routine insider trading, immaterial by default absent evidence of unusual magnitude or signaling.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/97210/000195917326006080/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T12:33:16Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "61e51d5d038d336b35dab71dc616dd961e4f4883beb15cccf93b09f9e27cffc6",
+      "ticker": "TER",
+      "company_name": "TERADYNE, INC",
+      "industry": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of 4,000 shares (~0.003% of outstanding) by an officer/director. While the dollar amount is material in absolute terms, the share count and percentage of float are modest and do ",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/97210/000195917326006058/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:42:30Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "321878a9545ab3acb8f6cebf39b39d1c0a07f5b6845064e110bd077c9eb7e477",
+      "ticker": "TPL",
+      "company_name": "Texas Pacific Land Corp",
+      "industry": "Oil Royalty Traders",
+      "native_form": "4",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Insider trade (Form 4)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.92,
+      "rationale": "A purchase of 1 share by a 10% owner is de minimis and immaterial; insider forms are immaterial by default unless the trade signals unusual magnitude or intent.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1811074/000143774926028127/xslF345X06/rdgdoc.xml",
+      "published_at": "2026-08-17T10:22:29Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "afdafcc9199395bbcfd49b42c15b810b30010621d1a7fb2b02ae1fe0edb210a0",
+      "ticker": "TSCO",
+      "company_name": "TRACTOR SUPPLY CO /DE/",
+      "industry": "Retail-Building Materials, Hardware, Garden Supply",
+      "native_form": "S-3ASR",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Automatic shelf registration statement (S-3ASR)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.92,
+      "rationale": "A shelf registration statement (S-3ASR) is a procedural filing establishing a framework for future issuances. No specific offering, amount, or terms are announced; actual raises will be disclosed sepa",
+      "flags": [
+        {
+          "code": "G6_directional_language",
+          "label": "Advice wording removed",
+          "why": "Wording was withheld for compliance — the underlying facts still stand; read them directly."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/916365/000119312526353323/d171891ds3asr.htm",
+      "published_at": "2026-08-17T09:10:39Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "b52b9299f2eb8602ba15fbfba7ad74a5b4fbd36012e1a8d83fe781540be6fd20",
+      "ticker": "TTWO",
+      "company_name": "TAKE TWO INTERACTIVE SOFTWARE INC",
+      "industry": "Services-Prepackaged Software",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A director sale of 127 shares (~$31k) is routine and immaterial by magnitude; does not signal control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/946581/000195917326006066/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T11:30:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "4506377595651de53fec97d19f656b77c3cfb2bf04350a35cf92b00077736543",
+      "ticker": "TTWO",
+      "company_name": "TAKE TWO INTERACTIVE SOFTWARE INC",
+      "industry": "Services-Prepackaged Software",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of 362 shares (~$88.7k) is immaterial by default; magnitude does not signal control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/946581/000195917326006064/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T11:23:32Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "bc7c6c9aa74aa112870b8f4d9c467e6f3492d97995d3f51ee4173a92daf0a226",
+      "ticker": "ULTA",
+      "company_name": "Ulta Beauty, Inc.",
+      "industry": "Retail-Retail Stores, NEC",
+      "native_form": "8-K",
+      "doc_type": "operational_incident",
+      "doc_type_label": "Material event report (8-K)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.92,
+      "rationale": "A single independent director appointment is a routine governance change with no bearing on earnings, cash flow, risk, or the investment case.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1403568/000110465926097497/ulta-20260813x8k.htm",
+      "published_at": "2026-08-17T06:30:42Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "2f145d37ead2d5a7f783b880b8778b1b128aa66b2a698b58f9c152f477b9e1f0",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail medium-term note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023898/form424b3.htm",
+      "published_at": "2026-08-17T13:51:55Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "bb7791f0c91e32c1639da7f1a3a0d16508f3df0e3aa39d4e7dd13db20c8f550a",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail medium-term note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023897/form424b3.htm",
+      "published_at": "2026-08-17T13:50:08Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "bc507809d6049f5753a096761849d35d52c0f52995e44a0e91315a8bfd329db4",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail medium-term note is immaterial by form type; individually de minimis and issued continuously.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023891/form424b3.htm",
+      "published_at": "2026-08-17T13:11:36Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "1ca7e120f2bf0dbdeb4989024eeef6ba2ddac5b44ac2501a6fee1be9e9a74362",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail medium-term note is de minimis and immaterial by form type under the recurring edge case for 424B3 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023889/form424b3.htm",
+      "published_at": "2026-08-17T13:08:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "05d5e1225d71b6a7a52bbc2687e560e0afeec5ebecd34092f9581590c2fac83e",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured medium-term note is de minimis and immaterial by form type under the recurring edge case for 424B3 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023888/form424b3.htm",
+      "published_at": "2026-08-17T13:06:24Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "803a7e19d337fc4ccccb432bb80da751fd802fcfd2b154a3a27a8c357a24671f",
+      "ticker": "USB",
+      "company_name": "US BANCORP \\DE\\",
+      "industry": "National Commercial Banks",
+      "native_form": "424B3",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B3)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "immaterial",
+      "confidence": 0.98,
+      "rationale": "A preliminary pricing supplement for a retail structured medium-term note is de minimis and immaterial by form type under the recurring edge case for 424B3 filings.",
+      "flags": [],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/36104/000191870426023887/form424b3.htm",
+      "published_at": "2026-08-17T13:04:20Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "140155b7266b744777aa2a778d8f85276f491dee68024b9241175a68aee0fdb3",
+      "ticker": "VLTO",
+      "company_name": "Veralto Corp",
+      "industry": "Instruments For Meas & Testing of  Electricity & Elec Signals",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "Form 144 insider sale of 986 shares (~$95,691) by an officer is immaterial by default; magnitude does not signal control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/1967680/000195917326006079/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T12:24:00Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "581b34037482f1e2bea4b1aa3310ac63e038d7a49e7e204dffc3d11b17d771e6",
+      "ticker": "WAB",
+      "company_name": "WESTINGHOUSE AIR BRAKE TECHNOLOGIES CORP",
+      "industry": "Railroad Equipment",
+      "native_form": "144",
+      "doc_type": "director_dealing",
+      "doc_type_label": "Notice of proposed insider sale (Form 144)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.95,
+      "rationale": "A Form 144 insider sale of 952 shares (~$286k) by an officer is immaterial by default; the magnitude does not signal a control or float change.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        },
+        {
+          "code": "G3_unverified_amount",
+          "label": "Unverified figure",
+          "why": "Treat amounts as unconfirmed — check the filing for the actual numbers."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/943452/000194984626000518/xsl144X01/primary_doc.xml",
+      "published_at": "2026-08-17T10:57:30Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "dcfd13030cc3a82a7736f439f7128c96beafc911f401afd8d0088bb09bcd5333",
+      "ticker": "WFC",
+      "company_name": "WELLS FARGO & COMPANY/MN",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $13.9M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/72971/000183988226040211/r9967wfc_424b2-26789.htm",
+      "published_at": "2026-08-17T13:34:57Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "dad69f1871aad93b2d83605d948844f46cc9a1681dff478e5bb1823722c6ce70",
+      "ticker": "WFC",
+      "company_name": "WELLS FARGO & COMPANY/MN",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A $16.5M retail structured-note pricing supplement is de minimis and immaterial by form type under the recurring edge case for 424B2 filings.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/72971/000183988226040157/r9968wfc_424b2-26786.htm",
+      "published_at": "2026-08-17T11:46:14Z",
+      "score": 0.0
+    },
+    {
+      "announcement_id": "f7834ba802a09d11bf2efe0a91336af444c24311800c8c0d12fc1eed9427a2c8",
+      "ticker": "WFC",
+      "company_name": "WELLS FARGO & COMPANY/MN",
+      "industry": "National Commercial Banks",
+      "native_form": "424B2",
+      "doc_type": "capital_raise",
+      "doc_type_label": "Prospectus supplement (424B2)",
+      "materiality": "immaterial",
+      "materiality_label": "Immaterial",
+      "tier": "needs_look",
+      "confidence": 0.98,
+      "rationale": "A retail structured-note pricing supplement is de minimis and immaterial by form type, issued continuously by the hundred under a continuous programme.",
+      "flags": [
+        {
+          "code": "G2_ungrounded_quote",
+          "label": "Unverified quote",
+          "why": "Possible paraphrase or model error — confirm the quote against the source before relying on it."
+        }
+      ],
+      "source_url": "https://www.sec.gov/Archives/edgar/data/72971/000183988226040141/r9987wfc_424b2-26817.htm",
+      "published_at": "2026-08-17T11:08:20Z",
+      "score": 0.0
+    }
+  ]
+}

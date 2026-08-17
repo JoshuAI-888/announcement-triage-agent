@@ -384,6 +384,11 @@
     "edge": "Extensive global distribution network, decades of engineering expertise in engine technology, and established relationships with major OEM customers across multiple end markets.",
     "generated_at": "2026-08-07T19:08:40.953131+00:00"
   },
+  "CNC": {
+    "business": "Centene operates as a managed healthcare company providing health insurance plans and related services to government-sponsored programs including Medicaid, Medicare, and the Health Insurance Marketplace.",
+    "edge": "Scale and operational efficiency in administering government healthcare programs across a large membership base, combined with established relationships with state and federal payers.",
+    "generated_at": "2026-08-17T18:04:50.780581+00:00"
+  },
   "CNP": {
     "business": "Centerpoint Energy operates regulated natural gas and electric utility systems serving millions of customers across Texas, Louisiana, Arkansas, Oklahoma, and Mississippi.",
     "edge": "Regulated utility business model with essential infrastructure and predictable cash flows from rate-based assets in growing service territories.",
@@ -1744,6 +1749,11 @@
     "edge": "Extensive scale and established relationships with insurers, government payers, and referral sources that create barriers to entry in behavioral health care.",
     "generated_at": "2026-08-07T03:35:20.257823+00:00"
   },
+  "ULTA": {
+    "business": "Ulta Beauty operates a chain of beauty retail stores and an e-commerce platform selling cosmetics, fragrances, skincare, and haircare products from multiple brands alongside its own private label.",
+    "edge": "Its integrated omnichannel model combining physical stores with digital sales, coupled with a large loyalty program membership base, creates customer stickiness and data advantages in a fragmented beauty market.",
+    "generated_at": "2026-08-17T18:04:52.502265+00:00"
+  },
   "UNH": {
     "business": "Provides health insurance, healthcare services, and pharmacy benefit management through its UnitedHealthcare and Optum divisions.",
     "edge": "Vertically integrated model combining insurance, healthcare delivery, and pharmacy operations creates operational efficiencies and data advantages competitors lack.",
@@ -1768,6 +1778,11 @@
     "business": "VICI Properties is a real estate investment trust (REIT) that owns and leases gaming, hospitality, and entertainment properties primarily to major casino operators.",
     "edge": "The company benefits from long-term triple-net lease agreements with established casino operators that provide stable, predictable cash flows with built-in rent escalations.",
     "generated_at": "2026-08-07T03:32:58.527631+00:00"
+  },
+  "VLTO": {
+    "business": "Veralto is a provider of software and hardware solutions for quality assurance, product inspection, and data management across manufacturing and industrial sectors.",
+    "edge": "Its portfolio combines specialized imaging and analytics technology with deep domain expertise in regulated industries, creating switching costs and integration barriers for customers.",
+    "generated_at": "2026-08-17T18:04:54.148005+00:00"
   },
   "VMC": {
     "business": "Produces and sells aggregates (crushed stone, sand, gravel) and related construction materials primarily for infrastructure and building projects in North America.",
