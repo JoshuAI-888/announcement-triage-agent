@@ -39,6 +39,11 @@
     "edge": "Established market position with deep customer relationships, extensive integrations into enterprise systems, and significant switching costs that create recurring revenue stability.",
     "generated_at": "2026-08-07T03:33:41.640194+00:00"
   },
+  "AEE": {
+    "business": "Ameren operates electric and natural gas utilities serving customers in Missouri and Illinois through regulated utility operations.",
+    "edge": "Established infrastructure and regulatory relationships in its service territories provide stable, predictable cash flows from rate-regulated utility operations.",
+    "generated_at": "2026-08-18T18:05:07.693758+00:00"
+  },
   "AFL": {
     "business": "Provides supplemental insurance products, primarily accident and disability coverage, sold through employer group plans in the United States and Japan.",
     "edge": "Dominant market position in supplemental insurance with extensive employer distribution relationships and strong brand recognition in Japan, where it generates significant revenue.",
@@ -118,6 +123,11 @@
     "business": "Designs and sells cloud networking hardware and software, primarily high-speed Ethernet switches for data centers and enterprise networks.",
     "edge": "Proprietary operating system (EOS) and software-driven architecture that enables rapid feature deployment and deep network visibility across large-scale deployments.",
     "generated_at": "2026-08-07T03:33:57.457456+00:00"
+  },
+  "AON": {
+    "business": "A multinational professional services firm providing risk management, insurance brokerage, and human capital consulting services to clients globally.",
+    "edge": "Extensive distribution network, deep client relationships, and integrated service offerings across risk, insurance, and talent management that create switching costs and cross-selling opportunities.",
+    "generated_at": "2026-08-18T18:05:05.239912+00:00"
   },
   "AOS": {
     "business": "Manufactures and distributes specialty chemicals, engineered materials, and equipment for industrial applications across water treatment, air purification, and other markets.",
@@ -218,6 +228,11 @@
     "business": "Franklin Resources is a global investment management company that provides asset management, retirement planning, and financial advisory services to institutional and individual clients.",
     "edge": "The company benefits from its diversified product offerings across multiple asset classes and geographies, combined with a large base of long-term client relationships and substantial assets under management.",
     "generated_at": "2026-08-05T18:15:49.087321+00:00"
+  },
+  "BG": {
+    "business": "Global agribusiness company engaged in oilseed processing, grain trading, sugar production, and fertilizer distribution across multiple continents.",
+    "edge": "Integrated supply chain network and established relationships with farmers and customers that provide scale advantages in commodity sourcing and distribution.",
+    "generated_at": "2026-08-18T18:05:09.778598+00:00"
   },
   "BIIB": {
     "business": "Biogen develops and commercializes therapies for neurological and neurodegenerative diseases, including multiple sclerosis, spinal muscular atrophy, and Alzheimer's disease.",
@@ -418,6 +433,11 @@
     "business": "Provides payment processing, business payments, and financial technology solutions for businesses and organizations.",
     "edge": "Extensive network of payment channels and integration capabilities that enable customers to consolidate multiple payment types through a single platform.",
     "generated_at": "2026-08-07T03:34:16.580016+00:00"
+  },
+  "CPRT": {
+    "business": "COPART operates an online marketplace for insurance companies and other sellers to auction salvage vehicles, heavy equipment, and other assets to buyers worldwide.",
+    "edge": "Proprietary technology platform and established network effects from high seller and buyer liquidity create significant switching costs and operational efficiency advantages.",
+    "generated_at": "2026-08-18T18:05:12.389230+00:00"
   },
   "CPT": {
     "business": "Owns and operates apartment communities primarily in the United States, generating revenue through residential leasing.",
@@ -824,6 +844,16 @@
     "edge": "Established brand reputation, extensive client relationships, and significant scale in capital markets that create barriers to entry and competitive advantages in deal flow and execution.",
     "generated_at": "2026-08-05T18:16:42.756264+00:00"
   },
+  "HAL": {
+    "business": "Provides oilfield services, engineering, and construction solutions to the energy industry globally.",
+    "edge": "Integrated service offerings and established relationships with major oil and gas operators create switching costs and operational efficiency advantages.",
+    "generated_at": "2026-08-18T18:05:13.909676+00:00"
+  },
+  "HAS": {
+    "business": "Designs, manufactures, and markets toys, games, entertainment franchises, and consumer products globally.",
+    "edge": "Owns and controls iconic intellectual property brands (Transformers, My Little Pony, Nerf, Play-Doh) with decades of brand equity and cross-media licensing reach.",
+    "generated_at": "2026-08-18T18:05:15.576934+00:00"
+  },
   "HBAN": {
     "business": "Regional bank providing retail and commercial banking, wealth management, and treasury services primarily across the Midwest and Mid-Atlantic United States.",
     "edge": "Extensive branch network and deposit base across its operating regions, combined with digital banking capabilities that support customer retention and cross-selling opportunities.",
@@ -928,6 +958,11 @@
     "business": "Designs and manufactures semiconductor processors and related computing components for data centers, personal computers, and other electronic devices.",
     "edge": "Decades of accumulated expertise in chip design and manufacturing processes, along with significant capital investment in fabrication facilities that create barriers to competition.",
     "generated_at": "2026-08-10T19:06:25.968813+00:00"
+  },
+  "INTU": {
+    "business": "Develops and sells financial management and small business software, including tax preparation (TurboTax), accounting (QuickBooks), and payment processing solutions.",
+    "edge": "Large installed base with high customer switching costs and network effects across integrated product ecosystem.",
+    "generated_at": "2026-08-18T18:05:17.102712+00:00"
   },
   "IP": {
     "business": "Manufactures and distributes containerboard, packaging products, and pulp for use in corrugated boxes, folding cartons, and other paper-based packaging solutions globally.",
@@ -1344,6 +1379,11 @@
     "edge": "Market leadership position in RPA with an extensive partner ecosystem and platform that integrates with legacy and modern enterprise systems.",
     "generated_at": "2026-08-15T18:38:50.067145+00:00"
   },
+  "PAYX": {
+    "business": "Provides payroll processing, human resources management, and employee benefits administration services primarily to small and medium-sized businesses.",
+    "edge": "Established integrated platform with deep customer relationships and high switching costs due to embedded payroll and HR systems across a large client base.",
+    "generated_at": "2026-08-18T18:05:18.453204+00:00"
+  },
   "PCG": {
     "business": "Generates and distributes electricity and natural gas to millions of customers across northern and central California.",
     "edge": "Monopoly utility franchise with regulated rates and essential infrastructure that creates high barriers to entry.",
@@ -1409,6 +1449,11 @@
     "edge": "Extensive branch network and established relationships with institutional and individual clients across multiple regions.",
     "generated_at": "2026-08-07T19:09:09.915525+00:00"
   },
+  "PNR": {
+    "business": "Manufactures and supplies water treatment, filtration, and flow control products for residential, commercial, and industrial applications.",
+    "edge": "Diversified portfolio across multiple end markets with established distribution networks and technical expertise in water management solutions.",
+    "generated_at": "2026-08-18T18:05:20.350485+00:00"
+  },
   "PNW": {
     "business": "Generates and distributes electricity to residential, commercial, and industrial customers primarily in Arizona through its subsidiary Arizona Public Service Company.",
     "edge": "Vertically integrated utility with regulated monopoly service territory covering central and southern Arizona, providing stable cash flows through cost-recovery rate structures.",
@@ -1459,6 +1504,11 @@
     "edge": "Established relationships with major utility and energy clients combined with technical expertise in complex infrastructure projects that create high switching costs.",
     "generated_at": "2026-08-07T03:33:01.087855+00:00"
   },
+  "PYPL": {
+    "business": "PayPal operates a digital payments platform enabling money transfers, online checkout services, and merchant payment processing globally.",
+    "edge": "Network effects from its large user base and merchant ecosystem create switching costs and reduce friction for both buyers and sellers.",
+    "generated_at": "2026-08-18T18:05:21.655245+00:00"
+  },
   "Q": {
     "business": "I don't have reliable information about a company called \"Qnity Electronics, Inc.\" with ticker symbol (Q) in my training data.",
     "edge": "This could be because:  - The company name or ticker may be slightly different than stated - It may be a smaller or newer company with limited public information - It may operate under a different legal name  I'd recommend verifying the exact company name and ticker symbol, then checking current sources like SEC filings, the company website, or financial databases for accurate information.",
@@ -1508,6 +1558,11 @@
     "business": "Provides waste collection, transfer, recycling, and disposal services to residential, commercial, and industrial customers across North America.",
     "edge": "Extensive network of landfills and transfer stations, combined with scale advantages in fleet operations and customer density, creates high switching costs and operational efficiency.",
     "generated_at": "2026-08-07T03:32:47.264351+00:00"
+  },
+  "RTX": {
+    "business": "RTX designs and manufactures aerospace and defense systems, including aircraft engines, missiles, avionics, and cybersecurity solutions.",
+    "edge": "Dominant market position in defense contracting with long-term government contracts, advanced R&D capabilities, and high barriers to entry due to regulatory requirements and customer switching costs.",
+    "generated_at": "2026-08-18T18:05:23.201711+00:00"
   },
   "RVTY": {
     "business": "Provides analytical instruments, software, and services for life sciences research, diagnostics, and applied markets.",
@@ -1773,6 +1828,11 @@
     "business": "US Bancorp is a diversified financial services company providing banking, investment, and payment services to consumers and businesses across the United States.",
     "edge": "Its extensive branch network and integrated digital banking platform provide scale advantages in deposit gathering and customer cross-selling across retail and commercial segments.",
     "generated_at": "2026-08-07T03:32:01.398860+00:00"
+  },
+  "VEEV": {
+    "business": "Provides cloud-based software solutions for the life sciences industry, including applications for clinical trials, regulatory compliance, and commercial operations.",
+    "edge": "Dominant market position in specialized life sciences software with high switching costs and deep integration into customer workflows.",
+    "generated_at": "2026-08-18T18:05:24.427708+00:00"
   },
   "VICI": {
     "business": "VICI Properties is a real estate investment trust (REIT) that owns and leases gaming, hospitality, and entertainment properties primarily to major casino operators.",
