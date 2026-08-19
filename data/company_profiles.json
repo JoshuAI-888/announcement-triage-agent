@@ -19,6 +19,11 @@
     "edge": "Diversified portfolio across multiple healthcare segments with established distribution networks and strong brand recognition in both developed and emerging markets.",
     "generated_at": "2026-08-12T18:05:30.243285+00:00"
   },
+  "ACGL": {
+    "business": "Provides insurance and reinsurance products across property, casualty, and specialty lines globally.",
+    "edge": "Strong underwriting discipline and risk selection capabilities that have historically generated consistent profitability across insurance cycles.",
+    "generated_at": "2026-08-19T18:54:19.135013+00:00"
+  },
   "ACN": {
     "business": "Provides management consulting, technology services, and outsourcing solutions to enterprises across industries globally.",
     "edge": "Scale and integrated service delivery model enabling end-to-end digital transformation and technology implementation at scope competitors struggle to match.",
@@ -29,6 +34,11 @@
     "edge": "Strong network effects and switching costs from its widely-adopted Creative Cloud suite and established position in professional creative workflows.",
     "generated_at": "2026-08-07T19:08:33.987984+00:00"
   },
+  "ADI": {
+    "business": "Designs and manufactures analog, mixed-signal, and digital signal processing semiconductors for industrial, communications, and consumer applications.",
+    "edge": "Extensive portfolio of specialized analog chips with high switching costs and deep customer integration that create barriers to substitution.",
+    "generated_at": "2026-08-19T18:54:14.661209+00:00"
+  },
   "ADM": {
     "business": "Processes agricultural commodities into food ingredients, animal feed, and biofuels.",
     "edge": "Integrated global supply chain and processing infrastructure that captures value across multiple stages of commodity transformation.",
@@ -38,6 +48,11 @@
     "business": "Provides cloud-based human capital management, payroll processing, and workforce management solutions to businesses of all sizes.",
     "edge": "Established market position with deep customer relationships, extensive integrations into enterprise systems, and significant switching costs that create recurring revenue stability.",
     "generated_at": "2026-08-07T03:33:41.640194+00:00"
+  },
+  "ADSK": {
+    "business": "Autodesk develops cloud-based and desktop software for design, engineering, and construction professionals across architecture, manufacturing, media, and entertainment industries.",
+    "edge": "Strong network effects and switching costs from deeply embedded workflows, combined with a large installed base and continuous innovation in AI-assisted design tools.",
+    "generated_at": "2026-08-19T18:54:20.442006+00:00"
   },
   "AEE": {
     "business": "Ameren operates electric and natural gas utilities serving customers in Missouri and Illinois through regulated utility operations.",
@@ -218,6 +233,11 @@
     "business": "Manufactures aluminum and steel beverage containers, as well as aerospace and specialty packaging products.",
     "edge": "Vertically integrated production with significant scale in beverage can manufacturing and long-term contracts with major global beverage companies.",
     "generated_at": "2026-08-07T19:08:36.491044+00:00"
+  },
+  "BAX": {
+    "business": "Manufactures and distributes medical devices, pharmaceuticals, and biopharmaceuticals for hospital and clinical use.",
+    "edge": "Broad portfolio of established products across multiple therapeutic areas with significant barriers to entry in regulated healthcare markets.",
+    "generated_at": "2026-08-19T18:54:16.196731+00:00"
   },
   "BDX": {
     "business": "Manufactures and distributes medical devices, diagnostic systems, and laboratory equipment used in healthcare settings worldwide.",
@@ -519,6 +539,16 @@
     "edge": "Unified platform integrating multiple observability functions reduces switching costs and creates network effects as customers consolidate vendors.",
     "generated_at": "2026-08-07T03:32:51.296462+00:00"
   },
+  "DE": {
+    "business": "Manufactures and sells agricultural machinery, construction equipment, and related products and services globally.",
+    "edge": "Strong brand reputation and extensive dealer network that create high switching costs and customer loyalty in equipment markets.",
+    "generated_at": "2026-08-19T18:54:21.551788+00:00"
+  },
+  "DECK": {
+    "business": "Designs, markets, and distributes footwear and apparel brands including UGG, The North Face, Timberland, and Hoka.",
+    "edge": "Strong portfolio of iconic, globally recognized brands with pricing power and loyal customer bases across multiple categories and geographies.",
+    "generated_at": "2026-08-19T18:54:22.863314+00:00"
+  },
   "DG": {
     "business": "Operates a chain of discount retail stores offering consumables, home goods, apparel, and seasonal merchandise primarily to price-conscious consumers in rural and underserved markets.",
     "edge": "Extensive network of small-format stores in rural areas with limited competition, combined with efficient supply chain and low-cost operating model that enables competitive pricing.",
@@ -578,6 +608,11 @@
     "business": "Generates, transmits, and distributes electricity and natural gas to millions of customers across the Carolinas, Florida, and the Midwest.",
     "edge": "Regulated utility model with long-term contracts and established infrastructure that creates stable cash flows and high barriers to entry.",
     "generated_at": "2026-08-10T19:06:29.352972+00:00"
+  },
+  "DVA": {
+    "business": "Operates dialysis treatment centers and provides kidney care services to patients with end-stage renal disease.",
+    "edge": "Large integrated network of clinics with established relationships with nephrologists, payors, and patients, combined with vertically integrated pharmaceutical and laboratory services.",
+    "generated_at": "2026-08-19T18:54:24.226522+00:00"
   },
   "DVN": {
     "business": "Devon Energy is an independent oil and natural gas exploration and production company that develops and operates upstream energy assets primarily in the United States.",
@@ -1039,6 +1074,11 @@
     "edge": "Extensive branch network and established customer relationships across the Midwest and Northeast United States provide scale advantages in deposit gathering and regional market penetration.",
     "generated_at": "2026-08-15T18:38:43.747362+00:00"
   },
+  "KEYS": {
+    "business": "Designs and manufactures electronic measurement instruments, software, and services for communications, aerospace, defense, and industrial markets.",
+    "edge": "Extensive portfolio of specialized test and measurement solutions with deep customer relationships and high switching costs in mission-critical applications.",
+    "generated_at": "2026-08-19T18:54:17.787412+00:00"
+  },
   "KHC": {
     "business": "Manufactures and markets food and beverage products including condiments, sauces, meals, snacks, and beverages globally.",
     "edge": "Extensive portfolio of iconic brands with strong consumer recognition and established distribution networks across retail channels.",
@@ -1053,6 +1093,11 @@
     "business": "Designs and manufactures process control and yield management systems for semiconductor manufacturing.",
     "edge": "Dominant market position in critical inspection and metrology equipment with high switching costs and deep customer integration across major chipmakers.",
     "generated_at": "2026-08-05T18:16:53.429863+00:00"
+  },
+  "KMI": {
+    "business": "Operates one of North America's largest networks of pipelines, terminals, and storage facilities for transporting and storing natural gas, crude oil, refined products, and other commodities.",
+    "edge": "Extensive integrated infrastructure across multiple commodity types and geographies with long-term contracted revenues that provide stable cash flows relatively insulated from commodity price volatility.",
+    "generated_at": "2026-08-19T18:54:26.556455+00:00"
   },
   "KO": {
     "business": "Manufactures and distributes non-alcoholic beverages including carbonated soft drinks, juices, water, and sports drinks sold globally.",
@@ -1108,6 +1153,11 @@
     "business": "Alliant Energy is a regulated utility company that generates, transmits, and distributes electricity and natural gas to customers in Iowa and Wisconsin.",
     "edge": "Its primary competitive advantage derives from regulated utility status with predictable rate-base returns and essential infrastructure serving a stable customer base across its service territories.",
     "generated_at": "2026-08-13T18:05:15.923611+00:00"
+  },
+  "LOW": {
+    "business": "Operates a chain of home improvement retail stores selling tools, building materials, and home décor products to both consumers and professionals.",
+    "edge": "Extensive store network with convenient locations and integrated supply chain logistics that enable efficient inventory management and competitive pricing.",
+    "generated_at": "2026-08-19T18:54:12.705862+00:00"
   },
   "LRCX": {
     "business": "Manufactures semiconductor processing equipment used in chip fabrication, particularly for etching and deposition processes.",
@@ -1268,6 +1318,11 @@
     "business": "Manufactures and sells precision instruments for weighing, analytical, and diagnostic applications across laboratory, industrial, and healthcare markets.",
     "edge": "Strong brand reputation and installed base that creates switching costs, combined with proprietary technology and extensive service networks that are difficult for competitors to replicate.",
     "generated_at": "2026-08-05T18:17:00.533865+00:00"
+  },
+  "MU": {
+    "business": "Designs and manufactures memory semiconductors including DRAM and NAND flash storage for data centers, PCs, mobile devices, and other applications.",
+    "edge": "Vertically integrated manufacturing with significant capital investment in fabrication plants, enabling cost efficiency and supply chain control in commodity memory markets.",
+    "generated_at": "2026-08-19T18:54:28.102812+00:00"
   },
   "NCLH": {
     "business": "Operates cruise ship fleets under multiple brands (Norwegian Cruise Line, Oceania Cruises, Regent Seven Seas Cruises) offering leisure travel experiences.",
@@ -1719,6 +1774,11 @@
     "edge": "Efficient supply chain and store network combined with a strong private-label brand portfolio that differentiates its product offerings from competitors.",
     "generated_at": "2026-08-07T03:35:13.802284+00:00"
   },
+  "TJX": {
+    "business": "Operates a portfolio of off-price retail chains including TJ Maxx, Marshalls, HomeGoods, and Sierra, selling discounted brand-name apparel, home goods, and accessories.",
+    "edge": "Established relationships with vendors and suppliers that enable consistent access to excess inventory and closeout merchandise at favorable costs, supporting its discount pricing model.",
+    "generated_at": "2026-08-19T18:54:11.359651+00:00"
+  },
   "TKO": {
     "business": "TKO Group Holdings operates as a sports and entertainment company that promotes mixed martial arts events and professional wrestling through the UFC and WWE brands.",
     "edge": "The company benefits from exclusive content libraries, established fan bases, and long-term athlete contracts that create high barriers to entry in combat sports entertainment.",
@@ -1828,6 +1888,11 @@
     "business": "US Bancorp is a diversified financial services company providing banking, investment, and payment services to consumers and businesses across the United States.",
     "edge": "Its extensive branch network and integrated digital banking platform provide scale advantages in deposit gathering and customer cross-selling across retail and commercial segments.",
     "generated_at": "2026-08-07T03:32:01.398860+00:00"
+  },
+  "V": {
+    "business": "Operates a global payments network that processes electronic fund transfers between financial institutions and merchants.",
+    "edge": "Dominant market position with an extensive, established network of banks and merchants that creates powerful network effects and switching costs.",
+    "generated_at": "2026-08-19T18:54:29.424803+00:00"
   },
   "VEEV": {
     "business": "Provides cloud-based software solutions for the life sciences industry, including applications for clinical trials, regulatory compliance, and commercial operations.",
