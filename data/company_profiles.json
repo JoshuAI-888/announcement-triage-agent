@@ -349,6 +349,11 @@
     "edge": "Largest cruise operator globally by passenger capacity, providing scale advantages in fleet operations, itinerary diversity, and pricing power.",
     "generated_at": "2026-08-05T18:15:46.859005+00:00"
   },
+  "CDNS": {
+    "business": "Cadence Design Systems provides electronic design automation (EDA) software and hardware emulation tools used by semiconductor and electronics companies to design and verify integrated circuits and systems.",
+    "edge": "Market leadership in EDA with deeply embedded software tools across the chip design workflow that create high switching costs and significant barriers to entry for competitors.",
+    "generated_at": "2026-08-20T18:05:58.321173+00:00"
+  },
   "CDW": {
     "business": "CDW is a technology solutions provider that sells IT hardware, software, and services to business, government, and education customers.",
     "edge": "The company maintains competitive advantages through its large customer base, vendor relationships, and integrated services capabilities that create switching costs.",
@@ -1134,6 +1139,11 @@
     "edge": "Vertically integrated capabilities across multiple defense domains with long-term government contracts and high barriers to entry in classified systems.",
     "generated_at": "2026-08-13T18:05:14.645952+00:00"
   },
+  "LIN": {
+    "business": "Linde manufactures and distributes industrial gases, engineering services, and related equipment for diverse end markets including chemicals, healthcare, and manufacturing.",
+    "edge": "Extensive global distribution network, long-term customer contracts, and high switching costs create durable competitive advantages in gas supply and delivery.",
+    "generated_at": "2026-08-20T18:05:59.729708+00:00"
+  },
   "LITE": {
     "business": "Manufactures optical and photonic products for telecommunications, data center, and consumer applications.",
     "edge": "Vertically integrated manufacturing capabilities and proprietary laser and optical component technologies that serve high-barrier-to-entry markets.",
@@ -1213,6 +1223,11 @@
     "business": "Provides credit ratings, research, and analytics for financial markets and debt instruments globally.",
     "edge": "Dominant market position in credit rating oligopoly with high switching costs and regulatory barriers to entry.",
     "generated_at": "2026-08-13T18:04:59.574681+00:00"
+  },
+  "MDLZ": {
+    "business": "Manufactures and distributes packaged snack foods and beverages globally, including brands like Oreo, Cadbury, Trident, and Doritos.",
+    "edge": "Extensive portfolio of iconic global brands with strong consumer loyalty and established distribution networks across developed and emerging markets.",
+    "generated_at": "2026-08-20T18:06:01.052666+00:00"
   },
   "MDT": {
     "business": "Medtronic designs, manufactures, and sells medical devices and therapies across cardiac, neurological, surgical, and chronic disease management categories.",
@@ -1333,6 +1348,11 @@
     "business": "Operates stock exchanges and provides market data, analytics, and technology services to financial markets globally.",
     "edge": "Dominant position in U.S. equity listings and real-time market data distribution that creates network effects and switching costs for participants.",
     "generated_at": "2026-08-07T21:37:50.426137+00:00"
+  },
+  "NDSN": {
+    "business": "Nordson manufactures and sells precision dispensing equipment, fluid management systems, and related products for industrial applications across adhesives, coatings, and electronics assembly.",
+    "edge": "Strong market position in specialized dispensing technology with high switching costs, established customer relationships, and proprietary engineering expertise that create barriers to competition.",
+    "generated_at": "2026-08-20T18:05:54.143109+00:00"
   },
   "NEE": {
     "business": "Generates and distributes electricity and natural gas through regulated utility subsidiaries and renewable energy projects across North America.",
@@ -1593,6 +1613,11 @@
     "business": "Regional bank holding company providing consumer and commercial banking services, wealth management, and mortgage lending across the southeastern and midwestern United States.",
     "edge": "Extensive branch network and established customer relationships across its geographic footprint, combined with scale advantages in deposit gathering and loan origination within regional markets.",
     "generated_at": "2026-08-07T03:33:26.735108+00:00"
+  },
+  "RJF": {
+    "business": "Provides financial services including brokerage, asset management, banking, and advisory services to individual and institutional clients.",
+    "edge": "Established brand reputation and integrated platform combining retail brokerage, wealth management, and banking operations that creates customer switching costs.",
+    "generated_at": "2026-08-20T18:05:56.771606+00:00"
   },
   "RL": {
     "business": "Designs, manufactures, and distributes luxury apparel, accessories, and home furnishings under the Ralph Lauren brand globally.",
