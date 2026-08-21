@@ -84,6 +84,11 @@
     "edge": "Operates one of the world's largest distributed server networks positioned at internet edge locations, enabling fast content delivery and DDoS protection at scale.",
     "generated_at": "2026-08-07T03:31:56.380112+00:00"
   },
+  "ALB": {
+    "business": "Produces lithium, bromine, and specialty chemicals for batteries, flame retardants, and industrial applications.",
+    "edge": "Vertically integrated lithium operations with significant reserves and low-cost production capacity, combined with established market positions in bromine and specialty chemicals.",
+    "generated_at": "2026-08-21T18:06:11.266136+00:00"
+  },
   "ALGN": {
     "business": "Manufactures clear dental aligners and digital orthodontic treatment systems for teeth straightening.",
     "edge": "Proprietary software, extensive patent portfolio, and established network of orthodontists and dentists create high switching costs and barriers to entry.",
@@ -103,6 +108,11 @@
     "business": "Manufactures and sells security products and solutions including locks, access control systems, and door hardware for commercial and residential markets.",
     "edge": "Strong brand portfolio and integrated software-hardware platform that creates switching costs and customer lock-in across its installed base.",
     "generated_at": "2026-08-07T03:33:47.416484+00:00"
+  },
+  "AMAT": {
+    "business": "Manufactures and sells semiconductor processing equipment used in the fabrication of microchips and displays.",
+    "edge": "Dominant market position in critical process steps with high switching costs and deep customer relationships that create barriers to competition.",
+    "generated_at": "2026-08-21T18:06:08.372439+00:00"
   },
   "AMCR": {
     "business": "Amcor is a global packaging manufacturer producing flexible and rigid packaging solutions for food, beverage, pharmaceutical, and other consumer products.",
@@ -328,6 +338,11 @@
     "business": "Manufactures heavy equipment and machinery for construction, mining, agriculture, and energy sectors, along with diesel engines and financial services.",
     "edge": "Extensive global dealer network, brand reputation for durability and reliability, and significant scale in manufacturing and distribution.",
     "generated_at": "2026-08-05T18:16:11.586533+00:00"
+  },
+  "CB": {
+    "business": "Provides property and casualty insurance products and services to commercial and personal customers globally.",
+    "edge": "Diversified geographic footprint and strong underwriting discipline that has historically generated consistent profitability across market cycles.",
+    "generated_at": "2026-08-21T18:06:12.541897+00:00"
   },
   "CBOE": {
     "business": "Operates electronic exchanges and provides trading platforms for equities, options, futures, and other derivatives globally.",
@@ -1629,10 +1644,20 @@
     "edge": "Integrated ecosystem of hardware, software, and data analytics that creates switching costs and network effects across connected care settings.",
     "generated_at": "2026-08-07T03:31:59.547195+00:00"
   },
+  "ROK": {
+    "business": "Designs and manufactures industrial automation software, control systems, and information technology solutions for manufacturing and enterprise operations.",
+    "edge": "Extensive installed base of legacy systems and deep integration into customer operations creates high switching costs and recurring revenue streams.",
+    "generated_at": "2026-08-21T18:06:13.752540+00:00"
+  },
   "ROP": {
     "business": "Roper Technologies is a diversified industrial company that manufactures and sells engineered products and software solutions across multiple markets including water, energy, healthcare, and transportation.",
     "edge": "The company maintains a competitive advantage through its portfolio of niche market leaders with strong recurring revenue streams, particularly from software and subscription-based businesses, combined with an efficient acquisition and integration strategy.",
     "generated_at": "2026-08-07T19:09:15.983385+00:00"
+  },
+  "ROST": {
+    "business": "Ross Stores operates a chain of off-price retail stores selling discounted brand-name apparel, accessories, and home goods.",
+    "edge": "Buying power and relationships with vendors enable acquisition of excess inventory and closeout merchandise at steep discounts, which it passes to customers while maintaining margins.",
+    "generated_at": "2026-08-21T18:06:04.929045+00:00"
   },
   "RSG": {
     "business": "Provides waste collection, transfer, recycling, and disposal services to residential, commercial, and industrial customers across North America.",
@@ -2048,6 +2073,11 @@
     "business": "Operates luxury casino resorts and hotels primarily in Las Vegas, Macau, and Boston, generating revenue from gaming, hotel accommodations, dining, and entertainment.",
     "edge": "Brand reputation for high-end hospitality and premium customer experience, combined with prime real estate locations in major gaming markets.",
     "generated_at": "2026-08-07T03:33:08.607954+00:00"
+  },
+  "XEL": {
+    "business": "Regulated utility company providing electricity and natural gas to millions of customers across eight states in the upper Midwest and Southwest.",
+    "edge": "Diversified geographic footprint with established infrastructure and regulatory relationships that create barriers to entry in its service territories.",
+    "generated_at": "2026-08-21T18:06:06.908138+00:00"
   },
   "XYL": {
     "business": "Manufactures and sells water and wastewater treatment equipment, pumps, and analytics software for utilities and industrial customers globally.",
