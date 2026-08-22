@@ -249,6 +249,11 @@
     "edge": "Broad portfolio of established products across multiple therapeutic areas with significant barriers to entry in regulated healthcare markets.",
     "generated_at": "2026-08-19T18:54:16.196731+00:00"
   },
+  "BBY": {
+    "business": "Retailer of consumer electronics, appliances, computers, and related products through physical stores and e-commerce channels.",
+    "edge": "Extensive store network providing same-day services like in-store pickup and Geek Squad technical support, creating friction costs for customers to switch to online-only competitors.",
+    "generated_at": "2026-08-22T18:42:11.348469+00:00"
+  },
   "BDX": {
     "business": "Manufactures and distributes medical devices, diagnostic systems, and laboratory equipment used in healthcare settings worldwide.",
     "edge": "Established brand reputation, extensive distribution networks, and integrated portfolio of complementary products that create switching costs for hospital and laboratory customers.",
@@ -1858,6 +1863,11 @@
     "business": "Trimble designs and manufactures positioning, navigation, and software solutions for construction, agriculture, transportation, and surveying industries.",
     "edge": "Proprietary GNSS (Global Navigation Satellite System) technology and integrated software platforms that create switching costs and network effects across its customer base.",
     "generated_at": "2026-08-07T03:35:16.651986+00:00"
+  },
+  "TROW": {
+    "business": "T. Rowe Price is a global investment management firm that provides mutual funds, retirement accounts, brokerage services, and advisory solutions to individual and institutional investors.",
+    "edge": "Established reputation and scale in active asset management with deep expertise in equity and fixed-income research, supported by a large base of long-term client relationships.",
+    "generated_at": "2026-08-22T18:42:12.967074+00:00"
   },
   "TRV": {
     "business": "Provides property and casualty insurance products including auto, home, and commercial coverage to individuals and businesses.",
