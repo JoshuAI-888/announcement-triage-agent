@@ -574,6 +574,11 @@
     "edge": "Strong portfolio of iconic, globally recognized brands with pricing power and loyal customer bases across multiple categories and geographies.",
     "generated_at": "2026-08-19T18:54:22.863314+00:00"
   },
+  "DELL": {
+    "business": "Designs, manufactures, and sells personal computers, servers, storage systems, and IT infrastructure solutions.",
+    "edge": "Vertically integrated supply chain and direct-to-customer sales model that enables competitive pricing and customization at scale.",
+    "generated_at": "2026-08-24T18:05:35.947964+00:00"
+  },
   "DG": {
     "business": "Operates a chain of discount retail stores offering consumables, home goods, apparel, and seasonal merchandise primarily to price-conscious consumers in rural and underserved markets.",
     "edge": "Extensive network of small-format stores in rural areas with limited competition, combined with efficient supply chain and low-cost operating model that enables competitive pricing.",
@@ -694,6 +699,11 @@
     "edge": "Strong brand reputation and integrated product portfolio that creates switching costs and cross-selling opportunities across commercial and industrial customer bases.",
     "generated_at": "2026-08-07T03:34:29.882091+00:00"
   },
+  "EOG": {
+    "business": "Explores for, develops, and produces crude oil and natural gas reserves primarily in the United States, Canada, and Trinidad and Tobago.",
+    "edge": "Technological expertise in horizontal drilling and hydraulic fracturing that enables efficient extraction from unconventional shale and tight formations at competitive costs.",
+    "generated_at": "2026-08-24T18:05:37.160774+00:00"
+  },
   "EQIX": {
     "business": "Operates a global network of data centers that provide colocation, interconnection, and cloud services to enterprises, financial institutions, and technology companies.",
     "edge": "Maintains one of the world's largest platforms of interconnected data centers with significant switching fabric capacity that creates network effects and switching costs for customers.",
@@ -743,6 +753,11 @@
     "business": "Online travel agency and platform that enables consumers to search, compare, and book flights, hotels, car rentals, and vacation packages.",
     "edge": "Large network effects from its marketplace connecting millions of travelers with suppliers, combined with extensive inventory aggregation and brand portfolio including Vrbo, Hotels.com, and Trivago.",
     "generated_at": "2026-08-07T19:08:52.083656+00:00"
+  },
+  "EXR": {
+    "business": "Operates a network of self-storage facilities across the United States that customers rent for personal or business storage needs.",
+    "edge": "Scale and geographic density of its facility portfolio, combined with proprietary technology and brand recognition that enable efficient operations and customer acquisition.",
+    "generated_at": "2026-08-24T18:05:31.795180+00:00"
   },
   "FANG": {
     "business": "Diamondback Energy is an independent oil and natural gas exploration and production company operating primarily in the Permian Basin.",
@@ -1409,6 +1424,11 @@
     "edge": "Extensive platform ecosystem and customer lock-in through deep integration into enterprise IT infrastructure and processes.",
     "generated_at": "2026-08-12T18:05:53.999028+00:00"
   },
+  "NSC": {
+    "business": "Operates a major freight railroad network primarily serving the eastern and midwestern United States, transporting coal, intermodal containers, automotive products, and other commodities.",
+    "edge": "Extensive rail infrastructure and established relationships with shippers across key industrial regions provide significant barriers to entry and switching costs.",
+    "generated_at": "2026-08-24T18:05:38.825110+00:00"
+  },
   "NTAP": {
     "business": "NetApp provides cloud data services and storage infrastructure software for managing and protecting data across hybrid cloud environments.",
     "edge": "Strong enterprise relationships and integrated software-hardware solutions that create switching costs and lock-in effects for large organizations.",
@@ -1538,6 +1558,11 @@
     "business": "Develops data integration and analytics software platforms used by government agencies and commercial enterprises to manage and derive insights from large datasets.",
     "edge": "Established relationships with U.S. government agencies and proprietary data fusion technology that creates switching costs for existing customers.",
     "generated_at": "2026-08-07T03:35:00.410986+00:00"
+  },
+  "PM": {
+    "business": "Manufactures and sells cigarettes, cigars, and smoke-free nicotine products globally.",
+    "edge": "Extensive distribution networks, strong brand portfolio (Marlboro, Parliament, IQOS), and established relationships with retailers worldwide.",
+    "generated_at": "2026-08-24T18:05:33.175176+00:00"
   },
   "PNC": {
     "business": "Provides retail and commercial banking, asset management, and financial services across the United States.",
@@ -1908,6 +1933,11 @@
     "business": "Manufactures and sells aircraft, defense systems, industrial products, and specialized vehicles across commercial and government markets.",
     "edge": "Diversified portfolio across aerospace and defense with established relationships in government contracting and integrated manufacturing capabilities.",
     "generated_at": "2026-08-07T03:35:19.085351+00:00"
+  },
+  "TYL": {
+    "business": "Provides cloud-based software and services for local governments, courts, and related public sector organizations.",
+    "edge": "Entrenched position as the dominant software provider to U.S. municipalities with high switching costs and recurring revenue streams.",
+    "generated_at": "2026-08-24T18:05:40.201128+00:00"
   },
   "UAL": {
     "business": "Operates a major U.S. airline providing passenger air transportation and related services across domestic and international routes.",
