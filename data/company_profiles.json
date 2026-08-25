@@ -464,6 +464,11 @@
     "edge": "Vertically integrated design and manufacturing capabilities combined with a broad portfolio of laser technologies spanning multiple wavelengths and power ranges.",
     "generated_at": "2026-08-13T18:04:57.719772+00:00"
   },
+  "COIN": {
+    "business": "Coinbase operates a cryptocurrency exchange platform and provides digital asset custody, trading, and blockchain services for retail and institutional clients.",
+    "edge": "Large user base and brand recognition in cryptocurrency trading, combined with regulatory compliance infrastructure that creates barriers for competitors in regulated markets.",
+    "generated_at": "2026-08-25T18:06:45.147085+00:00"
+  },
   "COP": {
     "business": "ConocoPhillips is an integrated energy company engaged in crude oil and natural gas exploration, production, refining, and marketing globally.",
     "edge": "The company maintains a diversified portfolio of low-cost production assets across multiple geographic regions, providing resilience through commodity price cycles and operational scale advantages.",
@@ -493,6 +498,11 @@
     "business": "Provides drug development and safety testing services, including preclinical and clinical laboratory services, to pharmaceutical, biotechnology, and chemical companies.",
     "edge": "Extensive regulatory expertise, established client relationships, and integrated service offerings across the drug development lifecycle create high switching costs and barriers to entry.",
     "generated_at": "2026-08-05T18:15:51.451130+00:00"
+  },
+  "CRM": {
+    "business": "Provides cloud-based customer relationship management (CRM) software and related enterprise applications for sales, service, marketing, and commerce functions.",
+    "edge": "Market leadership position with extensive ecosystem of third-party integrations, developer community, and AppExchange marketplace that create switching costs and network effects.",
+    "generated_at": "2026-08-25T18:06:46.808508+00:00"
   },
   "CROX": {
     "business": "Manufactures and sells foam clog shoes and casual footwear under the Crocs brand, along with complementary brands like HEYDUDE and Jibbitz accessories.",
@@ -718,6 +728,11 @@
     "business": "EQT is a natural gas production and midstream infrastructure company operating primarily in the Appalachian Basin.",
     "edge": "Largest natural gas producer in the United States with low-cost production and an integrated midstream network that captures additional value across the supply chain.",
     "generated_at": "2026-08-15T18:38:47.310991+00:00"
+  },
+  "ES": {
+    "business": "Eversource Energy is a utility company that generates, transmits, and distributes electricity and natural gas to customers in the northeastern United States, primarily serving Connecticut, Massachusetts, and New Hampshire.",
+    "edge": "Its regulated utility business model provides stable, predictable cash flows backed by rate-setting mechanisms that allow cost recovery and reasonable returns on infrastructure investments.",
+    "generated_at": "2026-08-25T18:06:48.274699+00:00"
   },
   "ETN": {
     "business": "Manufactures and distributes electrical components, hydraulics, aerospace parts, and vehicle powertrains for industrial, commercial, and transportation markets.",
@@ -969,6 +984,11 @@
     "edge": "Established brand recognition, extensive distribution network, and recurring revenue from printer consumables (ink and toner cartridges).",
     "generated_at": "2026-08-05T18:16:44.260538+00:00"
   },
+  "HRL": {
+    "business": "Produces and sells meat products, including bacon, ham, pepperoni, and shelf-stable meals, along with nutritional products and pet food.",
+    "edge": "Established brand portfolio with strong distribution networks and vertical integration in pork processing that support cost efficiency and supply chain control.",
+    "generated_at": "2026-08-25T18:06:42.556080+00:00"
+  },
   "HSIC": {
     "business": "Distributes dental and medical supplies, equipment, and technology solutions to healthcare providers worldwide.",
     "edge": "Extensive distribution network and scale advantages that enable competitive pricing and reliable supply chain access for dental and medical practices.",
@@ -1013,6 +1033,11 @@
     "business": "Operates global exchanges and clearing houses for financial derivatives, commodities, equities, and fixed income products, along with data and analytics services.",
     "edge": "Network effects from high trading volumes and liquidity across interconnected markets, combined with switching costs embedded in established market infrastructure and data dependencies.",
     "generated_at": "2026-08-05T18:16:47.641768+00:00"
+  },
+  "IDXX": {
+    "business": "IDEXX develops and manufactures diagnostic equipment, software, and services for veterinary practices, water testing, and livestock operations.",
+    "edge": "Strong brand loyalty and switching costs from integrated diagnostic platforms and practice management software that create recurring revenue and customer lock-in.",
+    "generated_at": "2026-08-25T18:06:49.763233+00:00"
   },
   "IEX": {
     "business": "Manufactures fluid and metering dispensing equipment, including pumps, meters, and related components for various industrial and commercial applications.",
@@ -1993,6 +2018,11 @@
     "business": "VICI Properties is a real estate investment trust (REIT) that owns and leases gaming, hospitality, and entertainment properties primarily to major casino operators.",
     "edge": "The company benefits from long-term triple-net lease agreements with established casino operators that provide stable, predictable cash flows with built-in rent escalations.",
     "generated_at": "2026-08-07T03:32:58.527631+00:00"
+  },
+  "VLO": {
+    "business": "Operates petroleum refineries that process crude oil into gasoline, diesel, and other refined products, along with renewable fuel production.",
+    "edge": "Large-scale refining capacity and geographic diversification across multiple U.S. refineries provide operational efficiency and market reach advantages.",
+    "generated_at": "2026-08-25T18:06:51.280531+00:00"
   },
   "VLTO": {
     "business": "Veralto is a provider of software and hardware solutions for quality assurance, product inspection, and data management across manufacturing and industrial sectors.",
