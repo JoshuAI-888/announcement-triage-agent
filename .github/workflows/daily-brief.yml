@@ -10,20 +10,19 @@ name: daily-brief
 # each cron tick into digest / intraday / skip; the *actual* NZT poll time lives in
 # runtime_config.json, not here.
 #
-# The cron is scoped to the ~06:00 NZT digest window instead of firing all day. The
-# config is a DAILY digest with intraday OFF, so every tick outside that window was a
-# pure "skip" that still spun up a runner (checkout + pip install ≈ 40s) — 95 wasted
-# runs/day on a private repo, which exhausts the GitHub Actions minutes allowance and
-# then makes GitHub drop scheduled runs / fail them with "runner not acquired".
+# The cron schedule has been removed — this workflow now runs only on demand via
+# workflow_dispatch (the dashboard "Run now" button). To restore automatic daily
+# digests, add back a `schedule:` block scoped to the ~06:00 NZT window:
+#   schedule:
+#     - cron: "0,20,40 17,18 * * *"
 # 06:00 NZT is 18:00 UTC in NZST (winter) and 17:00 UTC in NZDT (summer); firing at
-# :00/:20/:40 of both 17:00 and 18:00 UTC covers the digest tick in either season and
-# gives the run 2 extra chances to acquire a runner. 6 runs/day instead of 96 (~16x).
-# NOTE: if you re-enable hourly intraday (schedule.poll_frequency="hourly",
-# intraday_alerts=true), widen this cron back out (e.g. "7 * * * *" hourly) or intraday
-# passes won't fire outside the morning window.
+# :00/:20/:40 of both hours covers the digest tick in either season and gives the run
+# 2 extra chances to acquire a runner. Scoping it to that window matters: the config is
+# a DAILY digest with intraday OFF, so an all-day cron spent 95 ticks/day as pure
+# "skip" runs that still spun up a runner, exhausting the Actions minutes allowance.
+# If you re-enable hourly intraday (schedule.poll_frequency="hourly",
+# intraday_alerts=true), widen that cron back out (e.g. "7 * * * *").
 on:
-  schedule:
-    - cron: "0,20,40 17,18 * * *"
   workflow_dispatch:
     inputs:
       force:
