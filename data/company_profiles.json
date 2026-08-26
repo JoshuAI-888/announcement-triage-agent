@@ -139,6 +139,11 @@
     "edge": "Integrated platform combining financial planning, investment management, and insurance under one brand with direct advisor relationships.",
     "generated_at": "2026-08-07T03:33:54.555698+00:00"
   },
+  "AMT": {
+    "business": "Owns and operates a portfolio of wireless communication towers and data center real estate that it leases to mobile carriers and other tenants.",
+    "edge": "Extensive geographic footprint across the U.S. and internationally with long-term tenant contracts that provide stable, recurring revenue streams and high barriers to entry for competitors.",
+    "generated_at": "2026-08-26T19:12:52.532167+00:00"
+  },
   "AMZN": {
     "business": "Amazon operates e-commerce, cloud computing (AWS), digital streaming, and advertising services globally.",
     "edge": "Extensive logistics network, AWS market leadership, and data-driven ecosystem create significant scale and switching cost advantages.",
@@ -754,6 +759,11 @@
     "edge": "Dominant market position in structural heart disease treatment with proprietary transcatheter technology and extensive clinical evidence supporting its products.",
     "generated_at": "2026-08-12T18:05:39.641582+00:00"
   },
+  "EXC": {
+    "business": "Generates and distributes electricity and natural gas to millions of customers across the United States through its regulated utility subsidiaries.",
+    "edge": "Operates a large fleet of nuclear power plants that provide low-carbon baseload generation with high capacity factors and established regulatory frameworks that support cost recovery.",
+    "generated_at": "2026-08-26T19:12:50.149454+00:00"
+  },
   "EXE": {
     "business": "Expand Energy Corp develops and operates renewable energy projects, primarily focused on solar and energy storage solutions.",
     "edge": "The company leverages proprietary technology and development expertise in distributed energy systems to differentiate its project offerings in competitive renewable markets.",
@@ -888,6 +898,11 @@
     "business": "Develops and commercializes antiviral medications, immunology drugs, and oncology treatments, with a historical focus on HIV, hepatitis C, and other infectious diseases.",
     "edge": "Extensive patent portfolio, established relationships with healthcare providers and payers, and significant revenue from legacy antiviral franchises that generate cash for R&D investment.",
     "generated_at": "2026-08-07T03:32:04.040736+00:00"
+  },
+  "GIS": {
+    "business": "Manufactures and markets packaged food products including cereals, yogurt, pet food, and other consumer staples distributed globally.",
+    "edge": "Strong portfolio of iconic brands with high consumer recognition and loyalty, combined with extensive distribution networks and scale advantages in production and marketing.",
+    "generated_at": "2026-08-26T19:12:54.083477+00:00"
   },
   "GL": {
     "business": "Globe Life Inc. is an insurance holding company that provides life, health, and accident insurance products primarily through independent agents and direct distribution channels.",
@@ -1494,6 +1509,11 @@
     "edge": "A diversified portfolio of over 15,000 properties across multiple geographies and industries, combined with a consistent monthly dividend payment history that attracts income-focused investors.",
     "generated_at": "2026-08-12T18:05:17.834842+00:00"
   },
+  "ODFL": {
+    "business": "Operates a regional less-than-truckload (LTL) freight network across North America, transporting partial shipments for customers.",
+    "edge": "Dense pickup and delivery network with high service frequency and reliability, enabling faster transit times and lower costs than competitors in regional markets.",
+    "generated_at": "2026-08-26T19:12:55.607118+00:00"
+  },
   "OMC": {
     "business": "Omnicom is a global advertising and marketing communications company that provides services including advertising, public relations, media planning, and digital marketing to clients across various industries.",
     "edge": "Its scale and integrated service offerings across multiple disciplines allow it to serve large multinational clients with coordinated campaigns while maintaining deep industry expertise and established client relationships.",
@@ -1508,6 +1528,11 @@
     "business": "Operates a chain of automotive aftermarket parts and accessories retail stores across North America, along with distribution centers and online sales channels.",
     "edge": "Extensive store network with same-day availability and local delivery capabilities, combined with proprietary supply chain systems and brand recognition in the DIY and professional mechanic segments.",
     "generated_at": "2026-08-07T21:37:23.670115+00:00"
+  },
+  "OTIS": {
+    "business": "Manufactures, installs, and maintains elevators, escalators, and moving walkways for buildings worldwide.",
+    "edge": "Dominant global market share with recurring high-margin revenue from maintenance contracts on installed equipment base.",
+    "generated_at": "2026-08-26T19:12:57.029282+00:00"
   },
   "PANW": {
     "business": "Develops and sells cybersecurity software and cloud-based platforms for network protection, threat detection, and security operations.",
@@ -1748,6 +1773,11 @@
     "business": "Manufactures and distributes architectural and industrial coatings, paints, and related products for professional and consumer markets.",
     "edge": "Extensive network of company-owned stores providing direct customer access, technical expertise, and supply chain control that competitors cannot easily replicate.",
     "generated_at": "2026-08-07T19:09:17.249385+00:00"
+  },
+  "SJM": {
+    "business": "Manufactures and sells food and beverage products including jams, peanut butter, coffee, pet food, and other branded consumer goods.",
+    "edge": "Strong portfolio of established consumer brands with high brand recognition and customer loyalty, combined with efficient distribution networks and scale advantages.",
+    "generated_at": "2026-08-26T19:12:48.133131+00:00"
   },
   "SLB": {
     "business": "Provides oilfield services, software, and digital solutions to the global energy industry, including drilling, production, and reservoir characterization.",
